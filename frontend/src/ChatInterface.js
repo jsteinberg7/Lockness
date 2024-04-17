@@ -4,7 +4,10 @@ import io from 'socket.io-client';
 import { ArrowUpIcon } from '@chakra-ui/icons';
 import logo from './assets/favicon.png';
 
-const socket = io('http://localhost:5001');
+// get active domain
+const domain = window.location.hostname;
+
+const socket = domain.includes("localhost") ? io('http://localhost:5001') : io("https://lockness-420607.uc.r.appspot.com");
 
 const ChatInterface = () => {
     const [messages, setMessages] = useState([{
