@@ -112,7 +112,7 @@ const ChatInterface = () => {
                         p={3}
                         borderRadius="md"
                     >
-                        <Text fontSize="sm"><b>{message.sender === 'user' ? 'You' : 'Lochness'}:</b> {message.text}</Text>
+                        <Text fontSize="sm"><b>{message.sender === 'user' ? 'You' : 'Lockness'}:</b> {message.text}</Text>
                     </Box>
                 ))}
                 {error && <Text color="red.500" mb={4}>An error has occurred: {error}</Text>}
