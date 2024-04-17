@@ -27,6 +27,7 @@ const SideNavigationBar = () => {
     const file = event.target.files[0]; // Access the file
     if (file) {
       setFile(file); // Store the file in state
+      // TODO: Upload the file to the server, have the server upload to RAG database
       toast({
         title: "File uploaded successfully.",
         description: file.name,
