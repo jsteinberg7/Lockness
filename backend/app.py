@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
 from flask_socketio import SocketIO, emit
 from services.llm_service import LLMService
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"*": {"origins": "*", "allow_headers": "*"}},
+     supports_credentials=True, automatic_options=True)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/')
