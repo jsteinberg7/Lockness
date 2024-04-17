@@ -1,98 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { Box, VStack, HStack, Input, Button, Text, FormControl, Textarea } from '@chakra-ui/react';
-import { EventSourcePolyfill } from 'event-source-polyfill';
-import logo from './assets/favicon.png';
+import { Box, VStack, HStack, Button, Text, Textarea } from '@chakra-ui/react';
+import io from 'socket.io-client';
 import { ArrowUpIcon } from '@chakra-ui/icons';
+import logo from './assets/favicon.png';
+
+const socket = io('http://localhost:5001');
 
 const ChatInterface = () => {
-    const [messages, setMessages] = useState([{ text: 'Hello! How can I help you today?', sender: 'bot' }]);
-    const [inputMessage, setInputMessage] = useState('');
+    const [messages, setMessages] = useState([{
+        text: 'Hello! I am Lockness. How can I help you today?', sender: 'bot'
+    }]);
+    const [inputMessage, setInputMessage] = useState();
     const [error, setError] = useState(null);
-    const [source, setSource] = useState(null);
-
-    // Function to send the user's prompt to the backend
-    const sendPromptToBackend = (prompt) => {
-        fetch('http://localhost:5001/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ prompt: prompt }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                // show the response in the console
-                console.log('Response:', response);
-                return response;
-            })
-            .catch((error) => {
-                console.error('Failed to send message:', error);
-                setError(error.message);
-            });
-    };
 
     useEffect(() => {
-        if (!source) {
-            initializeEventSource();
-        }
-        return () => {
-            if (source) {
-                source.close();
-            }
-        };
-    }, [source]); // Only run when source changes
+        let currentMessage = { text: '', sender: 'bot' };
 
-    // Function to initialize the EventSource connection
-    // Modify the sendMessage function
+        socket.on('new_message', (message) => {
+            if (!message.final && message.text) {
+                currentMessage.text += message.text;
+                setMessages(prevMessages => {
+                    // Update the last bot message if it exists, otherwise add a new one
+                    if (prevMessages.length && prevMessages[prevMessages.length - 1].sender === 'bot') {
+                        return [...prevMessages.slice(0, -1), currentMessage];
+                    } else {
+                        return [...prevMessages, currentMessage];
+                    }
+                });
+            } else if (message.final && currentMessage.text) {
+                // Push the complete message only if there's text in the current message
+                // setMessages(prevMessages => [...prevMessages, currentMessage]);
+                currentMessage = { text: '', sender: 'bot' };  // Reset for the next message
+            }
+        });
+
+        socket.on('connect_error', (err) => {
+            setError('WebSocket connection failed.');
+        });
+
+        return () => {
+            socket.off('new_message');
+            socket.off('connect_error');
+        };
+    }, []);
+
     const handleSendMessage = () => {
-        setError(null);
         if (!inputMessage.trim()) {
             setError('Please enter a message.');
             return;
         }
-
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: inputMessage, sender: 'user' }
-        ]);
-
-        sendPromptToBackend(inputMessage);
-
+        socket.emit('send_prompt', { prompt: inputMessage });
+        // Do not clear the inputMessage here if you want to retain the input until it's manually cleared
+        setMessages(prevMessages => [...prevMessages, { text: inputMessage, sender: 'user' }]);
         setInputMessage('');
     };
 
-    // Separate function to handle EventSource initialization
-    const initializeEventSource = () => {
-        const eventSource = new EventSourcePolyfill('http://localhost:5001/chat');
-        eventSource.onmessage = (event) => {
-            console.log('Received message!');
-            console.log(event);
-            const data = JSON.parse(event.data);
-            console.log('Received message:', data.text);
-            setMessages((prevMessages) => [...prevMessages, { text: data.text, sender: 'bot' }]);
-        };
-        eventSource.onerror = (event) => {
-            console.error('EventSource failed:', event);
-            setError('An error occurred while streaming the response.');
-            eventSource.close();
-        };
-        setSource(eventSource);
-    };
-
-    // Cleanup EventSource when component unmounts
-    useEffect(() => {
-        return () => {
-            if (source) {
-                source.close();
-            }
-        };
-    }, [source]);
-
     return (
-        <Box p={4}
-            bg="gray.800"
+        <Box bg="gray.800"
             color="white"
             h="100vh"
             overflow="scroll"
@@ -103,22 +67,17 @@ const ChatInterface = () => {
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
             backgroundSize="200px"
-        >
+            py="2%">
             <VStack spacing={4} align="stretch" px="10%">
-                {messages.map((message, index) => (
-                    <Box
-                        key={index}
-                        bg={message.sender === 'user' ? 'blue.500' : 'gray.600'}
-                        p={3}
-                        borderRadius="md"
-                    >
-                        <Text fontSize="sm"><b>{message.sender === 'user' ? 'You' : 'Lockness'}:</b> {message.text}</Text>
+                {messages.map((msg, index) => (
+                    <Box key={index} bg={msg.sender === 'user' ? 'blue.500' : 'gray.600'}
+                        p={3} borderRadius="md">
+                        <Text fontSize="sm"><b>{msg.sender === 'user' ? 'You' : 'Lockness'}:</b> {msg.text}</Text>
                     </Box>
                 ))}
-                {error && <Text color="red.500" mb={4}>An error has occurred: {error}</Text>}
+                {error && <Text color="red.500" mb={4}>{error}</Text>}
             </VStack>
-            <HStack mt={4} position="absolute" spacing="5"
-                bottom="10" left="40" right="40">
+            <HStack mt={4} position="absolute" bottom="10" left="40" right="40" spacing="5">
                 <Textarea
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
@@ -129,18 +88,17 @@ const ChatInterface = () => {
                     color="white"
                     outlineColor="white"
                     borderRadius="md"
-                    onKeyDown={async (e) => {
+                    onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                             handleSendMessage();
                             e.preventDefault();
                         }
-                    }}
-                />
+                    }} />
                 <Button colorScheme="white" type="submit" borderRadius="md" outlineColor="white" onClick={handleSendMessage}>
                     <ArrowUpIcon />
                 </Button>
             </HStack>
-        </Box >
+        </Box>
     );
 };
 
