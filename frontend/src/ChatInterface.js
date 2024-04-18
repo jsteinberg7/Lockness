@@ -134,7 +134,7 @@ const ChatInterface = () => {
               backgroundImage={msg.sender === "user" ? defaultProfilePicture : logo}
               backgroundSize="cover"
             />
-            <Text  ml = "1%" size="lg" fontWeight="bold">{msg.sender === "user" ? "You" : "Lockness"}</Text>
+            <Text  ml = "1%" size="lg" fontWeight="bold">{msg.sender === "user" ? "You" : "Lockness AI"}</Text>
             
 
 
