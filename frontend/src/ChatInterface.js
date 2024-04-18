@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Box, VStack, HStack, Button, Text, Textarea, Spinner } from "@chakra-ui/react";
+import {
+    Box,
+    VStack,
+    HStack,
+    Button,
+    Text,
+    Textarea,
+    Spinner,
+    Flex,
+    InputGroup,
+    InputRightElement,
+    useColorModeValue,
+} from "@chakra-ui/react";
 import io from "socket.io-client";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import logo from "./assets/locknessLogo.png";
+import { TriangleUpIcon } from "@chakra-ui/icons"; // Or any other appropriate icon
 
 // get active domain
 const domain = window.location.hostname;
@@ -13,12 +26,12 @@ const socket = domain.includes("localhost")
 
 const ChatInterface = () => {
     const [messages, setMessages] = useState([
-        {
-            text: "Hello! I am Lockness. How can I help you today?",
-            sender: "bot",
-        },
+        // {
+        //   text: "Hello! I am Lockness. How can I help you today?",
+        //   sender: "bot",
+        // },
     ]);
-    const [inputMessage, setInputMessage] = useState();
+    const [inputMessage, setInputMessage] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -26,8 +39,8 @@ const ChatInterface = () => {
         let currentMessage = { text: "", sender: "bot" };
 
         socket.on("new_message", (message) => {
-            setError(null);
             setLoading(false);
+            setError(null);
             if (!message.final && message.text) {
                 currentMessage.text += message.text;
                 setMessages((prevMessages) => {
@@ -75,14 +88,29 @@ const ChatInterface = () => {
     };
 
     return (
-        <Box
-            bg="#3E4B5C"
-            color="#E8F2FC"
-            h="100vh"
-            position="relative"
-            py="2%"
-        >
+        <Box bg="#3E4B5C" color="#E8F2FC" h="100vh" position="relative" py="2%">
             <VStack spacing={4} align="stretch" px="10%">
+                {messages.length === 0 && (
+                    <Flex
+                        alignItems="center"
+                        justifyContent="center"
+                        flexDirection="column"
+                        mt="15%"
+                    >
+                        <Box
+                            display="inline-block"
+                            width="65px"
+                            height="65px"
+                            borderRadius="50%"
+                            backgroundImage={logo}
+                            backgroundSize="cover"
+                        />
+
+                        <Text fontSize="xl" fontWeight="bold" mt="2%">
+                            How can I help you with your research today?
+                        </Text>
+                    </Flex>
+                )}
                 {messages.map((msg, index) => (
                     <Box
                         key={index}
@@ -100,44 +128,69 @@ const ChatInterface = () => {
                         {error}
                     </Text>
                 )}
-                {loading && (<VStack justifyContent="center" py="5%"><Spinner color="white" /><Text>Thinking...</Text></VStack>)}
+                {loading && (
+                    <VStack justifyContent="center" py="5%">
+                        <Spinner color="white" />
+                        <Text>Hmmm...</Text>
+                    </VStack>
+                )}
             </VStack>
-            <HStack
-                mt={4}
+
+            <Flex
                 position="absolute"
-                bottom="10"
-                left="40"
-                right="40"
-                spacing="5"
+                bottom="2%"
+                justifyContent="center"
+                width="50%"
+                left="25%"
             >
-                <Textarea
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder="Enter your message..."
-                    colorScheme="white"
-                    autoFocus={true}
-                    size="md"
-                    color="white"
-                    outlineColor="white"
-                    borderRadius="md"
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                            handleSendMessage();
-                            e.preventDefault();
-                        }
-                    }}
-                />
-                <Button
-                    colorScheme="white"
-                    type="submit"
-                    borderRadius="md"
-                    outlineColor="white"
-                    onClick={handleSendMessage}
-                >
-                    <ArrowUpIcon />
-                </Button>
-            </HStack>
-        </Box >
+                <VStack spacing={5} width="100%">
+
+                    <InputGroup size="md">
+                        <Textarea
+                            value={inputMessage}
+                            onChange={(e) => setInputMessage(e.target.value)}
+                            placeholder="Enter new research prompt here..."
+                            style={{
+                                background: "#3E4B5C",
+                                color: "#E8F2FC",
+                                borderRadius: "8px",
+                                width: "100%",
+                                height: "15vh",
+                                resize: "none", // Allows vertical resizing
+                                overflowY: "auto", // Adds scroll if content overflows
+                                borderColor: "#E8F2FC",
+                                placeholderColor: "#B4B4B4",
+                                padding: "2%",
+                                fontSize: "sm",
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    handleSendMessage();
+                                    e.preventDefault();
+                                }
+                            }}
+                        />
+
+                        <Button
+                            size="lg"
+                            color="#E8F2FC"
+                            onClick={handleSendMessage}
+                            ml="1rem" // Adjust the margin to align the button as in the design
+                            borderRadius="lg"
+                            height="50%"
+                            isDisabled={inputMessage === ""}
+                        >
+                            <ArrowUpIcon color="black" />
+                        </Button>
+                    </InputGroup>
+                    <Text color="#B4B4B4" fontSize="sm">
+                        Lockness AI produces results based on the query and the data it is fed.
+                    </Text>
+                </VStack>
+
+
+            </Flex>
+        </Box>
     );
 };
 
