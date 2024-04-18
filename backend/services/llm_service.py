@@ -12,7 +12,8 @@ class LLMService:
     CLAUDE_SECRET_KEY = os.environ.get("CLAUDE_SECRET_KEY")
 
     def wrap_initial_prompt(prompt):
-        return f"Generate code for a script based on the following prompt:\n{prompt}. Do not include any additional output, besides the code."
+        return f"""Generate code and/or content based on the following prompt:\n{prompt}. 
+        Do not include any additional output, besides the code and/or content."""
 
     @staticmethod
     def stream_llm_response(prompt):
