@@ -8,6 +8,7 @@ import {
   Textarea,
   Spinner,
   Flex,
+  Center,
   InputGroup,
   InputRightElement,
   useColorModeValue,
@@ -15,6 +16,8 @@ import {
 import io from "socket.io-client";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import logo from "./assets/locknessLogo.png";
+import defaultProfilePicture from "./assets/defaultProfilePicture.jpeg";
+
 import { TriangleUpIcon } from "@chakra-ui/icons"; // Or any other appropriate icon
 
 // get active domain
@@ -110,16 +113,40 @@ const ChatInterface = () => {
           </Flex>
         )}
         {messages.map((msg, index) => (
-          <Box
+            <Center>
+            <Box
+          width = "100%"
             key={index}
-            bg={msg.sender === "user" ? "blue.500" : "gray.600"}
-            p={3}
+            // bg={msg.sender === "user" ? "blue.500" : "gray.600"}
+            p={5}
             borderRadius="md"
           >
-            <Text fontSize="sm">
-              <b>{msg.sender === "user" ? "You" : "Lockness"}:</b> {msg.text}
+
+          <Flex alignItems = "center" justifyContent = "start">
+
+          <Box
+              display="inline-block"
+              width="40px"
+              height="40px"
+              borderRadius="50%"
+              backgroundImage={msg.sender === "user" ? defaultProfilePicture : logo}
+              backgroundSize="cover"
+            />
+            <Text  ml = "1%" size="lg" fontWeight="bold">{msg.sender === "user" ? "You" : "Lockness"}</Text>
+            
+
+
+          </Flex>
+
+
+
+            <Text fontSize="md" mt = "1%" ml="5%">
+           {msg.text}
             </Text>
           </Box>
+
+            </Center>
+          
         ))}
         {error && (
           <Text color="red.500" mb={4}>
@@ -147,7 +174,7 @@ const ChatInterface = () => {
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Enter new research prompt here..."
+            placeholder={messages.length === 0 ? "Enter new research prompt here..." : "Message Lockness..."}
             style={{
               background: "#3E4B5C",
               color: "#E8F2FC",
@@ -182,7 +209,7 @@ const ChatInterface = () => {
           </Button>
         </InputGroup>
         <Text color="#B4B4B4" fontSize="sm">
-        Lockness AI produces results based on the query and the data it is fed. 
+        Lockness AI produces results based on the query and the data it has access to. 
     </Text>
     </VStack>
 

@@ -16,6 +16,7 @@ import { BsDatabaseAdd } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 
+
 const SideNavigationBar = () => {
   const authAccount = { profilePictureLink: "", name: "Lockness Test" };
   const navigate = useNavigate(); // Hook to navigate programmatically
@@ -95,6 +96,7 @@ const SideNavigationBar = () => {
     },
   ];
   return (
+    
     <Box
       position="fixed"
       left="0"
@@ -204,11 +206,20 @@ const SideNavigationBar = () => {
       <Box position="absolute" bottom="5" width="13vw">
         <Flex alignItems="center" justifyContent="space-between">
           <Flex alignItems="center" justifyContent="start" width="80%">
-            <Avatar
+            {/* <Avatar
               size="md"
               name={authAccount.name}
               src={authAccount.profilePicLink}
+            /> */}
+            <Box
+              display="inline-block"
+              width="40px"
+              height="40px"
+              borderRadius="50%"
+              backgroundImage={".assets/defaultProfilePicture.jpeg"}
+              backgroundSize="cover"
             />
+
             <Text color="#E8F2FC" ml="5%" fontSize="12px">
               {authAccount.name}
             </Text>
