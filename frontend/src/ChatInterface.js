@@ -26,6 +26,7 @@ const ChatInterface = () => {
         let currentMessage = { text: "", sender: "bot" };
 
         socket.on("new_message", (message) => {
+            setError(null);
             setLoading(false);
             if (!message.final && message.text) {
                 currentMessage.text += message.text;
@@ -49,6 +50,7 @@ const ChatInterface = () => {
 
         socket.on("connect_error", (err) => {
             setError("WebSocket connection failed.");
+            setLoading(false);
         });
 
         return () => {
