@@ -21,7 +21,7 @@ class LLMService:
 
         - Choose the appropriate tables that contain the billing information for medical procedures. Typically, this might include tables like transactions, patients, services, etc.
 
-        - Identify necessary columns such as amount_spent, date_of_service, state, service_id, and any patient identifiers linking to Medicaid.
+        - Identify necessary columns such as `amount_spent`, `date_of_service`, `state`, `service_id`, and any patient identifiers linking to Medicaid.
 
         ##### Step 2: Filter for Dialysis Services
 
@@ -33,7 +33,7 @@ class LLMService:
 
         - Determine the desired date range for the analysis and filter the data to only include rows within that time period.
 
-        - If looking at data for a specific geographic region, filter the data based on state, zip code, or other location identifiers.
+        - If looking at data for a specific geographic region, filter the data based on `state`, `zip_code`, or other location identifiers.
         """
 
     @staticmethod
