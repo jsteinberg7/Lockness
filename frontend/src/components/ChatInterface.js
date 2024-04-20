@@ -20,6 +20,7 @@ import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
 
 import { TriangleUpIcon } from "@chakra-ui/icons"; // Or any other appropriate icon
 import MarkdownCasing from "../components/Markdown";
+import EnglishOutline from "./EnglishOutline";
 
 // get active domain
 const domain = window.location.hostname;
@@ -38,6 +39,8 @@ const ChatInterface = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [step, setStep] = useState(-1);
 
   useEffect(() => {
     let currentMessage = { text: "", sender: "bot" };
@@ -99,13 +102,13 @@ const ChatInterface = () => {
       position="relative"
       py="2%"
     >
-      {/* <Box backgroundColor = "blue" overflow="auto" height = "75%">
-
-
-
-
-    </Box> */}
-      <VStack spacing={4} align="stretch" px="10%" overflow="auto" height="80%">
+      <VStack
+        spacing={4}
+        align="stretch"
+        px="10%"
+        overflow="auto"
+        height={step === -1 ? "75%" : "95%"}
+      >
         {messages.length === 0 && (
           <Flex
             alignItems="center"
@@ -157,17 +160,12 @@ const ChatInterface = () => {
                   {msg.text}
                 </Text>
               ) : (
-                <Flex flexDirection="column">
-                  <Text fontSize="md" mt="1%" ml="5%">
-                    {msg.text.split("####")[0]}
-                  </Text>
-                  <MarkdownCasing
-                    markdownContent={msg.text.replace(
-                      msg.text.split("####")[0].trim(),
-                      ""
-                    )}
-                  />
-                </Flex>
+                step === 0 ? 
+                <EnglishOutline outlineContent={msg.text}/> :
+                <Text>More than step 0 </Text>
+
+
+                
               )}
             </Box>
           </Center>
@@ -193,48 +191,53 @@ const ChatInterface = () => {
         left="25%"
       >
         <VStack spacing={5} width="100%">
-          <InputGroup size="md">
-            <Textarea
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder={
-                messages.length === 0
-                  ? "Enter new research prompt here..."
-                  : "Message Lockness..."
-              }
-              style={{
-                background: "darkBackgroundColor",
-                color: "primaryColor",
-                borderRadius: "8px",
-                width: "100%",
-                height: "15vh",
-                resize: "none", // Allows vertical resizing
-                overflowY: "auto", // Adds scroll if content overflows
-                borderColor: "primaryColor",
-                placeholderColor: "placeHolderColor",
-                padding: "2%",
-                fontSize: "sm",
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  handleSendMessage();
-                  e.preventDefault();
+          {step === -1 && (
+            <InputGroup size="md">
+              <Textarea
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder={
+                  messages.length === 0
+                    ? "Enter new research prompt here..."
+                    : "Message Lockness..."
                 }
-              }}
-            />
+                style={{
+                  background: "darkBackgroundColor",
+                  color: "primaryColor",
+                  borderRadius: "8px",
+                  width: "100%",
+                  height: "15vh",
+                  resize: "none", // Allows vertical resizing
+                  overflowY: "auto", // Adds scroll if content overflows
+                  borderColor: "primaryColor",
+                  placeholderColor: "placeHolderColor",
+                  padding: "2%",
+                  fontSize: "sm",
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    handleSendMessage();
+                    e.preventDefault();
+                  }
+                }}
+              />
 
-            <Button
-              size="lg"
-              color="primaryColor"
-              onClick={handleSendMessage}
-              ml="1rem" // Adjust the margin to align the button as in the design
-              borderRadius="lg"
-              height="50%"
-              isDisabled={inputMessage === ""}
-            >
-              <ArrowUpIcon color="black" />
-            </Button>
-          </InputGroup>
+              <Button
+                size="lg"
+                color="primaryColor"
+                onClick={() => {
+                  setStep(step + 1);
+                  handleSendMessage();
+                }}
+                ml="1rem" // Adjust the margin to align the button as in the design
+                borderRadius="lg"
+                height="50%"
+                isDisabled={inputMessage === ""}
+              >
+                <ArrowUpIcon color="black" />
+              </Button>
+            </InputGroup>
+          )}{" "}
           <Text color="placeHolderColor" fontSize="sm">
             Lockness AI produces results based on the query and the data it has
             access to.
