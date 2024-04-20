@@ -23,6 +23,7 @@ import { AttachmentIcon } from "@chakra-ui/icons";
 
 import MarkdownCasing from "../components/Markdown";
 import EnglishOutline from "./EnglishOutline";
+import ChatHeader from "./ChatHeader";
 
 // get active domain
 const domain = window.location.hostname;
@@ -177,35 +178,21 @@ const ChatInterface = () => {
                             backgroundSize="cover"
                         />
 
-                        <Text fontSize="xl" fontWeight="bold" mt="2%">
-                            How can I help you with your research today?
-                        </Text>
-                    </Flex>
-                )}
-                {messages.map((msg, index) => (
-                    <Center>
-                        <Box
-                            width="100%"
-                            key={index}
-                            // bg={msg.sender === "user" ? "blue.500" : "gray.600"}
-                            p={5}
-                            borderRadius="md"
-                        >
-                            <Flex alignItems="center" justifyContent="start">
-                                <Box
-                                    display="inline-block"
-                                    width="40px"
-                                    height="40px"
-                                    borderRadius="50%"
-                                    backgroundImage={
-                                        msg.sender === "user" ? defaultProfilePicture : logo
-                                    }
-                                    backgroundSize="cover"
-                                />
-                                <Text ml="1%" size="lg" fontWeight="bold">
-                                    {msg.sender === "user" ? "You" : "Lockness AI"}
-                                </Text>
-                            </Flex>
+            <Text fontSize="xl" fontWeight="bold" mt="2%">
+              How can I help you with your research today?
+            </Text>
+          </Flex>
+        )}
+        {messages.map((msg, index) => (
+          <Center>
+            <Box
+              width="100%"
+              key={index}
+              // bg={msg.sender === "user" ? "blue.500" : "gray.600"}
+              p={5}
+              borderRadius="md"
+            >
+              <ChatHeader sender={msg.sender} />
 
                             {msg.sender === "user" ? (
                                 <Text fontSize="md" mt="1%" ml="5%">
@@ -232,65 +219,83 @@ const ChatInterface = () => {
                 )}
             </VStack>
 
-            <Flex
-                position="absolute"
-                bottom="2%"
-                justifyContent="center"
-                width="50%"
-                left="25%"
-            >
-                <VStack spacing={5} width="100%">
-                    {step === -1 && (
-                        <InputGroup size="md">
-                            <Flex
-                                alignItems="center"
-                                justifyContent="left"
-                                borderRadius="lg"
-                                p="6.5%"
-                                cursor="pointer"
-                                onClick={handleUploadFileClick}
-                            >
-                                <Icon
-                                    aria-label="Upload File"
-                                    as={AttachmentIcon}
-                                    bg="transparent"
-                                    colorScheme="white"
-                                ></Icon>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleFileChange}
-                                    style={{ display: "none" }}
-                                />
-                            </Flex>
-                            <Textarea
-                                value={inputMessage}
-                                onChange={(e) => setInputMessage(e.target.value)}
-                                placeholder={
-                                    messages.length === 0
-                                        ? "Enter new research prompt here..."
-                                        : "Message Lockness..."
-                                }
-                                style={{
-                                    background: "darkBackgroundColor",
-                                    color: "primaryColor",
-                                    borderRadius: "8px",
-                                    width: "100%",
-                                    height: "15vh",
-                                    resize: "none", // Allows vertical resizing
-                                    overflowY: "auto", // Adds scroll if content overflows
-                                    borderColor: "primaryColor",
-                                    placeholderColor: "placeHolderColor",
-                                    padding: "2%",
-                                    fontSize: "sm",
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" && !e.shiftKey) {
-                                        handleSendMessage();
-                                        e.preventDefault();
-                                    }
-                                }}
-                            />
+      <Flex
+        position="absolute"
+        bottom="2%"
+        justifyContent="center"
+        width="50%"
+        left="25%"
+      >
+        <VStack spacing={5} width="100%">
+          {step === -1 && (
+            <InputGroup size="md">
+              <Button
+                size="lg"
+                color="primaryColor"
+                onClick={handleUploadFileClick}
+                mr="1rem" // Adjust the margin to align the button as in the design
+                borderRadius="lg"
+                height="50%"
+              >
+                <AttachmentIcon color="black" />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </Button>
+
+              {/* <Flex
+                alignItems="start"
+                justifyContent="left"
+                pr="1rem"
+                py="2.5%"
+                cursor="pointer"
+                // _hover={{ bg: "#3E4B5C" }}
+                onClick={handleUploadFileClick}
+              >
+                <Icon
+                size = "30px"
+                  aria-label="Upload File"
+                  as={AttachmentIcon}
+                  bg="transparent"
+                ></Icon>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </Flex> */}
+              <Textarea
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder={
+                  messages.length === 0
+                    ? "Enter new research prompt here..."
+                    : "Message Lockness..."
+                }
+                style={{
+                  background: "darkBackgroundColor",
+                  color: "primaryColor",
+                  borderRadius: "8px",
+                  width: "100%",
+                  height: "15vh",
+                  resize: "none", // Allows vertical resizing
+                  overflowY: "auto", // Adds scroll if content overflows
+                  borderColor: "primaryColor",
+                  placeholderColor: "placeHolderColor",
+                  padding: "2%",
+                  fontSize: "sm",
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    handleSendMessage();
+                    e.preventDefault();
+                  }
+                }}
+              />
 
                             <Button
                                 size="lg"
