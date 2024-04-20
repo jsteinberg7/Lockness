@@ -34,6 +34,7 @@ const ChatInterface = () => {
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
     const fileInputRef = useRef(null);
+    const [totalSteps, setTotalSteps] = useState(0);
 
     const toast = useToast();
 
@@ -73,6 +74,14 @@ const ChatInterface = () => {
                         return [...prevMessages, currentMessage];
                     }
                 });
+            } else if (message.final && currentMessage.text) {
+                // Push the complete message only if there's text in the current message
+                setMessages((prevMessages) => [...prevMessages, currentMessage]);
+                currentMessage = {
+                    text: "",
+                    sender: "bot",
+                    type: step <= 0 ? "englishOutline" : "codeStep",
+                }; // Reset for the next message
             }
         });
 
@@ -85,7 +94,7 @@ const ChatInterface = () => {
             socket.off("new_message");
             socket.off("connect_error");
         };
-    }, []);
+    }, [step]);
 
     const handleSendMessage = (context = "") => {
         if (!inputMessage.trim() && !context.trim()) {
@@ -93,18 +102,26 @@ const ChatInterface = () => {
             return;
         }
 
+        // if (step === 0)  {  // meaning we have gotten the english outline
+
+        //   messages.
+
+
+        // }
+
         const prompt = context ? context : inputMessage;
 
         socket.emit("send_prompt", {
             prompt: prompt,
             step: step + 1,
             type: step + 1 <= 0 ? "englishOutline" : "codeStep",
-            prev_code: step + 1 <= 0
-                ? messages
-                    .filter((message) => message.type === "codeStep")
-                    .map((message) => message.text)
-                    .join("")
-                : ""
+            prev_code:
+                step + 1 <= 0
+                    ? messages
+                        .filter((message) => message.type === "codeStep")
+                        .map((message) => message.text)
+                        .join("")
+                    : "",
         });
 
         setMessages((prevMessages) => [
@@ -120,9 +137,16 @@ const ChatInterface = () => {
         setLoading(true);
     };
 
+
     const handleUploadFileClick = () => {
         fileInputRef.current.click();
     };
+
+    const calculateTotalSteps = (englishOutline) => {
+        // parse through headers and find number of headers = number of steps 
+
+
+    }
 
     // add file to the staging area - file will be uploaded with the message
     const handleFileChange = (event) => {
@@ -209,18 +233,17 @@ const ChatInterface = () => {
                             {msg.sender === "user" ? (
                                 <Text fontSize="md" mt="1%" ml="5%">
                                     {msg.text}
-
                                 </Text>
                             ) : msg.type === "englishOutline" ? (
                                 <EnglishOutline
-                                    outlineContent={messages.filter((message) => message.type === "englishOutline")[0].text ?? ""}
+                                    outlineContent={msg.text ?? ""}
                                     onContinue={handleSendMessage}
                                 />
                             ) : (
                                 <CodeStep
                                     step={step}
                                     content={msg.text}
-                                    onContinue={() => { }}
+                                    onContinue={handleSendMessage}
                                 />
 
                                 // <MarkdownCasing
@@ -269,6 +292,29 @@ const ChatInterface = () => {
                                     style={{ display: "none" }}
                                 />
                             </Button>
+
+                            {/* <Flex
+                alignItems="start"
+                justifyContent="left"
+                pr="1rem"
+                py="2.5%"
+                cursor="pointer"
+                // _hover={{ bg: "#3E4B5C" }}
+                onClick={handleUploadFileClick}
+              >
+                <Icon
+                size = "30px"
+                  aria-label="Upload File"
+                  as={AttachmentIcon}
+                  bg="transparent"
+                ></Icon>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </Flex> */}
                             <Textarea
                                 value={inputMessage}
                                 onChange={(e) => setInputMessage(e.target.value)}
