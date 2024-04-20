@@ -1,29 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import { ArrowUpIcon, AttachmentIcon } from "@chakra-ui/icons";
 import {
     Box,
-    VStack,
-    HStack,
     Button,
+    Center,
+    Flex,
+    InputGroup,
+    Spinner,
     Text,
     Textarea,
-    Spinner,
-    Flex,
-    Center,
-    InputGroup,
-    InputRightElement,
-    useColorModeValue,
-    useToast,
-    Icon,
+    VStack,
+    useToast
 } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import { ArrowUpIcon } from "@chakra-ui/icons";
 import logo from "../assets/locknessLogo.png";
-import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
-import { AttachmentIcon } from "@chakra-ui/icons";
 
-import MarkdownCasing from "../components/Markdown";
-import EnglishOutline from "./EnglishOutline";
 import ChatHeader from "./ChatHeader";
+import EnglishOutline from "./EnglishOutline";
 
 // get active domain
 const domain = window.location.hostname;
@@ -90,14 +83,16 @@ const ChatInterface = () => {
         };
     }, []);
 
-    const handleSendMessage = () => {
+    const handleSendMessage = (context = "") => {
 
-        if (!inputMessage.trim()) {
+        if (!inputMessage.trim() && !context.trim()) {
             setError("Please enter a message.");
             return;
         }
 
-        socket.emit("send_prompt", { prompt: inputMessage, step: step + 1 });
+        const prompt = context ? context : inputMessage;
+
+        socket.emit("send_prompt", { prompt: prompt, step: step + 1 });
         // Do not clear the inputMessage here if you want to retain the input until it's manually cleared
         setMessages((prevMessages) => [
             ...prevMessages,
@@ -178,30 +173,30 @@ const ChatInterface = () => {
                             backgroundSize="cover"
                         />
 
-            <Text fontSize="xl" fontWeight="bold" mt="2%">
-              How can I help you with your research today?
-            </Text>
-          </Flex>
-        )}
-        {messages.map((msg, index) => (
-          <Center>
-            <Box
-              width="100%"
-              key={index}
-              // bg={msg.sender === "user" ? "blue.500" : "gray.600"}
-              p={5}
-              borderRadius="md"
-            >
-              <ChatHeader sender={msg.sender} />
+                        <Text fontSize="xl" fontWeight="bold" mt="2%">
+                            How can I help you with your research today?
+                        </Text>
+                    </Flex>
+                )}
+                {messages.map((msg, index) => (
+                    <Center>
+                        <Box
+                            width="100%"
+                            key={index}
+                            // bg={msg.sender === "user" ? "blue.500" : "gray.600"}
+                            p={5}
+                            borderRadius="md"
+                        >
+                            <ChatHeader sender={msg.sender} />
 
                             {msg.sender === "user" ? (
                                 <Text fontSize="md" mt="1%" ml="5%">
                                     {msg.text}
                                 </Text>
                             ) : step === 0 ? (
-                                <EnglishOutline outlineContent={msg.text} />
+                                <EnglishOutline outlineContent={msg.text} onContinue={handleSendMessage} />
                             ) : (
-                                <Text>More than step 0 </Text>
+                                <Text>{msg.text} </Text>
                             )}
                         </Box>
                     </Center>
@@ -219,34 +214,34 @@ const ChatInterface = () => {
                 )}
             </VStack>
 
-      <Flex
-        position="absolute"
-        bottom="2%"
-        justifyContent="center"
-        width="50%"
-        left="25%"
-      >
-        <VStack spacing={5} width="100%">
-          {step === -1 && (
-            <InputGroup size="md">
-              <Button
-                size="lg"
-                color="primaryColor"
-                onClick={handleUploadFileClick}
-                mr="1rem" // Adjust the margin to align the button as in the design
-                borderRadius="lg"
-                height="50%"
-              >
-                <AttachmentIcon color="black" />
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-              </Button>
+            <Flex
+                position="absolute"
+                bottom="2%"
+                justifyContent="center"
+                width="50%"
+                left="25%"
+            >
+                <VStack spacing={5} width="100%">
+                    {step === -1 && (
+                        <InputGroup size="md">
+                            <Button
+                                size="lg"
+                                color="primaryColor"
+                                onClick={handleUploadFileClick}
+                                mr="1rem" // Adjust the margin to align the button as in the design
+                                borderRadius="lg"
+                                height="50%"
+                            >
+                                <AttachmentIcon color="black" />
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    style={{ display: "none" }}
+                                />
+                            </Button>
 
-              {/* <Flex
+                            {/* <Flex
                 alignItems="start"
                 justifyContent="left"
                 pr="1rem"
@@ -268,41 +263,39 @@ const ChatInterface = () => {
                   style={{ display: "none" }}
                 />
               </Flex> */}
-              <Textarea
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                placeholder={
-                  messages.length === 0
-                    ? "Enter new research prompt here..."
-                    : "Message Lockness..."
-                }
-                style={{
-                  background: "darkBackgroundColor",
-                  color: "primaryColor",
-                  borderRadius: "8px",
-                  width: "100%",
-                  height: "15vh",
-                  resize: "none", // Allows vertical resizing
-                  overflowY: "auto", // Adds scroll if content overflows
-                  borderColor: "primaryColor",
-                  placeholderColor: "placeHolderColor",
-                  padding: "2%",
-                  fontSize: "sm",
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    handleSendMessage();
-                    e.preventDefault();
-                  }
-                }}
-              />
+                            <Textarea
+                                value={inputMessage}
+                                onChange={(e) => setInputMessage(e.target.value)}
+                                placeholder={
+                                    messages.length === 0
+                                        ? "Enter new research prompt here..."
+                                        : "Message Lockness..."
+                                }
+                                style={{
+                                    background: "darkBackgroundColor",
+                                    color: "primaryColor",
+                                    borderRadius: "8px",
+                                    width: "100%",
+                                    height: "15vh",
+                                    resize: "none", // Allows vertical resizing
+                                    overflowY: "auto", // Adds scroll if content overflows
+                                    borderColor: "primaryColor",
+                                    placeholderColor: "placeHolderColor",
+                                    padding: "2%",
+                                    fontSize: "sm",
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                        handleSendMessage();
+                                        e.preventDefault();
+                                    }
+                                }}
+                            />
 
                             <Button
                                 size="lg"
                                 color="primaryColor"
-                                onClick={() => {
-                                    handleSendMessage();
-                                }}
+                                onClick={handleSendMessage}
                                 ml="1rem" // Adjust the margin to align the button as in the design
                                 borderRadius="lg"
                                 height="50%"

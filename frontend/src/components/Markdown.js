@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import ReactMarkdown from "react-markdown";
-
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 
-const MarkdownCasing = ({ markdownContent }) => {
+const MarkdownCasing = ({ markdownContent, onContinue = () => { } }) => {
   return (
-    <Box
-      mt="2.5%"
-      ml="4%"
-      py="5"
-      px="10"
-      backgroundColor="darkBackgroundColor"
-      borderRadius="xl"
-    >
+    <Box mt="2.5%" ml="4%" py="5" px="10" backgroundColor="darkBackgroundColor" borderRadius="xl">
       <ReactMarkdown
         py="5"
         px="10"
@@ -22,7 +14,6 @@ const MarkdownCasing = ({ markdownContent }) => {
         components={ChakraUIRenderer()}
         children={markdownContent}
       />
-
       <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
         <Button
           onClick={() => {
@@ -45,7 +36,7 @@ const MarkdownCasing = ({ markdownContent }) => {
         </Button>
         <Button
           onClick={() => {
-            console.log("Moving on to step 1 of code generation");
+            onContinue(markdownContent); // pass overview back into prompt
           }}
           backgroundColor="primaryColor"
           ml="2.5%"
