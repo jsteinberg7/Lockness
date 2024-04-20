@@ -28,7 +28,7 @@ const EnglishOutline = ({ outlineContent, onContinue }) => {
   return (
     <Flex flexDirection="column">
       <Text fontSize="md" mt="1%" ml="5%">
-        {firstPart}
+        ENGLISH OUTLINE: {firstPart}
       </Text>
       <MarkdownCasing onContinue={onContinue} markdownContent={restOfContent} />
     </Flex>

@@ -15,10 +15,10 @@ import {
 } from "@chakra-ui/react";
 import MarkdownCasing from "./Markdown";
 
-const CodeStep = ({ step, stepContent, onContinue }) => {
-  const headerContent = stepContent.split("~~~")[0];
+const CodeStep = ({ step, content, onContinue }) => {
+  const headerContent = content.split("~~~")[0];
 
-  const code = stepContent
+  const code = content
     .replace(headerContent, "")
 
   return (

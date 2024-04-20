@@ -22,23 +22,28 @@ def index():
 @socketio.on("send_prompt")
 # data params:
 # prompt
-# step: "overview", "code"
+# step: "outline", "code"
 def handle_prompt(data):
+    prompt = data["prompt"]
+    step = data["step"]
+    msg_type = data["type"]
+    prev_code = data.get("prev_code", None)
+
     print(
-        f"Received prompt:, {data['prompt']} step = {data['step']} type = {data['type']}"
+        f"Received prompt:, {data['prompt']} step = {data['step']} type = msg_type {data['type']}"
     )
-    responses = LLMService.stream_llm_response(data["prompt"], data["step"])
+    responses = LLMService.stream_llm_response(prompt, step, prev_code)
     for response in responses:
         emit(
             "new_message",
             {
                 "text": response,
-                "type": data["type"],
+                "type": msg_type,
                 "final": False,
             },
         )
     emit(
-        "new_message", {"text": "", "final": True, "type": data["type"]}
+        "new_message", {"text": "", "final": True, "type": msg_type}
     )  # Indicates the end of this stream
 
 
