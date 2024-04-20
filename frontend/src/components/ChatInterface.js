@@ -17,6 +17,7 @@ import logo from "../assets/locknessLogo.png";
 
 import ChatHeader from "./ChatHeader";
 import EnglishOutline from "./EnglishOutline";
+import MarkdownCasing from "./Markdown";
 
 // get active domain
 const domain = window.location.hostname;
@@ -96,7 +97,7 @@ const ChatInterface = () => {
         // Do not clear the inputMessage here if you want to retain the input until it's manually cleared
         setMessages((prevMessages) => [
             ...prevMessages,
-            { text: inputMessage, sender: "user" },
+            { text: (step === -1) ? inputMessage : "Look good, continue...", sender: "user" },
         ]);
         setStep(step + 1);
         setInputMessage("");
@@ -196,7 +197,9 @@ const ChatInterface = () => {
                             ) : step === 0 ? (
                                 <EnglishOutline outlineContent={msg.text} onContinue={handleSendMessage} />
                             ) : (
-                                <Text>{msg.text} </Text>
+                                <MarkdownCasing
+                                    markdownContent={msg.text}
+                                />
                             )}
                         </Box>
                     </Center>
