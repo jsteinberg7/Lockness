@@ -19,6 +19,7 @@ import logo from "./assets/locknessLogo.png";
 import defaultProfilePicture from "./assets/defaultProfilePicture.jpeg";
 
 import { TriangleUpIcon } from "@chakra-ui/icons"; // Or any other appropriate icon
+import MarkdownCasing from "./components/Markdown";
 
 // get active domain
 const domain = window.location.hostname;
@@ -92,7 +93,14 @@ const ChatInterface = () => {
 
   return (
     <Box bg="#3E4B5C" color="#E8F2FC" h="100vh" position="relative" py="2%">
-      <VStack spacing={4} align="stretch" px="10%">
+
+    {/* <Box backgroundColor = "blue" overflow="auto" height = "75%">
+
+
+
+
+    </Box> */}
+      <VStack spacing={4} align="stretch" px="10%" overflow="auto" height = "75%">
         {messages.length === 0 && (
           <Flex
             alignItems="center"
@@ -139,9 +147,13 @@ const ChatInterface = () => {
                 </Text>
               </Flex>
 
-              <Text fontSize="md" mt="1%" ml="5%">
-                {msg.text}
-              </Text>
+              {msg.sender === "user" ? (
+                <Text fontSize="md" mt="1%" ml="5%">
+                  {msg.text}
+                </Text>
+              ) : (
+                <MarkdownCasing markdownContent={msg.text} />
+              )}
             </Box>
           </Center>
         ))}
