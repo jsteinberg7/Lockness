@@ -57,10 +57,12 @@ class LLMService:
 
     @staticmethod
     def stream_llm_response(prompt, step):
-        if step == "overview":
+        if step == 0: # overview step
             prompt = LLMService.wrap_natural_language_prompt(prompt)
-        elif step == "code":
+        elif step > 0: # code generation step
             prompt = LLMService.wrap_query_generation_prompt(prompt) # pass in the English overview as the prompt
+        else:
+            raise ValueError("Invalid step value. Step must be 0 or greater.")
 
         client = Groq(api_key=LLMService.GROQ_SECRET_KEY)
 
