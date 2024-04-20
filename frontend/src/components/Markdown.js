@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import ReactMarkdown from "react-markdown";
 
 import { Box } from "@chakra-ui/react";
 
 const MarkdownCasing = () => {
-    const markdown = `
-**Step 1: Identify and Select Relevant Tables and Columns**
+  const markdown = `
+## Step 1: Identify and Select Relevant Tables and Columns**
 
 1. Choose the appropriate tables that contain the billing information for medical procedures. Typically, this might include tables like transactions, patients, services, etc.
 
@@ -30,20 +31,20 @@ const MarkdownCasing = () => {
 - Sum the amount_spent column for each grouping to calculate total expenses for dialysis services over the specified time period and geographic area.
 `;
 
-//   const [markdown, setMarkdown] = useState("");
+  //   const [markdown, setMarkdown] = useState("");
 
 
-//   useEffect(() => {
-//     fetch("./README.md")
-//       .then((res) => res.text())
-//       .then((text) => setMarkdown(text));
-//   }, []);
+  //   useEffect(() => {
+  //     fetch("./README.md")
+  //       .then((res) => res.text())
+  //       .then((text) => setMarkdown(text));
+  //   }, []);
 
   return (
 
-	<div className="post">
-	<ReactMarkdown children={markdown} />
-  </div>
+    <div className="post">
+      <ReactMarkdown components={ChakraUIRenderer()} children={markdown} skipHtml />;
+    </div>
 
   );
 };
