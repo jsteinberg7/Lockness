@@ -90,16 +90,19 @@ const ChatInterface = () => {
     }, []);
 
     const handleSendMessage = () => {
+
         if (!inputMessage.trim()) {
             setError("Please enter a message.");
             return;
         }
-        socket.emit("send_prompt", { prompt: inputMessage, step: step });
+
+        socket.emit("send_prompt", { prompt: inputMessage, step: step + 1 });
         // Do not clear the inputMessage here if you want to retain the input until it's manually cleared
         setMessages((prevMessages) => [
             ...prevMessages,
             { text: inputMessage, sender: "user" },
         ]);
+        setStep(step + 1);
         setInputMessage("");
         setLoading(true);
     };
@@ -293,7 +296,6 @@ const ChatInterface = () => {
                                 size="lg"
                                 color="primaryColor"
                                 onClick={() => {
-                                    setStep(step + 1);
                                     handleSendMessage();
                                 }}
                                 ml="1rem" // Adjust the margin to align the button as in the design
