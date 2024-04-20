@@ -3,9 +3,16 @@ import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import ReactMarkdown from "react-markdown";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 
-const MarkdownCasing = ({ markdownContent, onContinue = () => { } }) => {
+const MarkdownCasing = ({ markdownContent, onContinue = () => {} }) => {
   return (
-    <Box mt="2.5%" ml="4%" py="5" px="10" backgroundColor="darkBackgroundColor" borderRadius="xl">
+    <Box
+      mt="2.5%"
+      ml="4%"
+      py="5"
+      px="10"
+      backgroundColor="darkBackgroundColor"
+      borderRadius="xl"
+    >
       <ReactMarkdown
         py="5"
         px="10"
@@ -37,6 +44,10 @@ const MarkdownCasing = ({ markdownContent, onContinue = () => { } }) => {
         <Button
           onClick={() => {
             onContinue(markdownContent); // pass overview back into prompt
+            window.scrollTo({
+              bottom: document.documentElement.scrollHeight,
+              behavior: "smooth", // Optional: defines the transition animation
+            });
           }}
           backgroundColor="primaryColor"
           ml="2.5%"

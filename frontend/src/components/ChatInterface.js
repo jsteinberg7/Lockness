@@ -19,6 +19,8 @@ import ChatHeader from "./ChatHeader";
 import EnglishOutline from "./EnglishOutline";
 import MarkdownCasing from "./Markdown";
 
+import CodeStep from "./CodeStep";
+
 // get active domain
 const domain = window.location.hostname;
 
@@ -46,9 +48,14 @@ const ChatInterface = () => {
   // All other steps are for code generation
   // Note: We start at -1 to indicate that the user has not yet started the chat
   const [step, setStep] = useState(-1);
+  console.log(messages);
 
   useEffect(() => {
-    let currentMessage = { text: "", sender: "bot" };
+    let currentMessage = {
+      text: "",
+      sender: "bot",
+      type: step <= 0 ? "englishOutline" : "codeStep",
+    };
 
     socket.on("new_message", (message) => {
       setLoading(false);
@@ -69,7 +76,11 @@ const ChatInterface = () => {
       } else if (message.final && currentMessage.text) {
         // Push the complete message only if there's text in the current message
         // setMessages(prevMessages => [...prevMessages, currentMessage]);
-        currentMessage = { text: "", sender: "bot" }; // Reset for the next message
+        currentMessage = {
+          text: "",
+          sender: "bot",
+          type: step <= 0 ? "englishOutline" : "codeStep"
+        }; // Reset for the next message
       }
     });
 
@@ -92,16 +103,24 @@ const ChatInterface = () => {
 
     const prompt = context ? context : inputMessage;
 
-        socket.emit("send_prompt", { prompt: prompt, step: step + 1 });
-        // Do not clear the inputMessage here if you want to retain the input until it's manually cleared
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: (step === -1) ? inputMessage : "Look good, continue...", sender: "user" },
-        ]);
-        setStep(step + 1);
-        setInputMessage("");
-        setLoading(true);
-    };
+    socket.emit("send_prompt", {
+      prompt: prompt,
+      step: step + 1,
+      type: step <= 0 ? "englishOutline" : "codeStep",
+    });
+    // Do not clear the inputMessage here if you want to retain the input until it's manually cleared
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        text: step === -1 ? inputMessage : "Looks good, continue...",
+        sender: "user",
+        type: step === -1 ? "prompt" : "continue",
+      },
+    ]);
+    setStep(step + 1);
+    setInputMessage("");
+    setLoading(true);
+  };
 
   const handleUploadFileClick = () => {
     fileInputRef.current.click();
@@ -189,32 +208,41 @@ const ChatInterface = () => {
             >
               <ChatHeader sender={msg.sender} />
 
-                            {msg.sender === "user" ? (
-                                <Text fontSize="md" mt="1%" ml="5%">
-                                    {msg.text}
-                                </Text>
-                            ) : step === 0 ? (
-                                <EnglishOutline outlineContent={msg.text} onContinue={handleSendMessage} />
-                            ) : (
-                                <MarkdownCasing
-                                    markdownContent={msg.text}
-                                />
-                            )}
-                        </Box>
-                    </Center>
-                ))}
-                {error && (
-                    <Text color="red.500" mb={4}>
-                        {error}
-                    </Text>
-                )}
-                {loading && (
-                    <VStack justifyContent="center" py="5%">
-                        <Spinner color="primaryColor" />
-                        <Text>Hmmm...</Text>
-                    </VStack>
-                )}
-            </VStack>
+              {msg.sender === "user" ? (
+                <Text fontSize="md" mt="1%" ml="5%">
+                  {msg.text}
+                </Text>
+              ) : msg.type === "englishOutline" ? (
+                <EnglishOutline
+                  outlineContent={msg.text}
+                  onContinue={handleSendMessage}
+                />
+              ) : (
+                <CodeStep
+                  step={step}
+                  stepContent={msg.text}
+                  onContinue={() => {}}
+                />
+
+                // <MarkdownCasing
+                //  markdownContent={msg.text}
+                // />
+              )}
+            </Box>
+          </Center>
+        ))}
+        {error && (
+          <Text color="red.500" mb={4}>
+            {error}
+          </Text>
+        )}
+        {loading && (
+          <VStack justifyContent="center" py="5%">
+            <Spinner color="primaryColor" />
+            <Text>Hmmm...</Text>
+          </VStack>
+        )}
+      </VStack>
 
       <Flex
         position="absolute"

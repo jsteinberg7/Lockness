@@ -39,13 +39,15 @@ class LLMService:
     
     # Generates an SQL query based on the overview generated in the previous step
     @staticmethod
-    def wrap_query_generation_prompt(english_overview):
-        return f"""Generate an SQL query based on the following prompt.
+    def wrap_query_generation_prompt(step, english_overview):
+        return f"""Generate the SQL query code and a brief and bulleted explanation for step {step} based on the following prompt.
         Wrap the query in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown.
-        Do not include any additional output besides the SQL query and the Markdown formatting.
+        Follow the example format explicitly
+        
         {english_overview}
 
         Example:
+        Alright! Let's move on to step {step}: Identifying the Relevant Tables and Columns
         ~~~~sql
         SELECT amount_spent, date_of_service, state
         FROM transactions
@@ -53,14 +55,38 @@ class LLMService:
         AND date_of_service BETWEEN '2021-01-01' AND '2021-12-31'
         AND state = 'NY';
         ~~~~
+        ##### Explanation
+        - I have sorted and aggregated the data in order to access the correct tables and functions
+        - Identified and impored the correct columns necessaet such as...
         """
+        
+
+        # Old prompt: 
+
+
+        #         return f"""Generate an SQL query based on the following prompt.
+        # Wrap the query in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown.
+        # Do not include any additional output besides the SQL query and the Markdown formatting.
+        
+        # {english_overview}
+
+        # Example:
+        # ~~~~sql
+        # SELECT amount_spent, date_of_service, state
+        # FROM transactions
+        # WHERE service_id IN (SELECT service_id FROM services WHERE service_type = 'Dialysis')
+        # AND date_of_service BETWEEN '2021-01-01' AND '2021-12-31'
+        # AND state = 'NY';
+        # ~~~~
+        # """
+
 
     @staticmethod
     def stream_llm_response(prompt, step):
         if step == 0: # overview step
             prompt = LLMService.wrap_natural_language_prompt(prompt)
         elif step > 0: # code generation step
-            prompt = LLMService.wrap_query_generation_prompt(prompt) # pass in the English overview as the prompt
+            prompt = LLMService.wrap_query_generation_prompt(step, prompt) # pass in the English overview as the prompt
         else:
             raise ValueError("Invalid step value. Step must be 0 or greater.")
 
