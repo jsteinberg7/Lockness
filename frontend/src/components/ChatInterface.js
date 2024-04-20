@@ -43,7 +43,6 @@ const ChatInterface = () => {
   // All other steps are for code generation
   // Note: We start at -1 to indicate that the user has not yet started the chat
   const [step, setStep] = useState(-1);
-  console.log(messages);
 
   useEffect(() => {
     let currentMessage = {
@@ -60,6 +59,12 @@ const ChatInterface = () => {
       }
 
       console.log("New message received: ", message);
+
+      if (step === 0) {
+        // This means we have just gotten the English Outline
+        calculateTotalSteps(message);
+      }
+
       if (!message.final) {
         currentMessage.text += message.text;
 
@@ -102,13 +107,6 @@ const ChatInterface = () => {
       return;
     }
 
-    // if (step === 0)  {  // meaning we have gotten the english outline
-
-    //   messages.
-
-
-    // }
-
     const prompt = context ? context : inputMessage;
 
     socket.emit("send_prompt", {
@@ -132,21 +130,20 @@ const ChatInterface = () => {
         type: step === -1 ? "prompt" : "continue",
       },
     ]);
+
     setStep(step + 1);
     setInputMessage("");
     setLoading(true);
   };
-
 
   const handleUploadFileClick = () => {
     fileInputRef.current.click();
   };
 
   const calculateTotalSteps = (englishOutline) => {
-    // parse through headers and find number of headers = number of steps 
-
-
-  }
+    // parse through headers and find number of headers = number of steps
+    setTotalSteps(englishOutline.split("#####").length - 1);
+  };
 
   // add file to the staging area - file will be uploaded with the message
   const handleFileChange = (event) => {
