@@ -3,7 +3,7 @@ import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import ReactMarkdown from "react-markdown";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 
-const MarkdownCasing = ({ markdownContent, onContinue = () => { } }) => {
+const MarkdownCasing = ({ markdownContent, onContinue = () => { },step, totalSteps }) => {
   return (
     <Box
       mt="2.5%"
@@ -63,7 +63,7 @@ const MarkdownCasing = ({ markdownContent, onContinue = () => { } }) => {
             transform: "scale(1.05)",
           }}
         >
-          <Text color="darkBackgroundColor">Looks good, continue</Text>
+          <Text color="darkBackgroundColor">{step >= totalSteps ? "Finish code" : "Looks good, continue"}</Text>
         </Button>
       </Flex>
     </Box>

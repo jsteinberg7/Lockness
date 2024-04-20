@@ -48,7 +48,13 @@ const ChatInterface = () => {
     let currentMessage = {
       text: "",
       sender: "bot",
-      type: step <= 0 ? "englishOutline" : "codeStep",
+      step: step,
+      type:
+        step <= 0
+          ? "englishOutline"
+          : step === totalSteps + 1
+          ? "finalCode"
+          : "codeStep",
     };
 
     socket.on("new_message", (message) => {
@@ -85,7 +91,13 @@ const ChatInterface = () => {
         currentMessage = {
           text: "",
           sender: "bot",
-          type: step <= 0 ? "englishOutline" : "codeStep",
+          type:
+            step <= 0
+              ? "englishOutline"
+              : step === totalSteps + 1
+              ? "finalCode"
+              : "codeStep",
+          step: step,
         }; // Reset for the next message
       }
     });
@@ -112,7 +124,12 @@ const ChatInterface = () => {
     socket.emit("send_prompt", {
       prompt: prompt,
       step: step + 1,
-      type: step + 1 <= 0 ? "englishOutline" : "codeStep",
+      type:
+        step + 1 <= 0
+          ? "englishOutline"
+          : step === totalSteps + 1
+          ? "finalCode"
+          : "codeStep",
       prev_code:
         step + 1 <= 0
           ? messages
@@ -128,6 +145,7 @@ const ChatInterface = () => {
         text: step === -1 ? inputMessage : "Looks good, continue...",
         sender: "user",
         type: step === -1 ? "prompt" : "continue",
+        step: step,
       },
     ]);
 
@@ -227,26 +245,32 @@ const ChatInterface = () => {
             >
               <ChatHeader sender={msg.sender} />
 
-              {msg.sender === "user" ? (
-                <Text fontSize="md" mt="1%" ml="5%">
-                  {msg.text}
-                </Text>
-              ) : msg.type === "englishOutline" ? (
-                <EnglishOutline
-                  outlineContent={msg.text ?? ""}
-                  onContinue={handleSendMessage}
-                />
-              ) : (
-                <CodeStep
-                  step={step}
-                  content={msg.text}
-                  onContinue={handleSendMessage}
-                />
+              {
+                msg.sender === "user" ? (
+                  <Text fontSize="md" mt="1%" ml="5%">
+                    {msg.text}
+                  </Text>
+                ) : msg.type === "englishOutline" ? (
+                  <EnglishOutline
+                    outlineContent={msg.text ?? ""}
+                    onContinue={handleSendMessage}
+                    totalSteps={totalSteps}
+                  />
+                ) : msg.type === "codeStep" ? (
+                  <CodeStep
+                    content={msg.text}
+                    onContinue={handleSendMessage}
+                    step={msg.step}
+                    totalSteps={totalSteps}
+                  />
+                ) : (
+                  <Text>Should show total code output now</Text>
+                )
 
                 // <MarkdownCasing
                 //  markdownContent={msg.text}
                 // />
-              )}
+              }
             </Box>
           </Center>
         ))}

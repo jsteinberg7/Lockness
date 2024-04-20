@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import MarkdownCasing from "./Markdown";
 
-const CodeStep = ({ step, content, onContinue }) => {
+const CodeStep = ({ totalSteps, step, type, content, onContinue }) => {
   const headerContent = content.split("~~~")[0];
 
   const code = content
@@ -26,7 +26,7 @@ const CodeStep = ({ step, content, onContinue }) => {
       <Text fontSize="md" mt="1%" ml="5%">
         {headerContent}
       </Text>
-      <MarkdownCasing onContinue={onContinue} markdownContent={code} />
+      <MarkdownCasing onContinue={onContinue} markdownContent={code} totalSteps={totalSteps} step={step} />
       {/* <Text fontSize="md" fontWeight="bold" mt="2.5%" ml="5%">
         Explanation
       </Text> */}
