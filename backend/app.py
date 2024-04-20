@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from services.llm_service import LLMService
-from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*", "allow_headers": "*"}},
@@ -15,7 +15,8 @@ def index():
 # Flask-SocketIO backend example
 @socketio.on('send_prompt')
 def handle_prompt(data):
-    print("Received prompt:", data['prompt'])
+    print("Received prompt:", data['prompt'], data['step'])
+    # Step: "overview", "code"
     responses = LLMService.stream_llm_response(data['prompt'])
     for response in responses:
         emit('new_message', {'text': response, 'final': False})

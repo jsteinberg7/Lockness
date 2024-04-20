@@ -7,11 +7,12 @@ from groq import Groq
 class LLMService:
     
     load_dotenv()
-    CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages'
     GROQ_SECRET_KEY = os.getenv('GROQ_SECRET_KEY')
 
-    def wrap_initial_prompt(prompt):
-        return f"""Generate a plain English overview of how to approach the query described in the the following prompt:\n{prompt}. 
+
+    # Generates a plain English overview of how to approach the query described in prompt
+    def wrap_natural_language_prompt(prompt):
+        return f"""Generate a plain English overview of how to approach the query described in the following prompt:\n{prompt}. 
         Do not include any additional output besides the Markdown content.
         Output the content/code in CommonMark Markdown format, divided into steps, following the example format below:
         
@@ -35,10 +36,19 @@ class LLMService:
 
         - If looking at data for a specific geographic region, filter the data based on `state`, `zip_code`, or other location identifiers.
         """
+    
+    # Generates an SQL query based on the overview generated in the previous step
+    @staticmethod
+    def wrap_query_generation_prompt(english_overview):
+        return f"""Generate an SQL query based on the following prompt.
+        Wrap the query in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown.
+        Do not include any additional output besides the SQL query and the Markdown formatting.
+        {english_overview}
+        """
 
     @staticmethod
     def stream_llm_response(prompt):
-        prompt = LLMService.wrap_initial_prompt(prompt)
+        prompt = LLMService.wrap_natural_language_prompt(prompt)
 
         client = Groq(api_key=LLMService.GROQ_SECRET_KEY)
 
