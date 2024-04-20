@@ -62,7 +62,7 @@ const ChatInterface = () => {
 
       if (step === 0) {
         // This means we have just gotten the English Outline
-        calculateTotalSteps(message);
+        calculateTotalSteps(message.text);
       }
 
       if (!message.final) {
