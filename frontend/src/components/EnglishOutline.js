@@ -21,7 +21,7 @@ const EnglishOutline = ({ outlineContent, onContinue }) => {
   }
 
   // Splitting the content for further use in MarkdownCasing
-  const splitContent = outlineContent.split("###") ?? "unable to split";
+  const splitContent = outlineContent.split("#####") ?? "unable to split";
   const firstPart = splitContent[0] ?? outlineContent; // Safe fallback
   const restOfContent = outlineContent.replace(firstPart.trim(), "") ?? "unable to replace";
 
