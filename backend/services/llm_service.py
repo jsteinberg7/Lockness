@@ -12,14 +12,14 @@ class LLMService:
 
     # Generates a plain English outline of how to approach the query described in prompt
     def wrap_natural_language_prompt(prompt):
-        return f"""Generate a plain English outline of how to approach the query described in the following prompt:\n{prompt}. 
+        return f"""Generate a plain English outline (or ask for clarifications) of how to approach the query described in the following prompt:\n{prompt}. 
         Do not include any additional output besides the Markdown content.
-        Output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers. Do not use any Markdown headers besides h5 (#####) for step headers.
+        If generating the outline, output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers. Do not use any Markdown headers besides h5 (#####) for step headers.
         Additionally, you do not need to include a final "combination" step, as this is implied by the outline itself.
 
-        If you need any clarifications or further context to generate the outline, please ask for more information. In this case, do not generate an outline.
+        If you need any clarifications or further context to generate the outline, please ask questions in the form of a bulleted list. In this case, do not generate an outline.
 
-        If you are ready to generate the outline, please proceed with the outline generation. 
+        If you have all the information you need and you are ready to generate the outline, please proceed with the outline generation. 
         following the example format below.
         Note that you do not need to use an arbitrary number of steps; use as many as necessary to break down the query effectively, but don't simple tasks into many steps just for the sake of it.
     

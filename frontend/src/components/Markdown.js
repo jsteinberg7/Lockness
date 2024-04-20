@@ -3,7 +3,12 @@ import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import ReactMarkdown from "react-markdown";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 
-const MarkdownCasing = ({ markdownContent, onContinue = () => { }, step, totalSteps }) => {
+const MarkdownCasing = ({
+  markdownContent,
+  onContinue = () => { },
+  step,
+  totalSteps,
+}) => {
   return (
     <Box
       mt="2.5%"
@@ -14,7 +19,7 @@ const MarkdownCasing = ({ markdownContent, onContinue = () => { }, step, totalSt
       borderRadius="xl"
     >
 
-      
+
       <ReactMarkdown
         py="5"
         px="10"
@@ -43,30 +48,34 @@ const MarkdownCasing = ({ markdownContent, onContinue = () => { }, step, totalSt
         >
           <Text color="primaryColor">Edit</Text>
         </Button>
-        <Button
-          cursor={"pointer"}
-          onClick={() => {
-            onContinue(markdownContent); // pass outline back into prompt
-            window.scrollTo({
-              bottom: document.documentElement.scrollHeight,
-              behavior: "smooth", // Optional: defines the transition animation
-            });
-          }}
-          backgroundColor="primaryColor"
-          ml="2.5%"
-          _active={{
-            backgroundColor: "primaryColor",
-          }}
-          _focus={{
-            boxShadow: "none", // Optional: removes the focus outline if you want
-            backgroundColor: "primaryColor",
-          }}
-          _hover={{
-            transform: "scale(1.05)",
-          }}
-        >
-          <Text color="darkBackgroundColor">{step >= totalSteps ? "Finish code" : "Looks good, continue"}</Text>
-        </Button>
+        {step <= totalSteps && (
+          <Button
+            cursor={"pointer"}
+            onClick={() => {
+              onContinue(markdownContent); // pass outline back into prompt
+              window.scrollTo({
+                bottom: document.documentElement.scrollHeight,
+                behavior: "smooth", // Optional: defines the transition animation
+              });
+            }}
+            backgroundColor="primaryColor"
+            ml="2.5%"
+            _active={{
+              backgroundColor: "primaryColor",
+            }}
+            _focus={{
+              boxShadow: "none", // Optional: removes the focus outline if you want
+              backgroundColor: "primaryColor",
+            }}
+            _hover={{
+              transform: "scale(1.05)",
+            }}
+          >
+            <Text color="darkBackgroundColor">
+              {step === totalSteps ? "Finish code" : "Looks good, continue"}
+            </Text>
+          </Button>
+        )}
       </Flex>
     </Box>
   );
