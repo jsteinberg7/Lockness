@@ -15,11 +15,11 @@ import {
 } from "@chakra-ui/react";
 import io from "socket.io-client";
 import { ArrowUpIcon } from "@chakra-ui/icons";
-import logo from "./assets/locknessLogo.png";
-import defaultProfilePicture from "./assets/defaultProfilePicture.jpeg";
+import logo from "../assets/locknessLogo.png";
+import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
 
 import { TriangleUpIcon } from "@chakra-ui/icons"; // Or any other appropriate icon
-import MarkdownCasing from "./components/Markdown";
+import MarkdownCasing from "../components/Markdown";
 
 // get active domain
 const domain = window.location.hostname;
@@ -92,15 +92,20 @@ const ChatInterface = () => {
   };
 
   return (
-    <Box bg="#3E4B5C" color="#E8F2FC" h="100vh" position="relative" py="2%">
-
-    {/* <Box backgroundColor = "blue" overflow="auto" height = "75%">
+    <Box
+      bg="lightBackgroundColor"
+      color="primaryColor"
+      h="100vh"
+      position="relative"
+      py="2%"
+    >
+      {/* <Box backgroundColor = "blue" overflow="auto" height = "75%">
 
 
 
 
     </Box> */}
-      <VStack spacing={4} align="stretch" px="10%" overflow="auto" height = "75%">
+      <VStack spacing={4} align="stretch" px="10%" overflow="auto" height="80%">
         {messages.length === 0 && (
           <Flex
             alignItems="center"
@@ -152,16 +157,17 @@ const ChatInterface = () => {
                   {msg.text}
                 </Text>
               ) : (
-
                 <Flex flexDirection="column">
-                <Text fontSize="md" mt="1%" ml="5%">
-                  {msg.text.split("#####")[0]}
-                </Text>
-
-
-                <MarkdownCasing markdownContent={msg.text} />
+                  <Text fontSize="md" mt="1%" ml="5%">
+                    {msg.text.split("####")[0]}
+                  </Text>
+                  <MarkdownCasing
+                    markdownContent={msg.text.replace(
+                      msg.text.split("####")[0].trim(),
+                      ""
+                    )}
+                  />
                 </Flex>
-
               )}
             </Box>
           </Center>
@@ -173,7 +179,7 @@ const ChatInterface = () => {
         )}
         {loading && (
           <VStack justifyContent="center" py="5%">
-            <Spinner color="white" />
+            <Spinner color="primaryColor" />
             <Text>Hmmm...</Text>
           </VStack>
         )}
@@ -197,15 +203,15 @@ const ChatInterface = () => {
                   : "Message Lockness..."
               }
               style={{
-                background: "#3E4B5C",
-                color: "#E8F2FC",
+                background: "darkBackgroundColor",
+                color: "primaryColor",
                 borderRadius: "8px",
                 width: "100%",
                 height: "15vh",
                 resize: "none", // Allows vertical resizing
                 overflowY: "auto", // Adds scroll if content overflows
-                borderColor: "#E8F2FC",
-                placeholderColor: "#B4B4B4",
+                borderColor: "primaryColor",
+                placeholderColor: "placeHolderColor",
                 padding: "2%",
                 fontSize: "sm",
               }}
@@ -219,7 +225,7 @@ const ChatInterface = () => {
 
             <Button
               size="lg"
-              color="#E8F2FC"
+              color="primaryColor"
               onClick={handleSendMessage}
               ml="1rem" // Adjust the margin to align the button as in the design
               borderRadius="lg"
@@ -229,7 +235,7 @@ const ChatInterface = () => {
               <ArrowUpIcon color="black" />
             </Button>
           </InputGroup>
-          <Text color="#B4B4B4" fontSize="sm">
+          <Text color="placeHolderColor" fontSize="sm">
             Lockness AI produces results based on the query and the data it has
             access to.
           </Text>
