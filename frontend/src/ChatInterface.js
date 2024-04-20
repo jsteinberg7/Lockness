@@ -152,7 +152,16 @@ const ChatInterface = () => {
                   {msg.text}
                 </Text>
               ) : (
+
+                <Flex flexDirection="column">
+                <Text fontSize="md" mt="1%" ml="5%">
+                  {msg.text.split("#####")[0]}
+                </Text>
+
+
                 <MarkdownCasing markdownContent={msg.text} />
+                </Flex>
+
               )}
             </Box>
           </Center>

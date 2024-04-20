@@ -6,7 +6,7 @@ import { Box } from "@chakra-ui/react";
 
 const MarkdownCasing = ({ markdownContent }) => {
   return (
-    <Box mt = "2.5%" ml="4%" py="5" px="10" backgroundColor="black" borderRadius="xl">
+    <Box mt = "2.5%" ml="4%" py="5" px="10" backgroundColor="#2A3B53" borderRadius="xl">
       <ReactMarkdown
         py="5"
         px="10"
