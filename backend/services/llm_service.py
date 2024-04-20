@@ -54,7 +54,7 @@ class LLMService:
         Task outline:
         {english_outline}
 
-        Already generate code, which you need to add on to (do not repeat already generated code):
+        Already generated code, which you need to add on to (do not repeat already generated code):
         {prev_code}
 
         Wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
@@ -68,26 +68,6 @@ class LLMService:
         - I have sorted and aggregated the data in order to access the correct tables and functions
         - Identified and impored the correct columns necessaet such as...
         """
-        
-
-        # Old prompt: 
-
-
-        #         return f"""Generate an SQL query based on the following prompt.
-        # Wrap the query in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown.
-        # Do not include any additional output besides the SQL query and the Markdown formatting.
-        
-        # {english_outline}
-
-        # Example:
-        # ~~~~sql
-        # SELECT amount_spent, date_of_service, state
-        # FROM transactions
-        # WHERE service_id IN (SELECT service_id FROM services WHERE service_type = 'Dialysis')
-        # AND date_of_service BETWEEN '2021-01-01' AND '2021-12-31'
-        # AND state = 'NY';
-        # ~~~~
-        # """
 
 
     @staticmethod
