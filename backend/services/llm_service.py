@@ -14,21 +14,21 @@ class LLMService:
         return f"""Generate a plain English overview of how to approach the query described in the the following prompt:\n{prompt}. 
         Do not include any additional output besides the Markdown content.
         Output the content/code in CommonMark Markdown format, divided into steps, following the example format below:
-        # Great question! Let me create an outline of the steps I am going to take in order to resolve this query and you can let me know if everything looks good!
+        ### Great question! Let me create an outline of the steps I am going to take in order to resolve this query and you can let me know if everything looks good!
 
-        ## Step 1: Identify and Select Relevant Tables and Columns
+        #### Step 1: Identify and Select Relevant Tables and Columns
 
         - Choose the appropriate tables that contain the billing information for medical procedures. Typically, this might include tables like transactions, patients, services, etc.
 
         - Identify necessary columns such as amount_spent, date_of_service, state, service_id, and any patient identifiers linking to Medicaid.
 
-        ## Step 2: Filter for Dialysis Services
+        #### Step 2: Filter for Dialysis Services
 
         - Apply filters to the selected tables and columns to only include rows related to dialysis services.
 
         - Use service codes, descriptions, or other identifiers specific to dialysis to accurately capture the relevant data.
 
-        ## Step 3: Set Date Range and Location Filters
+        #### Step 3: Set Date Range and Location Filters
 
         - Determine the desired date range for the analysis and filter the data to only include rows within that time period.
 
@@ -60,4 +60,5 @@ class LLMService:
                     if "choices" in json_data:
                         for choice in json_data["choices"]:
                             if "message" in choice and "content" in choice["message"]:
+                                print(choice["message"]["content"])
                                 yield choice["message"]["content"]
