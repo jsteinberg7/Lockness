@@ -23,6 +23,7 @@ import { AttachmentIcon } from "@chakra-ui/icons";
 
 import MarkdownCasing from "../components/Markdown";
 import EnglishOutline from "./EnglishOutline";
+import ChatHeader from "./ChatHeader";
 
 // get active domain
 const domain = window.location.hostname;
@@ -184,21 +185,7 @@ const ChatInterface = () => {
               p={5}
               borderRadius="md"
             >
-              <Flex alignItems="center" justifyContent="start">
-                <Box
-                  display="inline-block"
-                  width="40px"
-                  height="40px"
-                  borderRadius="50%"
-                  backgroundImage={
-                    msg.sender === "user" ? defaultProfilePicture : logo
-                  }
-                  backgroundSize="cover"
-                />
-                <Text ml="1%" size="lg" fontWeight="bold">
-                  {msg.sender === "user" ? "You" : "Lockness AI"}
-                </Text>
-              </Flex>
+              <ChatHeader sender={msg.sender} />
 
               {msg.sender === "user" ? (
                 <Text fontSize="md" mt="1%" ml="5%">
@@ -207,7 +194,7 @@ const ChatInterface = () => {
               ) : step === 0 ? (
                 <EnglishOutline outlineContent={msg.text} />
               ) : (
-                <Text>More than step 0 </Text>
+                <Text>Code step should go here</Text>
               )}
             </Box>
           </Center>
@@ -235,20 +222,37 @@ const ChatInterface = () => {
         <VStack spacing={5} width="100%">
           {step === -1 && (
             <InputGroup size="md">
-              <Flex
-                alignItems="center"
-                justifyContent="left"
+              <Button
+                size="lg"
+                color="primaryColor"
+                onClick={handleUploadFileClick}
+                mr="1rem" // Adjust the margin to align the button as in the design
                 borderRadius="lg"
-                p="6.5%"
+                height="50%"
+              >
+                <AttachmentIcon color="black" />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </Button>
+
+              {/* <Flex
+                alignItems="start"
+                justifyContent="left"
+                pr="1rem"
+                py="2.5%"
                 cursor="pointer"
                 // _hover={{ bg: "#3E4B5C" }}
                 onClick={handleUploadFileClick}
               >
                 <Icon
+                size = "30px"
                   aria-label="Upload File"
                   as={AttachmentIcon}
                   bg="transparent"
-                  colorScheme="white"
                 ></Icon>
                 <input
                   type="file"
@@ -256,7 +260,7 @@ const ChatInterface = () => {
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
-              </Flex>
+              </Flex> */}
               <Textarea
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
