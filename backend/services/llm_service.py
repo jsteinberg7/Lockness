@@ -44,11 +44,23 @@ class LLMService:
         Wrap the query in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown.
         Do not include any additional output besides the SQL query and the Markdown formatting.
         {english_overview}
+
+        Example:
+        ~~~~sql
+        SELECT amount_spent, date_of_service, state
+        FROM transactions
+        WHERE service_id IN (SELECT service_id FROM services WHERE service_type = 'Dialysis')
+        AND date_of_service BETWEEN '2021-01-01' AND '2021-12-31'
+        AND state = 'NY';
+        ~~~~
         """
 
     @staticmethod
-    def stream_llm_response(prompt):
-        prompt = LLMService.wrap_natural_language_prompt(prompt)
+    def stream_llm_response(prompt, step):
+        if step == "overview":
+            prompt = LLMService.wrap_natural_language_prompt(prompt)
+        elif step == "code":
+            prompt = LLMService.wrap_query_generation_prompt(prompt) # pass in the English overview as the prompt
 
         client = Groq(api_key=LLMService.GROQ_SECRET_KEY)
 

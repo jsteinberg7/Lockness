@@ -62,33 +62,6 @@ const OldChat = () => {
     },
   ];
 
-
-//   const markdownContent =  `
-//   ### Step 1: Identify and Select Relevant Tables and Columns
-
-// 1. Choose the appropriate tables that contain the billing information for medical procedures. Typically, this might include tables like transactions, patients, services, etc.
-
-// 1. Identify necessary columns such as amount_spent, date_of_service, state, service_id, and any patient identifiers linking to Medicaid.
-
-// ## Step 2: Filter for Dialysis Services
-
-// - Apply filters to the selected tables and columns to only include rows related to dialysis services.
-
-// - Use service codes, descriptions, or other identifiers specific to dialysis to accurately capture the relevant data.
-
-// ## Step 3: Set Date Range and Location Filters
-
-// - Determine the desired date range for the analysis and filter the data to only include rows within that time period.
-
-// - If looking at data for a specific geographic region, filter the data based on state, zip code, or other location identifiers.
-
-// ## Step 4: Aggregate and Sum Expenses
-
-// - Group the filtered data by relevant dimensions such as date, location, or service type.
-
-// - Sum the amount_spent column for each grouping to calculate total expenses for dialysis services over the specified time period and geographic area.
-// `
-
   const chatData = userChatData.find((chat) => chat[chatId]);
 
   const chatHistory = chatData
@@ -103,7 +76,7 @@ const OldChat = () => {
     : "Date not available.";
 
   return (
-    <Box p="2%" color="#E8F2FC">
+    <Box p="2%" color="primaryColor" bg = "lightBackgroundColor">
       <Text>Title: {chatTitle}</Text>
       <Text>Chat History: {chatHistory}</Text>
       <Text>Date: {date}</Text>

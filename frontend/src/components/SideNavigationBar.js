@@ -104,8 +104,8 @@ const SideNavigationBar = () => {
       p="1%"
       w="15%"
       h="100%"
-      bg="#2A3B53"
-      color="#E8F2FC"
+      bg="darkBackgroundColor"
+      color="primaryColor"
       zIndex="overlay"
     >
       <VStack spacing="2" align="stretch" mt="2%">
@@ -115,7 +115,7 @@ const SideNavigationBar = () => {
           borderRadius="lg"
           p="6.5%"
           cursor="pointer"
-          _hover={{ bg: "#3E4B5C" }}
+          _hover={{ bg: "lightBackgroundColor" }}
           onClick={handleClick}
         >
           <SlCloudUpload size="10%" />
@@ -138,7 +138,7 @@ const SideNavigationBar = () => {
           }}
           p="6.5%"
           cursor="pointer"
-          _hover={{ bg: "#3E4B5C" }}
+          _hover={{ bg: "lightBackgroundColor" }}
         >
           <BsDatabaseAdd size="10%" />
 
@@ -164,7 +164,7 @@ const SideNavigationBar = () => {
               background: "transparent",
             },
             "&::-webkit-scrollbar-thumb": {
-              background: "#3E4B5C",
+              background: "lightBackgroundColor",
               borderRadius: "4px",
             },
           }}
@@ -184,33 +184,18 @@ const SideNavigationBar = () => {
                 onClick={() => {
                   navigate(`/queries?queryId=${chatData.id}`);
                 }}
-                _hover={{ bg: "#3E4B5C" }}
+                _hover={{ bg: "lightBackgroundColor" }}
               >
                 {chatData.title}
               </Box>
             );
           })}
 
-          {/* <Box
-            justifyContent="left"
-            borderRadius="lg"
-            px="6.5%"
-            py="3%"
-            cursor="pointer"
-            _hover={{ bg: "#3E4B5C" }}
-          >
-            {chat.title}
-          </Box> */}
         </VStack>
       </VStack>
       <Box position="absolute" bottom="5" width="13vw">
         <Flex alignItems="center" justifyContent="space-between">
           <Flex alignItems="center" justifyContent="start" width="80%">
-            {/* <Avatar
-              size="md"
-              name={authAccount.name}
-              src={authAccount.profilePicLink}
-            /> */}
             <Box
               display="inline-block"
               width="40px"
@@ -220,7 +205,7 @@ const SideNavigationBar = () => {
               backgroundSize="cover"
             />
 
-            <Text color="#E8F2FC" ml="5%" fontSize="12px">
+            <Text color="primaryColor" ml="5%" fontSize="12px">
               {authAccount.name}
             </Text>
           </Flex>

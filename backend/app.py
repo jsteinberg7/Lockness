@@ -14,10 +14,12 @@ def index():
 
 # Flask-SocketIO backend example
 @socketio.on('send_prompt')
+# data params: 
+# prompt
+# step: "overview", "code"
 def handle_prompt(data):
     print("Received prompt:", data['prompt'], data['step'])
-    # Step: "overview", "code"
-    responses = LLMService.stream_llm_response(data['prompt'])
+    responses = LLMService.stream_llm_response(data['prompt'], data['step'])
     for response in responses:
         emit('new_message', {'text': response, 'final': False})
     emit('new_message', {'text': '', 'final': True})  # Indicates the end of this stream

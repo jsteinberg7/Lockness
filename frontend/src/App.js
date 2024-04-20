@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import logo from "./logo.svg"; // Assuming you might use it somewhere else
 import "./App.css";
-import ChatInterface from "./ChatInterface";
+import ChatInterface from "./components/ChatInterface";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "./components/Layout";
 import theme from "./design/theme"; // Make sure the path is correct
@@ -17,6 +17,8 @@ import OldChat from "./components/OldChat";
 
 function App() {
   return (
+    <React.StrictMode>
+
     <ChakraProvider theme={theme}>
       <Router>
         <Layout>
@@ -29,6 +31,8 @@ function App() {
         </Layout>
       </Router>
     </ChakraProvider>
+    </React.StrictMode>
+
   );
 }
 

@@ -16,10 +16,13 @@ import {
     Icon
 } from "@chakra-ui/react";
 import io from "socket.io-client";
-import { ArrowUpIcon, AttachmentIcon } from "@chakra-ui/icons";
-import logo from "./assets/locknessLogo.png";
-import defaultProfilePicture from "./assets/defaultProfilePicture.jpeg";
-import MarkdownCasing from "./components/Markdown";
+import { ArrowUpIcon } from "@chakra-ui/icons";
+import logo from "../assets/locknessLogo.png";
+import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
+import { AttachmentIcon } from "@chakra-ui/icons";
+
+import MarkdownCasing from "../components/Markdown";
+
 
 // get active domain
 const domain = window.location.hostname;
@@ -145,7 +148,7 @@ const ChatInterface = () => {
 
 
     </Box> */}
-            <VStack spacing={4} align="stretch" px="10%" overflow="auto" height="75%">
+            <VStack spacing={4} align="stretch" px="10%" overflow="auto" height="80%">
                 {messages.length === 0 && (
                     <Flex
                         alignItems="center"
@@ -296,13 +299,13 @@ const ChatInterface = () => {
                         >
                             <ArrowUpIcon color="black" />
                         </Button>
-                    </InputGroup>
+                    </InputGroup >
                     <Text color="#B4B4B4" fontSize="sm">
                         Lockness AI produces results based on the query and the data it has
                         access to.
                     </Text>
-                </VStack>
-            </Flex>
+                </VStack >
+            </Flex >
         </Box >
     );
 };
