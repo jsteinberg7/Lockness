@@ -38,6 +38,9 @@ const ChatInterface = () => {
 
   const toast = useToast();
 
+  const messagesEndRef = useRef(null);  // Ref to maintain scrolling position
+
+
   // Define the step state to manage the chatbot steps
   // Step 0 is English outline
   // All other steps are for code generation
@@ -107,11 +110,14 @@ const ChatInterface = () => {
       setLoading(false);
     });
 
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
+
     return () => {
       socket.off("new_message");
       socket.off("connect_error");
     };
-  }, [step]);
+  }, [step, totalSteps, messages ]);
 
   const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
@@ -274,6 +280,8 @@ const ChatInterface = () => {
             </Box>
           </Center>
         ))}
+        <div ref={messagesEndRef} />
+
         {error && (
           <Text color="red.500" mb={4}>
             {error}
