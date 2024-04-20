@@ -68,14 +68,42 @@ class LLMService:
         - I have sorted and aggregated the data in order to access the correct tables and functions
         - Identified and impored the correct columns necessaet such as...
         """
+    
+    @staticmethod
+    def wrap_query_combination_prompt(english_outline, prev_code):
+        return f"""
+        Combine all of the code to accomplish the task described in the outline:
+        Also include a brief bulleted explanation of the code you generated.
+        
+        Task outline:
+        {english_outline}
+
+        Generated code to combine:
+        {prev_code}
+
+        Wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
+
+        Example:
+        Alright! Here's the full query:
+        ~~~~sql
+        SELECT * FROM transactions
+        JOIN patients ON transactions.patient_id = patients.patient_id
+        JOIN services ON transactions.service_id = services.service_id
+        WHERE services.service_type = 'Dialysis'
+        ~~~~
+        ##### Explanation
+        - I have sorted and aggregated the data in order to access the correct tables and functions
+        """
 
 
     @staticmethod
-    def stream_llm_response(prompt, step, prev_code=None):
-        if step == 0: # outline step
+    def stream_llm_response(prompt, msg_type, step, prev_code=None):
+        if msg_type == "englishOverview": # outline step
             prompt = LLMService.wrap_natural_language_prompt(prompt)
-        elif step > 0: # code generation step
+        elif msg_type == "codeStep": # code generation step
             prompt = LLMService.wrap_query_generation_prompt(prompt, step, prev_code) # pass in the English outline as the prompt
+        elif msg_type == "finalCode":
+            prompt = LLMService.wrap_query_combination_prompt(prompt, prev_code) # pass in the English outline as the prompt
         else:
             raise ValueError("Invalid step value. Step must be 0 or greater.")
 
