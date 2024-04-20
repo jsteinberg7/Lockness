@@ -51,7 +51,7 @@ const MarkdownCasing = ({ markdownContent, onContinue = () => { } }) => {
             transform: "scale(1.05)",
           }}
         >
-          <Text color="darkBackgroundColor">Looks good, Continue</Text>
+          <Text color="darkBackgroundColor">Looks good, continue</Text>
         </Button>
       </Flex>
     </Box>
