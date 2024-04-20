@@ -98,7 +98,8 @@ class LLMService:
 
     @staticmethod
     def stream_llm_response(prompt, msg_type, step, prev_code=None):
-        if msg_type == "englishOverview": # outline step
+        print(msg_type)
+        if msg_type == "englishOutline": # outline step
             prompt = LLMService.wrap_natural_language_prompt(prompt)
         elif msg_type == "codeStep": # code generation step
             prompt = LLMService.wrap_query_generation_prompt(prompt, step, prev_code) # pass in the English outline as the prompt

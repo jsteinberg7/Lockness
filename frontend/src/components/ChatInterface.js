@@ -52,7 +52,7 @@ const ChatInterface = () => {
       type:
         step <= 0
           ? "englishOutline"
-          : step === totalSteps + 1
+          : step === totalSteps
           ? "finalCode"
           : "codeStep",
     };
@@ -94,7 +94,7 @@ const ChatInterface = () => {
           type:
             step <= 0
               ? "englishOutline"
-              : step === totalSteps + 1
+              : step === totalSteps
               ? "finalCode"
               : "codeStep",
           step: step,
@@ -127,7 +127,7 @@ const ChatInterface = () => {
       type:
         step + 1 <= 0
           ? "englishOutline"
-          : step === totalSteps + 1
+          : step === totalSteps
           ? "finalCode"
           : "codeStep",
       prev_code:
@@ -256,16 +256,16 @@ const ChatInterface = () => {
                     onContinue={handleSendMessage}
                     totalSteps={totalSteps}
                   />
-                ) : msg.type === "codeStep" ? (
+                ) : //msg.type === "codeStep" ? (
                   <CodeStep
                     content={msg.text}
                     onContinue={handleSendMessage}
                     step={msg.step}
                     totalSteps={totalSteps}
                   />
-                ) : (
-                  <Text>Should show total code output now</Text>
-                )
+                //) : (
+                  //<Text>Should show total code output now</Text>
+                //)
 
                 // <MarkdownCasing
                 //  markdownContent={msg.text}
