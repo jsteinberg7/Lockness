@@ -32,7 +32,7 @@ def handle_prompt(data):
     print(
         f"Received prompt:, {data['prompt']} step = {data['step']} type = msg_type {data['type']}"
     )
-    responses = LLMService.stream_llm_response(prompt, step, prev_code)
+    responses = LLMService.stream_llm_response(prompt, msg_type, step, prev_code)
     for response in responses:
         emit(
             "new_message",
