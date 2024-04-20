@@ -73,14 +73,6 @@ const ChatInterface = () => {
                         return [...prevMessages, currentMessage];
                     }
                 });
-            } else if (message.final && currentMessage.text) {
-                // Push the complete message only if there's text in the current message
-                // setMessages(prevMessages => [...prevMessages, currentMessage]);
-                currentMessage = {
-                    text: "",
-                    sender: "bot",
-                    type: step <= 0 ? "englishOutline" : "codeStep"
-                }; // Reset for the next message
             }
         });
 
@@ -277,29 +269,6 @@ const ChatInterface = () => {
                                     style={{ display: "none" }}
                                 />
                             </Button>
-
-                            {/* <Flex
-                alignItems="start"
-                justifyContent="left"
-                pr="1rem"
-                py="2.5%"
-                cursor="pointer"
-                // _hover={{ bg: "#3E4B5C" }}
-                onClick={handleUploadFileClick}
-              >
-                <Icon
-                size = "30px"
-                  aria-label="Upload File"
-                  as={AttachmentIcon}
-                  bg="transparent"
-                ></Icon>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-              </Flex> */}
                             <Textarea
                                 value={inputMessage}
                                 onChange={(e) => setInputMessage(e.target.value)}
