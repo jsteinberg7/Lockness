@@ -14,7 +14,7 @@ class LLMService:
     def wrap_natural_language_prompt(prompt):
         return f"""Generate a plain English overview of how to approach the query described in the following prompt:\n{prompt}. 
         Do not include any additional output besides the Markdown content.
-        Output the content/code in CommonMark Markdown format, divided into steps, following the example format below:
+        Output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers, following the example format below:
         
         Great question! Let me create an outline of the steps I am going to take in order to resolve this query and you can let me know if everything looks good!
 
