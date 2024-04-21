@@ -79,7 +79,10 @@ const UserInput = ({
             <Button
               size="lg"
               color="primaryColor"
-              onClick={handleSendMessage}
+              onClick={(e) => {
+                handleSendMessage();
+                e.preventDefault();
+              }}
               ml="1rem" // Adjust the margin to align the button as in the design
               borderRadius="lg"
               height="50%"
@@ -94,7 +97,7 @@ const UserInput = ({
           access to.
         </Text>
       </VStack>
-    </Flex>
+    </Flex >
   );
 };
 
