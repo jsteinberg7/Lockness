@@ -8,7 +8,7 @@ import cohere
 
 class LLMService:
     
-    initial_prompt, clarifications, table_data, column_data, english_breakdown, previous_code = None, None, None, None, None, None
+    initial_prompt, clarifications, column_data, english_outline, previous_code = None, None, None, None, None
 
 
     load_dotenv()
@@ -77,7 +77,7 @@ class LLMService:
     def run_clarification_questions_prompt():
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way:
         {LLMService.initial_prompt}
-        {open('./clarifying_prompt.txt', 'r').read().strip()}
+        {open('services/clarifying_prompt.txt', 'r').read().strip()}
 
         This is an example of how to format the clarifications:
 
@@ -93,7 +93,7 @@ class LLMService:
 
     # Generates a plain English outline of how to approach the query described in prompt
     @staticmethod
-    def run_english_overview_prompt(prompt):
+    def run_english_overview_prompt():
         # Segment to find relevant tables
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {LLMService.initial_prompt}
         Here are some clarifications to the query: {LLMService.clarifications} \n
@@ -187,7 +187,7 @@ class LLMService:
             result += chunk
             yield chunk
 
-        LLMService.english_breakdown = result
+        LLMService.english_outline = result
 
     # Generates an SQL query based on the outline generated in the previous step
     @staticmethod
@@ -259,12 +259,12 @@ class LLMService:
     @staticmethod
     def run_prompt(input, msg_type, step):
         if msg_type == "clarification":
-            initial_prompt = input
-            chunks = LLMService.run_clarification_questions_prompt(input)
+            LLMService.initial_prompt = input
+            chunks = LLMService.run_clarification_questions_prompt()
         elif msg_type == "englishOutline":
             # at this point the input is the clarifications the user provides from the previous llm call
-            clarifications = input
-            chunks = LLMService.run_english_overview_prompt(input)
+            LLMService.clarifications = input
+            chunks = LLMService.run_english_overview_prompt()
         elif msg_type == "codeStep":
             chunks = LLMService.run_code_step_generation_prompt(step) # note: "prompt" should be the english outline here
         elif msg_type == "finalCode":
