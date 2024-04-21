@@ -1,7 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from services.llm_service import LLMService
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(
@@ -12,6 +14,15 @@ CORS(
 )
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+load_dotenv()
+
+@app.before_request
+def require_api_key():
+    if request.method == 'OPTIONS':
+        return # Allow CORS preflight requests to pass
+    if request.headers.get('Authorization') != os.getenv('BACKEND_API_KEY'):
+        abort(401, 'Invalid API key')
+
 
 @app.route("/")
 def index():
@@ -20,7 +31,7 @@ def index():
 
 # Flask-SocketIO backend example
 @socketio.on("send_prompt")
-def handle_prompt(data):
+def handle_prompt(data, headers):
     prompt = data["prompt"]
     msg_type = data["type"]
     step = data.get("step", None)
