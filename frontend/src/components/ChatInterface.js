@@ -19,6 +19,7 @@ import ChatHeader from "./ChatHeader";
 import EnglishOutline from "./EnglishOutline";
 
 import CodeStep from "./CodeStep";
+import NewChatDesign from "./NewChatDesign";
 
 // get active domain
 const domain = window.location.hostname;
@@ -217,38 +218,11 @@ const ChatInterface = () => {
         overflow="auto"
         height={step === -1 ? "75%" : "95%"}
       >
-        {messages.length === 0 && (
-          <Flex
-            alignItems="center"
-            justifyContent="center"
-            flexDirection="column"
-            mt="15%"
-          >
-            <Box
-              display="inline-block"
-              width="65px"
-              height="65px"
-              borderRadius="50%"
-              backgroundImage={logo}
-              backgroundSize="cover"
-            />
-
-            <Text fontSize="xl" fontWeight="bold" mt="2%">
-              How can I help you with your research today?
-            </Text>
-          </Flex>
-        )}
+        {messages.length === 0 && <NewChatDesign />}
         {messages.map((msg, index) => (
           <Center>
-            <Box
-              width="100%"
-              key={index}
-              // bg={msg.sender === "user" ? "blue.500" : "gray.600"}
-              p={5}
-              borderRadius="md"
-            >
+            <Box width="100%" key={index} p={5} borderRadius="md">
               <ChatHeader sender={msg.sender} />
-
               {
                 msg.sender === "user" ? (
                   <Text fontSize="md" mt="1%" ml="5%">

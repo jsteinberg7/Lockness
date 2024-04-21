@@ -18,21 +18,19 @@ import OldChat from "./components/OldChat";
 function App() {
   return (
     <React.StrictMode>
-
-    <ChakraProvider theme={theme}>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/new-chat" />} />
-            <Route path="/new-chat" element={<ChatInterface />} />
-            <Route path="/queries" element={<OldChat />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
-      </Router>
-    </ChakraProvider>
+      <ChakraProvider theme={theme}>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Navigate replace to="/new-chat" />} />
+              <Route path="/new-chat" element={<ChatInterface />} />
+              <Route path="/queries" element={<OldChat />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </ChakraProvider>
     </React.StrictMode>
-
   );
 }
 

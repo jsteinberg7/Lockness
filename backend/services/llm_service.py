@@ -152,8 +152,6 @@ class LLMService:
         
     @staticmethod
     def run_prompt(prompt, msg_type, step, prev_code=None):
-
-        print(msg_type)
         if msg_type == "clarification":
             chunks = LLMService.run_clarification_questions_prompt(prompt)
         elif msg_type == "englishOutline":
