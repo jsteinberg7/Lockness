@@ -1,0 +1,7 @@
+Short SAS name,Long SAS name,Label,Type,Length,IP file sequence1,New variables
+BENE_ID,BENE_ID,Encrypted CCW Beneficiary ID,CHAR,15.0,1.0,
+CLM_ID,CLM_ID,Claim ID,CHAR,15.0,2.0,
+CLM_TYPE,NCH_CLM_TYPE_CD,NCH Claim Type Code,CHAR,2.0,3.0,
+RLTOCRSQ,RLT_OCRNC_CD_SEQ,Claim Related Occurrence Code Sequence,CHAR,2.0,4.0,
+OCRNC_CD,CLM_RLT_OCRNC_CD,Claim Related Occurrence Code,CHAR,2.0,5.0,
+OCRNCDT,CLM_RLT_OCRNC_DT,Claim Related Occurrence Date,DATE,8.0,6.0,

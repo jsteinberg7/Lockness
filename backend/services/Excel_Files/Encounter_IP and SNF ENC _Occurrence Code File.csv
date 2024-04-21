@@ -1,0 +1,7 @@
+SAS Name,Label,Type,Length,2015+ 1
+BENE_ID ,Encrypted CCW Beneficiary ID,Char,15.0,1.0
+ENC_JOIN_KEY,Unique Encounter Join Key,Char,15.0,2.0
+CLM_TYPE_CD,Claim Type Code,Char,4.0,3.0
+RLT_OCRNC_CD_SEQ,Claim Related Occurrence Code Sequence,Char,2.0,4.0
+CLM_RLT_OCRNC_CD,Claim Related Occurrence Code,Char,2.0,5.0
+CLM_RLT_OCRNC_DT,Claim Related Occurrence Date,Date,8.0,6.0
