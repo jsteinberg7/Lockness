@@ -20,17 +20,14 @@ def index():
 
 # Flask-SocketIO backend example
 @socketio.on("send_prompt")
-# data params:
-# prompt
-# step: "outline", "code"
 def handle_prompt(data):
     prompt = data["prompt"]
-    step = data.get("step", None)
     msg_type = data["type"]
+    step = data.get("step", None)
     prev_code = data.get("prev_code", None)
 
     print(
-        f"Received prompt:, {data['prompt']} step = {data.get('step')} type = msg_type {data['type']}"
+        f"Received prompt: {prompt}, msg_type: {msg_type}, step: {step}, prev_code: {prev_code}"
     )
 
     chunks = LLMService.run_prompt(prompt, msg_type, step, prev_code)
@@ -45,7 +42,7 @@ def handle_prompt(data):
         )
     emit(
         "new_message", {"text": "", "final": True, "type": msg_type}
-    )  # Indicates the end of this stream
+    )
 
 
 if __name__ == "__main__":

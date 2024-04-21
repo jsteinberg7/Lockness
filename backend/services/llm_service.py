@@ -1,13 +1,14 @@
 import json
 import os
-import requests
+
 from dotenv import load_dotenv
 from groq import Groq
+
 
 class LLMService:
     
     load_dotenv()
-    GROQ_SECRET_KEY = os.getenv('GROQ_SECRET_KEY')
+    GROQ_SECRET_KEY = os.getenv('GROQ_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
 
     @staticmethod
     def stream_llm_response(prompt):
@@ -147,8 +148,8 @@ class LLMService:
 
         for chunk in LLMService.stream_llm_response(full_prompt):
             yield chunk
-
-
+        
+        
     @staticmethod
     def run_prompt(prompt, msg_type, step, prev_code=None):
         if msg_type == "clarification":
