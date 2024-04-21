@@ -2,40 +2,37 @@ import json
 import os
 
 from dotenv import load_dotenv
-from groq import Groq
+import cohere
 
 
 class LLMService:
     
     load_dotenv()
-    GROQ_SECRET_KEY = os.getenv('GROQ_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
+    COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
 
     @staticmethod
     def stream_llm_response(prompt):
-
-        client = Groq(api_key=LLMService.GROQ_SECRET_KEY)
-
-        with client.chat.completions.with_streaming_response.create(
+        co = cohere.Client(LLMService.COHERE_SECRET_KEY)
+        
+        for event in co.chat_stream(
             messages=[
                 {
                     "role": "system",
                     "content": "You are a helpful assistant.",
                 },
                 {
-                    "role": "user",
+                    "role": "user", 
                     "content": prompt,
-                },
+                }
             ],
-            model="llama3-70b-8192",
-        ) as response:
-            for line in response.iter_lines():
-                if line:
-                    json_data = json.loads(line)
-                    if "choices" in json_data:
-                        for choice in json_data["choices"]:
-                            if "message" in choice and "content" in choice["message"]:
-                                print(choice["message"]["content"])
-                                yield choice["message"]["content"]
+            model="command-xlarge-20221108"
+        ):
+            if event.event_type == "text-generation":
+                print(event.text)
+                yield event.text
+            elif event.event_type == "stream-end":
+                print(event.finish_reason)
+
 
 
     @staticmethod
