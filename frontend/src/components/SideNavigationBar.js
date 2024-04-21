@@ -16,7 +16,6 @@ import { BsDatabaseAdd } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 
-
 const SideNavigationBar = () => {
   const authAccount = { profilePictureLink: "", name: "Lockness Test" };
   const navigate = useNavigate(); // Hook to navigate programmatically
@@ -96,7 +95,6 @@ const SideNavigationBar = () => {
     },
   ];
   return (
-
     <Box
       position="fixed"
       left="0"
@@ -141,10 +139,8 @@ const SideNavigationBar = () => {
           _hover={{ bg: "lightBackgroundColor" }}
         >
           <BsDatabaseAdd size="10%" />
-
           <Text ml="5%">New Query</Text>
         </Flex>
-
         <Divider borderColor="#545454" />
 
         <Text mt="3%" fontSize="sm" mb="2%" fontWeight="semibold">
@@ -190,7 +186,6 @@ const SideNavigationBar = () => {
               </Box>
             );
           })}
-
         </VStack>
       </VStack>
       <Box position="absolute" bottom="5" width="13vw">

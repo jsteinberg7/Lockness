@@ -5,7 +5,7 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 
 const MarkdownCasing = ({
   markdownContent,
-  onContinue = () => { },
+  onContinue = () => {},
   step,
   totalSteps,
 }) => {
@@ -18,8 +18,6 @@ const MarkdownCasing = ({
       backgroundColor="darkBackgroundColor"
       borderRadius="xl"
     >
-
-
       <ReactMarkdown
         py="5"
         px="10"
@@ -52,18 +50,7 @@ const MarkdownCasing = ({
           <Button
             cursor={"pointer"}
             onClick={async () => {
-              await onContinue(markdownContent); // Wait for any asynchronous operations to complete
-              setTimeout(() => {
-                window.scrollTo({
-                  top: 1000,
-                  behavior: "smooth",
-                });
-              }, 500);
-              console.log(
-                "ScrollHeight:",
-                1000
-              );
-              // Give a little time for the DOM to update after the data is loaded
+              onContinue(markdownContent);
             }}
             backgroundColor="primaryColor"
             ml="2.5%"

@@ -27,12 +27,6 @@ const CodeStep = ({ totalSteps, step, type, content, onContinue }) => {
         {headerContent}
       </Text>
       <MarkdownCasing onContinue={onContinue} markdownContent={code} totalSteps={totalSteps} step={step} />
-      {/* <Text fontSize="md" fontWeight="bold" mt="2.5%" ml="5%">
-        Explanation
-      </Text> */}
-      {/* <Text fontSize="md" mt="1%" ml="5%">
-        {footerContent}
-      </Text> */}
     </Flex>
   );
 };
