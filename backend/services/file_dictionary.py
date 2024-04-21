@@ -81,6 +81,7 @@ file_dict = [
             "Line file",
             "Demonstrations/Innovations code file",
         ],
+        "file-root": "FFS_Carrier_"
     },
     {
         "tablename": "Skilled Nursing Facility (Fee-for-Service)",

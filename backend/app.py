@@ -41,7 +41,7 @@ def handle_prompt(data, headers):
         f"Received prompt: {prompt}, msg_type: {msg_type}, step: {step}, prev_code: {prev_code}"
     )
 
-    chunks = LLMService.run_prompt(prompt, msg_type, step, prev_code)
+    chunks = LLMService.run_prompt(prompt, msg_type, step)
     for chunk in chunks:
         emit(
             "new_message",

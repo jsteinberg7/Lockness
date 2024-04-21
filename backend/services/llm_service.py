@@ -1,6 +1,6 @@
-from json import parse_json
+import json
 import os
-from file_dictionary import file_dict
+from services.file_dictionary import file_dict
 import pandas as pd
 from dotenv import load_dotenv
 import cohere
@@ -11,14 +11,20 @@ class LLMService:
     initial_prompt, clarifications, table_data, column_data, english_breakdown, previous_code = None, None, None, None, None, None
 
 
-
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
 
-    system_prompt = open("system_explain_vrdc_ccw.txt", "r").read().strip()
-    json_system_prompt = open("./json_system_prompt.txt", "r").read().strip()
+    system_prompt = open("services/system_explain_vrdc_ccw.txt", "r").read().strip()
+    json_system_prompt = open("services/json_system_prompt.txt", "r").read().strip()
     co = cohere.Client(COHERE_SECRET_KEY)
     
+    @staticmethod
+    def parse_json(json_str):
+        try:
+            s = json_str.split("JSONSTARTSHERE")[-1]
+            return json.loads(s.strip())
+        except json.JSONDecodeError as e:
+            return None
 
     @staticmethod
     def stream_llm_response(prompt):
@@ -39,7 +45,7 @@ class LLMService:
         #     # ],
         #     # model="command-xlarge-20221108"
         # ):
-
+        print(response.text)
         yield response.text
             # if event.event_type == "text-generation":
             #     print(event.text)
@@ -64,13 +70,8 @@ class LLMService:
             message = prompt,
             model=model_used,
         )
-
+        print(chat_completion.text)
         return chat_completion.text
-
-
-    
-
-
 
     @staticmethod
     def run_clarification_questions_prompt():
@@ -104,8 +105,10 @@ class LLMService:
 
         full_prompt += f"""Please return the table names in the following JSON format WITHOUT EXPLANATION: [\n\t\"tablename1\",\n\t\"tablename2\",\n\t\"tablename3\",\n\t ...\n]"""
 
+        print("OH LOOKEY HERE")
+        print(full_prompt)
         res = LLMService.json_prompt(full_prompt) # call llm (will return json)
-        table_res = parse_json(str(res))
+        table_res = LLMService.parse_json(str(res))
 
         # Segment to find relevant columns
 
@@ -118,7 +121,7 @@ class LLMService:
             fname = ""
             if i["sub-sections"] is not None:
                 fname = i["sub-sections"][0]
-            df_temp = pd.read_csv("./Excel_Files/" + root  + fname.replace("/"," and ") + ".csv")
+            df_temp = pd.read_csv("services/Excel_Files/" + root  + fname.replace("/"," and ") + ".csv")
 
             # get the first column as a list
             list1 = df_temp[df_temp.columns.to_list()[0]].to_list()
@@ -134,7 +137,7 @@ class LLMService:
         HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
 
         res = LLMService.json_prompt(full_prompt) # call llm (return json)
-        column_res = parse_json(str(res))
+        column_res = LLMService.parse_json(str(res))
         
         tbl_paylod2 = ""
         for i in column_res:
