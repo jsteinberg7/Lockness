@@ -51,12 +51,19 @@ const MarkdownCasing = ({
         {step <= totalSteps && (
           <Button
             cursor={"pointer"}
-            onClick={() => {
-              onContinue(markdownContent); // pass outline back into prompt
-              window.scrollTo({
-                bottom: document.documentElement.scrollHeight,
-                behavior: "smooth", // Optional: defines the transition animation
-              });
+            onClick={async () => {
+              await onContinue(markdownContent); // Wait for any asynchronous operations to complete
+              setTimeout(() => {
+                window.scrollTo({
+                  top: 1000,
+                  behavior: "smooth",
+                });
+              }, 500);
+              console.log(
+                "ScrollHeight:",
+                1000
+              );
+              // Give a little time for the DOM to update after the data is loaded
             }}
             backgroundColor="primaryColor"
             ml="2.5%"
