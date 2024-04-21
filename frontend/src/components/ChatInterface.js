@@ -1,23 +1,15 @@
-import { ArrowUpIcon, AttachmentIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
   Center,
-  Flex,
-  InputGroup,
   Spinner,
   Text,
-  Textarea,
   VStack,
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import logo from "../assets/locknessLogo.png";
-
 import ChatHeader from "./ChatHeader";
 import EnglishOutline from "./EnglishOutline";
-
 import CodeStep from "./CodeStep";
 import NewChatDesign from "./NewChatDesign";
 import UserInput from "./UserInput";
@@ -246,7 +238,6 @@ const ChatInterface = () => {
           </Center>
         ))}
         <div ref={messagesEndRef} />
-
         {error && (
           <Text color="red.500" mb={4}>
             {error}

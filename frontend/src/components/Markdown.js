@@ -8,13 +8,14 @@ const MarkdownCasing = ({
   onContinue = () => {},
   step,
   totalSteps,
+  ...rest
 }) => {
   return (
     <Box
-      mt="2.5%"
-      ml="4%"
-      py="5"
-      px="10"
+      mt={rest.mt}
+      ml={rest.ml}
+      py={rest.py}
+      px={rest.px}
       backgroundColor="darkBackgroundColor"
       borderRadius="xl"
     >

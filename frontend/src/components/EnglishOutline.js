@@ -32,6 +32,12 @@ const EnglishOutline = ({ outlineContent, onContinue, totalSteps }) => {
         {firstPart}
       </Text>
       <MarkdownCasing
+        mt="2.5%"
+        ml="4%"
+        py="5"
+        px="10"
+        backgroundColor="darkBackgroundColor"
+        borderRadius="xl"
         onContinue={onContinue}
         markdownContent={restOfContent}
         step={0}
