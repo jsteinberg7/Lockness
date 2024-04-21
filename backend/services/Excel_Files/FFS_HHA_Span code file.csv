@@ -1,0 +1,8 @@
+Short SAS name,Long SAS name,Label,Type,Length,HHA file sequence1,New variables
+BENE_ID,BENE_ID,Encrypted CCW Beneficiary ID,CHAR,15.0,1.0,
+CLM_ID,CLM_ID,Claim ID,CHAR,15.0,2.0,
+CLM_TYPE,NCH_CLM_TYPE_CD,NCH Claim Type Code,CHAR,2.0,3.0,
+RLTSPNSQ,RLT_SPAN_CD_SEQ,Claim Related Span Code Sequence,CHAR,2.0,4.0,
+SPAN_CD,CLM_SPAN_CD,Claim Occurrence Span Code,CHAR,2.0,5.0,
+SPANFROM,CLM_SPAN_FROM_DT,Claim Occurrence Span From Date,DATE,8.0,6.0,
+SPANTHRU,CLM_SPAN_THRU_DT,Claim Occurrence Span Through Date,DATE,8.0,7.0,

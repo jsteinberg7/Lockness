@@ -1,0 +1,7 @@
+Short SAS name,Long SAS name,Label,Type,Length,HOS file sequence1,New variables
+BENE_ID,BENE_ID,Encrypted CCW Beneficiary ID,CHAR,15.0,1.0,
+CLM_ID,CLM_ID,Claim ID,CHAR,15.0,2.0,
+CLM_TYPE,NCH_CLM_TYPE_CD,NCH Claim Type Code,CHAR,2.0,3.0,
+RLTVALSQ,RLT_VAL_CD_SEQ,Claim Related Value Code Sequence,CHAR,2.0,4.0,
+VAL_CD,CLM_VAL_CD,Claim Value Code,CHAR,2.0,5.0,
+VAL_AMT,CLM_VAL_AMT,Claim Value Amount,NUM,12.0,6.0,

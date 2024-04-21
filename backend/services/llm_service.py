@@ -1,55 +1,71 @@
-import json
+from json import parse_json
 import os
-
+from file_dictionary import file_dict
+import pandas as pd
 from dotenv import load_dotenv
 import cohere
 
 
 class LLMService:
     
+    initial_prompt, clarifications, table_data, column_data, english_breakdown, previous_code = None, None, None, None, None, None
+
+
+
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
-    co = cohere.Client(LLMService.COHERE_SECRET_KEY)
+
+    system_prompt = open("system_explain_vrdc_ccw.txt", "r").read().strip()
+    json_system_prompt = open("./json_system_prompt.txt", "r").read().strip()
+    co = cohere.Client(COHERE_SECRET_KEY)
+    
+
     @staticmethod
     def stream_llm_response(prompt):
         
+        full_prompt = LLMService.system_prompt + prompt
+        response = LLMService.co.chat(message=full_prompt)
         
-        for event in LLMService.co.chat_stream(
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant.",
-                },
-                {
-                    "role": "user", 
-                    "content": prompt,
-                }
-            ],
-            model="command-xlarge-20221108"
-        ):
-            if event.event_type == "text-generation":
-                print(event.text)
-                yield event.text
-            elif event.event_type == "stream-end":
-                print(event.finish_reason)
+        # for event in co.chat(message=prompt
+        #     # messages=[
+        #     #     {
+        #     #         "role": "system",
+        #     #         "content": "You are a helpful assistant.",
+        #     #     },
+        #     #     {
+        #     #         "role": "user", 
+        #     #         "content": prompt,
+        #     #     }
+        #     # ],
+        #     # model="command-xlarge-20221108"
+        # ):
+
+        yield response.text
+            # if event.event_type == "text-generation":
+            #     print(event.text)
+            #     yield event.text
+            # elif event.event_type == "stream-end":
+            #     print(event.finish_reason)
+
+
 
     @staticmethod
-    def prompt (system, prompt, model_used="command-r-plus") -> str:
+    def json_prompt(prompt, model_used="command-r-plus") -> str:
         messages = []
 
-        if system:
-            messages.append({
-                "role": "SYSTEM",
-                "message": system,
-            })
+        messages.append({
+            "role": "SYSTEM",
+            "message": LLMService.system_prompt + "\n" + LLMService.json_system_prompt,
+        })
 
-        chat_completion = None
+
         chat_completion = LLMService.co.chat(
             chat_history=messages,
             message = prompt,
             model=model_used,
         )
-        return gpt_response(messages, chat_completion, prompt)
+
+        return chat_completion.text
 
 
     
@@ -58,12 +74,12 @@ class LLMService:
 
     @staticmethod
     def run_clarification_questions_prompt(prompt):
-        full_prompt = f"""Generate a list of clarification questions based on the following prompt:
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way:
         {prompt}
-        Output the content in CommonMark Markdown format, using numbered list items for each question.
-        Follow the format used in the example below. Note that the example is not a relevant list of questions, but just a template to show the expected format.
-        You may ask as many questions as you think are necessary to clarify the prompt.
-        
+        {open('./clarifying_prompt.txt', 'r').read().strip()}
+
+        This is an example of how to format the clarifications:
+
         Here are some clarification questions I would ask to better understand the query:
 
         1. What specific information are you looking to extract from the database?
@@ -77,9 +93,63 @@ class LLMService:
     # Generates a plain English outline of how to approach the query described in prompt
     @staticmethod
     def run_english_overview_prompt(prompt):
-        full_prompt = f"""Generate a plain English outline of how to approach the query described in the following prompt:\n{prompt}. 
-        Do not include any additional output besides the Markdown content.
+        # Segment to find relevant tables
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {LLMService.initial_prompt}
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        What tables/files would be relevant for this query? Return the recommended table names in a JSON list WITH NO EXPLANATION!
+        Here is a list of tables/files and their descriptions:\n
+        """
+        for table in file_dict:
+            full_prompt += f"{table['tablename']} : {table['desc']}"
+
+        full_prompt += f"""Please return the table names in the following JSON format WITHOUT EXPLANATION: [\n\t\"tablename1\",\n\t\"tablename2\",\n\t\"tablename3\",\n\t ...\n]"""
+
+        res = None # call llm
+        table_res = parse_json(str(res))
+
+        # Segment to find relevant columns
+
+        table_payload = ""
+        tbls = [i for i in file_dict if i["tablename"] in table_res]
+        for i in tbls:
+            table_payload += i["tablename"] + ": " + i["desc"] + "\n"
+            table_payload += f"HERE ARE THE COLUMNS FOR THE TABLE {i['tablename']}. They follow the format <column_name>: <description>, <type> :"
+            root = i["file-root"]
+            fname = ""
+            if i["sub-sections"] is not None:
+                fname = i["sub-sections"][0]
+            df_temp = pd.read_csv("./Excel_Files/" + root  + fname.replace("/"," and ") + ".csv")
+
+            # get the first column as a list
+            list1 = df_temp[df_temp.columns.to_list()[0]].to_list()
+            # get the Labels column as a list
+            list2 = df_temp["Label"].to_list()
+            # get types column as a list
+            list3 = df_temp["Type"].to_list()
+            table_payload += "\n".join([f"{list1[i]}: {list2[i]}, {list3[i]}" for i in range(len(list1))]) + "\n"
+        
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {LLMService.initial_prompt}\n
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        The following is a list of relevant tables with their descriptions and columns. I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format: \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
+        HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
+
+        res = None # call llm
+        column_res = parse_json(str(res))
+        
+        tbl_paylod2 = ""
+        for i in column_res:
+            tbl_paylod2 += "Table "+i + " has columns: " + ", ".join(column_res[i]) + "\n"
+
+        full_prompt += f"""The user wants to run a query on vrdc ccw that is described in the following way: 
+        \n{LLMService.initial_prompt}. \n
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        Here is a list of relevant tables/files with their descriptions and columns: {tbl_paylod2} \n
+        
+        Generate a plain English outline of how to approach the query. Note that you do not have to use ALL tables provided, make a judgement on what you think is needed for the query.
+        
         Output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers. Do not use any Markdown headers besides h5 (#####) for step headers.
+        
+        Do not include any additional output besides the Markdown content.
         Additionally, you do not need to include a final "combination" step, as this is implied by the outline itself.
 
         Note that you do not need to use an arbitrary number of steps; use as many as necessary to break down the query effectively, but don't simple tasks into many steps just for the sake of it.
@@ -106,9 +176,13 @@ class LLMService:
 
         - If looking at data for a specific geographic region, filter the data based on `state`, `zip_code`, or other location identifiers.
         """
+        result = ""
 
         for chunk in LLMService.stream_llm_response(full_prompt):
+            result += chunk
             yield chunk
+
+        LLMService.english_breakdown = result
 
     # Generates an SQL query based on the outline generated in the previous step
     @staticmethod
@@ -169,15 +243,18 @@ class LLMService:
         
         
     @staticmethod
-    def run_prompt(prompt, msg_type, step, prev_code=None):
+    def run_prompt(input, msg_type, step, prev_code=None):
         if msg_type == "clarification":
-            chunks = LLMService.run_clarification_questions_prompt(prompt)
+            initial_prompt = input
+            chunks = LLMService.run_clarification_questions_prompt(input)
         elif msg_type == "englishOutline":
-            chunks = LLMService.run_english_overview_prompt(prompt)
+            # at this point the input is the clarifications the user provides from the previous llm call
+            clarifications = input
+            chunks = LLMService.run_english_overview_prompt(input)
         elif msg_type == "codeStep":
-            chunks = LLMService.run_code_step_generation_prompt(prompt, step, prev_code) # note: "prompt" should be the english outline here
+            chunks = LLMService.run_code_step_generation_prompt(input, step, prev_code) # note: "prompt" should be the english outline here
         elif msg_type == "finalCode":
-            chunks = LLMService.run_query_combination_prompt(prompt, prev_code) # note: "prompt" should be the english outline here
+            chunks = LLMService.run_query_combination_prompt(input, prev_code) # note: "prompt" should be the english outline here
         else: 
             raise ValueError("Invalid message type")
         

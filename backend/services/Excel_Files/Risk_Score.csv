@@ -1,0 +1,99 @@
+SAS name,Label,Type,Length
+BENE_ID,CCW Beneficiary ID,CHAR,15
+RFRNC_YR,Reference (Payment) Year,NUM,8
+PTC_RISK_SCORE_01,Monthly Part C Risk Score: January,NUM,8
+PTC_RISK_SCORE_02,Monthly Part C Risk Score: February,NUM,8
+PTC_RISK_SCORE_03,Monthly Part C Risk Score: March,NUM,8
+PTC_RISK_SCORE_04,Monthly Part C Risk Score: April,NUM,8
+PTC_RISK_SCORE_05,Monthly Part C Risk Score: May,NUM,8
+PTC_RISK_SCORE_06,Monthly Part C Risk Score: June,NUM,8
+PTC_RISK_SCORE_07,Monthly Part C Risk Score: July,NUM,8
+PTC_RISK_SCORE_08,Monthly Part C Risk Score: August,NUM,8
+PTC_RISK_SCORE_09,Monthly Part C Risk Score: September,NUM,8
+PTC_RISK_SCORE_10,Monthly Part C Risk Score: October,NUM,8
+PTC_RISK_SCORE_11,Monthly Part C Risk Score: November,NUM,8
+PTC_RISK_SCORE_12,Monthly Part C Risk Score: December,NUM,8
+PTC_MODEL_SGMT_CD_01,Monthly Part C Model Segment Code: January,CHAR,2
+PTC_MODEL_SGMT_CD_02,Monthly Part C Model Segment Code:February,CHAR,2
+PTC_MODEL_SGMT_CD_03,Monthly Part C Model Segment Code:March,CHAR,2
+PTC_MODEL_SGMT_CD_04,Monthly Part C Model Segment Code:April,CHAR,2
+PTC_MODEL_SGMT_CD_05,Monthly Part C Model Segment Code:May,CHAR,2
+PTC_MODEL_SGMT_CD_06,Monthly Part C Model Segment Code:June,CHAR,2
+PTC_MODEL_SGMT_CD_07,Monthly Part C Model Segment Code:July,CHAR,2
+PTC_MODEL_SGMT_CD_08,Monthly Part C Model Segment Code:August,CHAR,2
+PTC_MODEL_SGMT_CD_09,Monthly Part C Model Segment Code:September,CHAR,2
+PTC_MODEL_SGMT_CD_10,Monthly Part C Model Segment Code:October,CHAR,2
+PTC_MODEL_SGMT_CD_11,Monthly Part C Model Segment Code:November,CHAR,2
+PTC_MODEL_SGMT_CD_12,Monthly Part C Model Segment Code:December,CHAR,2
+PTD_RISK_SCORE_01,Monthly Part D Risk Score: January,NUM,8
+PTD_RISK_SCORE_02,Monthly Part D Risk Score: Fenruary,NUM,8
+PTD_RISK_SCORE_03,Monthly Part D Risk Score: March,NUM,8
+PTD_RISK_SCORE_04,Monthly Part D Risk Score: April,NUM,8
+PTD_RISK_SCORE_05,Monthly Part D Risk Score:  May,NUM,8
+PTD_RISK_SCORE_06,Monthly Part D Risk Score: June,NUM,8
+PTD_RISK_SCORE_07,Monthly Part D Risk Score: July,NUM,8
+PTD_RISK_SCORE_08,Monthly Part D Risk Score: August,NUM,8
+PTD_RISK_SCORE_09,Monthly Part D Risk Score: September,NUM,8
+PTD_RISK_SCORE_10,Monthly Part D Risk Score: October,NUM,8
+PTD_RISK_SCORE_11,Monthly Part D Risk Score: November,NUM,8
+PTD_RISK_SCORE_12,Monthly Part D Risk Score: December,NUM,8
+PTD_MODEL_SGMT_CD_01,Monthly Part D Model Segment Code:January,CHAR,2
+PTD_MODEL_SGMT_CD_02,Monthly Part D Model Segment Code:February,CHAR,2
+PTD_MODEL_SGMT_CD_03,Monthly Part D Model Segment Code:March,CHAR,2
+PTD_MODEL_SGMT_CD_04,Monthly Part D Model Segment Code:April,CHAR,2
+PTD_MODEL_SGMT_CD_05,Monthly Part D Model Segment Code:May,CHAR,2
+PTD_MODEL_SGMT_CD_06,Monthly Part D Model Segment Code:June,CHAR,2
+PTD_MODEL_SGMT_CD_07,Monthly Part D Model Segment Code:July,CHAR,2
+PTD_MODEL_SGMT_CD_08,Monthly Part D Model Segment Code:August,CHAR,2
+PTD_MODEL_SGMT_CD_09,Monthly Part D Model Segment Code:September,CHAR,2
+PTD_MODEL_SGMT_CD_10,Monthly Part D Model Segment Code:October,CHAR,2
+PTD_MODEL_SGMT_CD_11,Monthly Part D Model Segment Code:November,CHAR,2
+PTD_MODEL_SGMT_CD_12,Monthly Part D Model Segment Code:December,CHAR,2
+PTC_RISK_CAT_CD,Part C Risk Category Code,CHAR,1
+PTC_SCORE_COM,Part C Community Model Score,NUM,8
+PTC_SCORE_COM_TPL_M4_M9,Part C Community Post-Transplant 4-9 Months Model Score,NUM,8
+PTC_SCORE_COM_TPL_M10,Part C Community Post-Transplant 10+ Months Model Score,NUM,8
+PTC_SCORE_DIAL,Part C Dialysis Model Score,NUM,8
+PTC_SCORE_NE,Part C New Enrollee  Model Score,NUM,8
+PTC_SCORE_NE_DIAL,Part C New Enrollee Dialysis Model Score,NUM,8
+PTC_SCORE_NE_TPL_M4_M9,Part C New Enrollee Post Transplant 4-9 Months Model Score,NUM,8
+PTC_SCORE_NE_TPL_M10,Part C New Enrollee Post-Transplant 10+ Months Model Score,NUM,8
+PTC_SCORE_TPL_M1,Part C Transplant - Month 1 Model Score,NUM,8
+PTC_SCORE_TPL_M2_M3,Part C Transplant Month 2-3 Model Score,NUM,8
+PTC_SCORE_INST,Part C Institutional Model Score,NUM,8
+PTC_SCORE_INST_TPL_M4_M9,Part C Institutional Post-Transplant 4-9 Months Model Score,NUM,8
+PTC_SCORE_INST_TPL_M10,Part C Institutional Post-Transplant 10+ Months Model Score,NUM,8
+PTC_SCORE_COM_PACE,Part C Community for PACE Organizations Model Score,NUM,8
+PTC_SCORE_INST_PACE,Part C Institutional for PACE Organizations Model Score,NUM,8
+PTC_SCORE_NE_PACE,Part C New Enrollee for PACE Organizations Model Score,NUM,8
+PTC_NE_SNP,Part C New Enrollee Chronic Condition SNP Model Score,NUM,8
+PTD_RISK_CAT_CD,Part D Risk Category Code,CHAR,1
+PTD_COM_NON_LI_CE,"Part D Community, Non-Low Income Continuing Enrollee Model Score",NUM,8
+PTD_COM_LI_CE,"Part D Community, Low Income Continuing Enrollee Model Score",NUM,8
+PTD_INST_CE,Part D Institutional Continuing Enrollee Model Score,NUM,8
+PTD_NE_COM_NON_LI_NON_ESRD,Part D New Enrollee Community Non-Low Income Non-ESRD Model Score,NUM,8
+PTD_NE_COM_NON_LI_ESRD,Part D New Enrollee Community Non-Low Income ESRD Model Score,NUM,8
+PTD_NE_COM_LI_NON_ESRD,Part D New Enrollee Community Low Income  Non-ESRD Model Score,NUM,8
+PTD_NE_COM_LI_ESRD,Part D New Enrollee Community Low Income ESRD Model Score,NUM,8
+PTD_NE_INST,Part D New Enrollee Institutional Non-ESRD Model Score,NUM,8
+PTD_NE_INST_ESRD,Part D New Enrollee Institutional ESRD Model Score,NUM,8
+LTI_IND_01,Monthly Long-Term Institutional Indicator: January,CHAR,1
+LTI_IND_02,Monthly Long-Term Institutional Indicator: February,CHAR,1
+LTI_IND_03,Monthly Long-Term Institutional Indicator: March,CHAR,1
+LTI_IND_04,Monthly Long-Term Institutional Indicator: April,CHAR,1
+LTI_IND_05,Monthly Long-Term Institutional Indicator: May,CHAR,1
+LTI_IND_06,Monthly Long-Term Institutional Indicator: June,CHAR,1
+LTI_IND_07,Monthly Long-Term Institutional Indicator: July,CHAR,1
+LTI_IND_08,Monthly Long-Term Institutional Indicator: August,CHAR,1
+LTI_IND_09,Monthly Long-Term Institutional Indicator: September,CHAR,1
+LTI_IND_10,Monthly Long-Term Institutional Indicator: October,CHAR,1
+LTI_IND_11,Monthly Long-Term Institutional Indicator: November,CHAR,1
+LTI_IND_12,Monthly Long-Term Institutional Indicator: December,CHAR,1
+MODEL_BENE_DOB,Date of Birth (model),DATE,8
+MODEL_OREC,Original Reason for Entitlement Code (model),CHAR,1
+MODEL_MDCD_FLG,Medicaid Flag (model),CHAR,1
+MODEL_SEX,Sex (model),CHAR,1
+MODEL_COV_START_DT,Coverage Start Date (model),DATE,8
+MODEL_COV_END_DT,Coverage End Date (model),DATE,8
+MODEL_BENE_AGE_GROUP,Beneficiary Reporting Age Bracket (model),CHAR,5
+MODEL_BENE_DOD,Beneficiary Death Date (model),DATE,8

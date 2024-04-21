@@ -1,0 +1,85 @@
+Short SAS Name1,Long SAS Name2,Label,Type,Length
+BENE_ID,BENE_ID,Encrypted CCW Beneficiary ID,CHAR,15.0
+RFRNC_YR,BENE_ENROLLMT_REF_YR,Reference Year,NUM,4.0
+ENRL_SRC,ENRL_SRC,Source of enrollment data,CHAR,3.0
+AMI,AMI,Acute Myocardial Infarction End-of-Year Indicator,NUM,1.0
+AMIM,AMI_MID,Acute Myocardial Infarction Mid-Year Indicator,NUM,1.0
+AMIE,AMI_EVER,First Occurrence of Acute Myocardial Infarction,DATE,8.0
+ALZH,ALZH,Alzheimer's Disease End-of-Year Indicator,NUM,1.0
+ALZHM,ALZH_MID,Alzheimer's Disease Mid-Year Indicator,NUM,1.0
+ALZHE,ALZH_EVER,First Occurrence of Alzheimer's Disease,DATE,8.0
+ALZHDMTA,ALZH_DEMEN,Alzheimer's Disease and Related Disorders or Senile Dementia End-of-Year Indicator,NUM,1.0
+ALZHDMTM,ALZH_DEMEN_MID,Alzheimer's Disease and Related Disorders or Senile Dementia Mid-Year Indicator,NUM,1.0
+ALZHDMTE,ALZH_DEMEN_EVER,First Occurrence of Alzheimer's Disease and Related Disorders or Senile Dementia,DATE,8.0
+ATRIALFB,ATRIAL_FIB,Atrial Fibrillation End-of-Year Indicator,NUM,1.0
+ATRIALFM,ATRIAL_FIB_MID,Atrial Fibrillation Mid-Year Indicator,NUM,1.0
+ATRIALFE,ATRIAL_FIB_EVER,First Occurrence of Atrial Fibrillation,DATE,8.0
+CATARACT,CATARACT,Cataract End-of-Year Indicator,NUM,1.0
+CATARCTM,CATARACT_MID,Cataract Mid-Year Indicator,NUM,1.0
+CATARCTE,CATARACT_EVER,First Occurrence of Cataract,DATE,8.0
+CHRNKIDN,CHRONICKIDNEY,Chronic Kidney Disease End-of-Year Indicator,NUM,1.0
+CHRNKDNM,CHRONICKIDNEY_MID,Chronic Kidney Disease Mid-Year Indicator,NUM,1.0
+CHRNKDNE,CHRONICKIDNEY_EVER,First Occurrence of Chronic Kidney Disease,DATE,8.0
+COPD,COPD,Chronic Obstructive Pulmonary Disease End-of-Year Indicator,NUM,1.0
+COPDM,COPD_MID,Chronic Obstructive Pulmonary Disease Mid-Year Indicator,NUM,1.0
+COPDE,COPD_EVER,First Occurrence of Chronic Obstructive Pulmonary Disease,DATE,8.0
+CHF,CHF,Heart Failure End-of-Year Indicator,NUM,1.0
+CHFM,CHF_MID,Heart Failure Mid-Year Indicator,NUM,1.0
+CHFE,CHF_EVER,First Occurrence of Heart Failure,DATE,8.0
+DIABETES,DIABETES,Diabetes End-of-Year Indicator,NUM,1.0
+DIABTESM,DIABETES_MID,Diabetes Mid-Year Indicator,NUM,1.0
+DIABTESE,DIABETES_EVER,First Occurrence of Diabetes,DATE,8.0
+GLAUCOMA,GLAUCOMA,Glaucoma End-of-Year Indicator,NUM,1.0
+GLAUCMAM,GLAUCOMA_MID,Glaucoma Mid-Year Indicator,NUM,1.0
+GLAUCMAE,GLAUCOMA_EVER,First Occurrence of Glaucoma,DATE,8.0
+HIPFRAC,HIP_FRACTURE,Hip/Pelvic Fracture End-of-Year Indicator,NUM,1.0
+HIPFRACM,HIP_FRACTURE_MID,Hip/Pelvic Fracture Mid-Year Indicator,NUM,1.0
+HIPFRACE,HIP_FRACTURE_EVER,First Occurrence of Hip/Pelvic Fracture,DATE,8.0
+ISCHMCHT,ISCHEMICHEART,Ischemic Heart Disease End-of-Year Indicator,NUM,1.0
+ISCHMCHM,ISCHEMICHEART_MID,Ischemic Heart Disease Mid-Year Indicator,NUM,1.0
+ISCHMCHE,ISCHEMICHEART_EVER,First Occurrence of Ischemic Heart Disease,DATE,8.0
+DEPRESSN,DEPRESSION,Depression End-of-Year Indicator,NUM,1.0
+DEPRSSNM,DEPRESSION_MID,Depression Mid-Year Indicator,NUM,1.0
+DEPRSSNE,DEPRESSION_EVER,First Occurrence of Depression,DATE,8.0
+OSTEOPRS,OSTEOPOROSIS,Osteoporosis End-of-Year Indicator,NUM,1.0
+OSTEOPRM,OSTEOPOROSIS_MID,Osteoporosis Mid-Year Indicator,NUM,1.0
+OSTEOPRE,OSTEOPOROSIS_EVER,First Occurrence of Osteoporosis,DATE,8.0
+RA_OA,RA_OA,Rheumatoid Arthritis / Osteoarthritis End-of-Year Indicator,NUM,1.0
+RA_OA_M,RA_OA_MID,Rheumatoid Arthritis / Osteoarthritis Mid-Year Indicator,NUM,1.0
+RA_OA_E,RA_OA_EVER,First Occurrence of Rheumatoid Arthritis / Osteoarthritis,DATE,8.0
+STRKETIA,STROKE_TIA,Stroke / Transient Ischemic Attack End-of-Year Indicator,NUM,1.0
+STRKTIAM,STROKE_TIA_MID,Stroke / Transient Ischemic Attack Mid-Year Indicator,NUM,1.0
+STRKTIAE,STROKE_TIA_EVER,First Occurrence of Stroke / Transient Ischemic Attack,DATE,8.0
+CNCRBRST,CANCER_BREAST,Breast Cancer End-of-Year Indicator,NUM,1.0
+CNCRBRSM,CANCER_BREAST_MID,Breast Cancer Mid-Year Indicator,NUM,1.0
+CNCRBRSE,CANCER_BREAST_EVER,First Occurrence of Breast Cancer,DATE,8.0
+CNCRCLRC,CANCER_COLORECTAL,Colorectal Cancer End-of-Year Indicator,NUM,1.0
+CNCRCLRM,CANCER_COLORECTAL_MID,Colorectal Cancer Mid-Year Indicator,NUM,1.0
+CNCRCLRE,CANCER_COLORECTAL_EVER,First Occurrence of Colorectal Cancer,DATE,8.0
+CNCRPRST,CANCER_PROSTATE,Prostate Cancer End-of-Year Indicator,NUM,1.0
+CNCRPRSM,CANCER_PROSTATE_MID,Prostate Cancer Mid-Year Indicator,NUM,1.0
+CNCRPRSE,CANCER_PROSTATE_EVER,First Occurrence of Prostate Cancer,DATE,8.0
+CNCRLUNG,CANCER_LUNG,Lung Cancer End-of-Year Indicator,NUM,1.0
+CNCRLNGM,CANCER_LUNG_MID,Lung Cancer Mid-Year Indicator,NUM,1.0
+CNCRLNGE,CANCER_LUNG_EVER,First Occurrence of Lung Cancer,DATE,8.0
+CNCRENDM,CANCER_ENDOMETRIAL,Endometrial Cancer End-of-Year Indicator,NUM,1.0
+CNCENDMM,CANCER_ENDOMETRIAL_MID,Endometrial Cancer Mid-Year Indicator,NUM,1.0
+CNCENDME,CANCER_ENDOMETRIAL_EVER,First Occurrence of Endometrial Cancer,DATE,8.0
+ANEMIA,ANEMIA,Anemia End Year Flag,NUM,1.0
+ANEMIA_MID,ANEMIA_MID,Anemia Mid Year Flag,NUM,1.0
+ANEMIA_EVER,ANEMIA_EVER,Anemia First Ever Occurrence Date,DATE,8.0
+ASTHMA,ASTHMA,Asthma End Year Flag,NUM,1.0
+ASTHMA_MID,ASTHMA_MID,Asthma Mid Year Flag,NUM,1.0
+ASTHMA_EVER,ASTHMA_EVER,Asthma First Ever Occurrence Date,DATE,8.0
+HYPERL,HYPERL,Hyperlipidemia End Year Flag,NUM,1.0
+HYPERL_MID,HYPERL_MID,Hyperlipidemia Mid Year Flag,NUM,1.0
+HYPERL_EVER,HYPERL_EVER,Hyperlipidemia First Ever Occurrence Date,DATE,8.0
+HYPERP,HYPERP,Benign Prostatic Hyperplasia End Year Flag,NUM,1.0
+HYPERP_MID,HYPERP_MID,Benign Prostatic Hyperplasia Mid Year Flag,NUM,1.0
+HYPERP_EVER,HYPERP_EVER,Benign Prostatic Hyperplasia First Ever Occurrence Date,DATE,8.0
+HYPERT,HYPERT,Hypertension End Year Flag,NUM,1.0
+HYPERT_MID,HYPERT_MID,Hypertension Mid Year Flag,NUM,1.0
+HYPERT_EVER,HYPERT_EVER,Hypertension First Ever Occurrence Date,DATE,8.0
+HYPOTH,HYPOTH,Acquired Hypothyroidism End Year Flag,NUM,1.0
+HYPOTH_MID,HYPOTH_MID,Acquired Hypothyroidism Mid Year Flag,NUM,1.0
+HYPOTH_EVER,HYPOTH_EVER,Acquired Hypothyroidism First Ever Occurrence Date,DATE,8.0
