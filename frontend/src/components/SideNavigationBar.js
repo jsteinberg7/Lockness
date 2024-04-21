@@ -16,6 +16,9 @@ import { BsDatabaseAdd } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 
+import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
+import Profile from "./Profile";
+
 const SideNavigationBar = () => {
   const authAccount = { profilePictureLink: "", name: "Lockness Test" };
   const navigate = useNavigate(); // Hook to navigate programmatically
@@ -188,25 +191,13 @@ const SideNavigationBar = () => {
           })}
         </VStack>
       </VStack>
-      <Box position="absolute" bottom="5" width="13vw">
-        <Flex alignItems="center" justifyContent="space-between">
-          <Flex alignItems="center" justifyContent="start" width="80%">
-            <Box
-              display="inline-block"
-              width="40px"
-              height="40px"
-              borderRadius="50%"
-              backgroundImage={".assets/defaultProfilePicture.jpeg"}
-              backgroundSize="cover"
-            />
 
-            <Text color="primaryColor" ml="5%" fontSize="12px">
-              {authAccount.name}
-            </Text>
-          </Flex>
-          <SlOptionsVertical />{" "}
-        </Flex>
-      </Box>
+      <Profile
+        bottom="5"
+        width="13vw"
+        profilePicture={defaultProfilePicture}
+        authAccountName={authAccount.name}
+      />
     </Box>
   );
 };

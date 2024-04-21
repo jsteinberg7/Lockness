@@ -5,19 +5,15 @@ const CodeStep = ({ totalSteps, step, type, content, onContinue }) => {
   let headerContent = content.split("~~~~")[0];
   let code = content.replace(headerContent, "");
 
-  if (code === "")  {
+  if (code === "") {
     headerContent = content.split("```")[0];
     code = content.replace(headerContent, "");
 
-    if (code === "")  {
+    if (code === "") {
       headerContent = content.split("~~~")[0];
       code = content.replace(headerContent, "");
-  
-
     }
   }
-
-
 
   return (
     <Flex flexDirection="column">
