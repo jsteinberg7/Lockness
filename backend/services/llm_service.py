@@ -104,7 +104,7 @@ class LLMService:
 
         full_prompt += f"""Please return the table names in the following JSON format WITHOUT EXPLANATION: [\n\t\"tablename1\",\n\t\"tablename2\",\n\t\"tablename3\",\n\t ...\n]"""
 
-        res = json_prompt(full_prompt) # call llm (will return json)
+        res = LLMService.json_prompt(full_prompt) # call llm (will return json)
         table_res = parse_json(str(res))
 
         # Segment to find relevant columns
@@ -133,7 +133,7 @@ class LLMService:
         The following is a list of relevant tables with their descriptions and columns. I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format: \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
         HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
 
-        res = json_prompt(full_prompt) # call llm (return json)
+        res = LLMService.json_prompt(full_prompt) # call llm (return json)
         column_res = parse_json(str(res))
         
         tbl_paylod2 = ""
