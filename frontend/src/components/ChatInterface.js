@@ -197,6 +197,8 @@ const ChatInterface = () => {
         }
     };
 
+    console.log(messages)
+
     return (
         <Box
             bg="lightBackgroundColor"

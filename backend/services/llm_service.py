@@ -13,25 +13,31 @@ class LLMService:
     @staticmethod
     def stream_llm_response(prompt):
         co = cohere.Client(LLMService.COHERE_SECRET_KEY)
+
+        response = co.chat(message=prompt)
         
-        for event in co.chat_stream(
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant.",
-                },
-                {
-                    "role": "user", 
-                    "content": prompt,
-                }
-            ],
-            model="command-xlarge-20221108"
-        ):
-            if event.event_type == "text-generation":
-                print(event.text)
-                yield event.text
-            elif event.event_type == "stream-end":
-                print(event.finish_reason)
+        # for event in co.chat(message=prompt
+        #     # messages=[
+        #     #     {
+        #     #         "role": "system",
+        #     #         "content": "You are a helpful assistant.",
+        #     #     },
+        #     #     {
+        #     #         "role": "user", 
+        #     #         "content": prompt,
+        #     #     }
+        #     # ],
+        #     # model="command-xlarge-20221108"
+        # ):
+
+        yield response.text
+            # if event.event_type == "text-generation":
+            #     print(event.text)
+            #     yield event.text
+            # elif event.event_type == "stream-end":
+            #     print(event.finish_reason)
+
+
 
 
 
