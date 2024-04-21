@@ -9,12 +9,12 @@ class LLMService:
     
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
-
+    co = cohere.Client(LLMService.COHERE_SECRET_KEY)
     @staticmethod
     def stream_llm_response(prompt):
-        co = cohere.Client(LLMService.COHERE_SECRET_KEY)
         
-        for event in co.chat_stream(
+        
+        for event in LLMService.co.chat_stream(
             messages=[
                 {
                     "role": "system",
@@ -32,6 +32,27 @@ class LLMService:
                 yield event.text
             elif event.event_type == "stream-end":
                 print(event.finish_reason)
+
+    @staticmethod
+    def prompt (system, prompt, model_used="command-r-plus") -> str:
+        messages = []
+
+        if system:
+            messages.append({
+                "role": "SYSTEM",
+                "message": system,
+            })
+
+        chat_completion = None
+        chat_completion = LLMService.co.chat(
+            chat_history=messages,
+            message = prompt,
+            model=model_used,
+        )
+        return gpt_response(messages, chat_completion, prompt)
+
+
+    
 
 
 
