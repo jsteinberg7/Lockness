@@ -1,0 +1,7 @@
+Short SAS name,Long SAS name,Label,Type,Length,HHA file sequence1,New variables
+BENE_ID,BENE_ID,Encrypted CCW Beneficiary ID,CHAR,15.0,1.0,
+CLM_ID,CLM_ID,Claim ID,CHAR,15.0,2.0,
+CLM_TYPE,NCH_CLM_TYPE_CD,NCH Claim Type Code,CHAR,2.0,3.0,
+DEMO_ID_SQNC_NUM,DEMO_ID_SQNC_NUM,Demonstration sequence number,NUM,3.0,4.0,
+DEMO_ID_NUM,DEMO_ID_NUM,Demonstration number,CHAR,2.0,5.0,
+DEMO_INFO_TXT,DEMO_INFO_TXT,Demo information text,CHAR,15.0,6.0,

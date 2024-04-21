@@ -1,0 +1,68 @@
+SAS Name,Label,Type,Length,2015 1,2016+  1
+BENE_ID,Encrypted CCW Beneficiary ID,Char,15.0,1,1.0
+SAMPLE_GROUP,CCW  Beneficiary Random Sample Group ,Char,2.0,2,2.0
+ENC_JOIN_KEY,Unique Encounter Join Key,Char,15.0,3,3.0
+CLM_TYPE_CD,Claim Type Code,Char,4.0,4,4.0
+CLM_FROM_DT,Claim From Date,Date,8.0,5,5.0
+CLM_THRU_DT,Claim Through Date,Date,8.0,6,6.0
+SRVC_MONTH,Service Month,Date,6.0,7,7.0
+CLM_CHRT_RVW_SW,Claim Chart Review Switch,Char,1.0,8,8.0
+CLM_CNTL_NUM,Claim Control Number,Char,23.0,9,9.0
+CLM_ORIG_CNTL_NUM,Claim Original Control Number,Char,23.0,10,10.0
+CLM_FINL_ACTN_IND,Claim Final Action Indicator,Char,1.0,11,11.0
+CLM_LTST_CLM_IND,Latest Claim Indicator,Char,1.0,12,12.0
+EDPS_CREATE_DT,Encounter Data Processing System (EDPS) Create Date,Date,8.0,13,13.0
+CLM_RCPT_DT,Claim Receipt Date,Date,8.0,14,14.0
+CLM_FREQ_CD,Claim Frequency Code,Char,1.0,15,15.0
+CNTRCT_NUM,Medicare Part C Contract Number,Char,5.0,16,16.0
+CNTRCT_PBP_NUM,Medicare Part C Plan Benefit Package (PBP) Number,Char,3.0,17,17.0
+CLM_MDCL_REC,Claim Medical Record Number,Char,1.0,18,18.0
+ORG_NPI,Organization NPI Number,Char,10.0,19,19.0
+ORG_TXNMY_CD,Organization Taxonomy Code,Char,10.0,20,20.0
+CLM_PLACE_OF_SRVC_CD,Claim Place of Service Code,Char,2.0,-,67.0
+RNDRNG_PHYSN_NPI,Claim Rendering Physician NPI Number ,Char,10.0,-,66.0
+RFRG_PHYSN_NPI,Claim Referring Physician NPI Number,Char,10.0,21,21.0
+PRNCPAL_DGNS_CD,Claim Principal Diagnosis Code,Char,7.0,22,22.0
+PRNCPAL_DGNS_VRSN_CD,Claim Principal Diagnosis Version Code,Char,1.0,23,23.0
+ICD_DGNS_CD1,Claim Diagnosis Code 1,Char,7.0,24,24.0
+ICD_DGNS_VRSN_CD1,Claim Diagnosis Code I Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,25,25.0
+ICD_DGNS_CD2,Claim Diagnosis Code 2,Char,7.0,26,26.0
+ICD_DGNS_VRSN_CD2,Claim Diagnosis Code II Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,27,27.0
+ICD_DGNS_CD3,Claim Diagnosis Code 3,Char,7.0,28,28.0
+ICD_DGNS_VRSN_CD3,Claim Diagnosis Code III Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,29,29.0
+ICD_DGNS_CD4,Claim Diagnosis Code 4,Char,7.0,30,30.0
+ICD_DGNS_VRSN_CD4,Claim Diagnosis Code IV Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,31,31.0
+ICD_DGNS_CD5,Claim Diagnosis Code 5,Char,7.0,32,32.0
+ICD_DGNS_VRSN_CD5,Claim Diagnosis Code V Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,33,33.0
+ICD_DGNS_CD6,Claim Diagnosis Code 6,Char,7.0,34,34.0
+ICD_DGNS_VRSN_CD6,Claim Diagnosis Code VI Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,35,35.0
+ICD_DGNS_CD7,Claim Diagnosis Code 7,Char,7.0,36,36.0
+ICD_DGNS_VRSN_CD7,Claim Diagnosis Code VII Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,37,37.0
+ICD_DGNS_CD8,Claim Diagnosis Code 8,Char,7.0,38,38.0
+ICD_DGNS_VRSN_CD8,Claim Diagnosis Code VIII Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,39,39.0
+ICD_DGNS_CD9,Claim Diagnosis Code 9,Char,7.0,40,40.0
+ICD_DGNS_VRSN_CD9,Claim Diagnosis Code IX Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,41,41.0
+ICD_DGNS_CD10,Claim Diagnosis Code 10,Char,7.0,42,42.0
+ICD_DGNS_VRSN_CD10,Claim Diagnosis Code X Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,43,43.0
+ICD_DGNS_CD11,Claim Diagnosis Code 11,Char,7.0,44,44.0
+ICD_DGNS_VRSN_CD11,Claim Diagnosis Code XI Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,45,45.0
+ICD_DGNS_CD12,Claim Diagnosis Code 12,Char,7.0,46,46.0
+ICD_DGNS_VRSN_CD12,Claim Diagnosis Code XII Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,47,47.0
+ICD_DGNS_CD13,Claim Diagnosis Code 13,Char,7.0,48,48.0
+ICD_DGNS_VRSN_CD13,Claim Diagnosis Code XIII Diagnosis Version Code (ICD-9 or ICD-10),Char,1.0,49,49.0
+CLM_OBSLT_DT,Claim Obsolete Date,Date,8.0,50,50.0
+CLM_BPRVDR_CITY_NAME,Billing Provider Address - City,Char,30.0,51,51.0
+CLM_BPRVDR_USPS_STATE_CD,Billing Provider Address - USPS State Code,Char,2.0,52,52.0
+CLM_BPRVDR_ADR_ZIP_CD,Billing Provider Address - ZIP Code,Char,9.0,53,53.0
+CLM_SUBSCR_CITY_NAME,Medicare Subscriber Address - City,Char,30.0,54,54.0
+CLM_SUBSCR_USPS_STATE_CD,Medicare Subscriber Address - USPS State Code,Char,2.0,55,55.0
+CLM_SUBSCR_ADR_ZIP_CD,Medicare Subscriber Address - ZIP Code,Char,9.0,56,56.0
+BENE_CNTY_CD,Beneficiary County Code from Claim (SSA),Char,3.0,57,57.0
+BENE_STATE_CD,Beneficiary Residence (SSA) State Code,Char,2.0,58,58.0
+BENE_MLG_CNTCT_ZIP_CD,Beneficiary ZIP Code of Residence ,Char,9.0,59,59.0
+GNDR_CD,Gender Code ,Char,1.0,60,60.0
+BENE_RACE_CD,Race Code,Char,1.0,61,61.0
+DOB_DT,Date of Birth,Date,8.0,62,62.0
+BENE_MDCR_STUS_CD,Beneficiary Medicare Status Code,Char,2.0,63,63.0
+TAX_NUM,Provider Tax Number,Char,10.0,64,64.0
+BENE_STATE,Beneficiary State Postal Code,Char,2.0,65,65.0

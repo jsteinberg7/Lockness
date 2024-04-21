@@ -1,0 +1,20 @@
+SAS Name,Label,Type,Length,2015+ 1
+BENE_ID,Encrypted CCW Beneficiary ID,Char,15.0,1.0
+ENC_JOIN_KEY,Unique Encounter Join Key,Char,15.0,2.0
+CLM_TYPE_CD,Claim Type Code,Char,4.0,3.0
+CLM_LINE_NUM,Claim Line Number,Num,13.0,4.0
+LINE_NUM_ORIG ,Original Claim Line Number,Num,13.0,19.0
+CLM_THRU_DT,Claim Through Date,Date,8.0,5.0
+REV_CNTR,Revenue Center Code,Char,4.0,6.0
+REV_CNTR_FROM_DT,Revenue Center From Date,Date,8.0,7.0
+REV_CNTR_THRU_DT,Revenue Center Thru Date,Date,8.0,8.0
+REV_CNTR_UNIT_CNT,Revenue Center Unit Count,Num,8.0,9.0
+HCPCS_CD,HCFA Common Procedure Coding System (HCPCS) Code,Char,5.0,10.0
+HCPCS_1ST_MDFR_CD,HCPCS Initial Modifier Code,Char,2.0,11.0
+HCPCS_2ND_MDFR_CD,HCPCS Second Modifier Code,Char,2.0,12.0
+HCPCS_3RD_MDRF_CD,HCPCS Third Modifier Code ,Char,2.0,13.0
+REV_CNTR_IDE_NDC_UPC_NUM,"Revenue Center IDE, NDC, or UPC Number",Char,24.0,14.0
+REV_CNTR_NDC_QTY,Revenue Center National Drug Code (NDC) Quantity,Num,10.0,15.0
+REV_CNTR_NDC_QTY_QLFR_CD,Revenue Center NDC Quantity Qualifier Code,Char,2.0,16.0
+REV_CNTR_RNDRNG_PHYSN_NPI,Revenue Center Rendering Physician NPI,Char,10.0,17.0
+LINE_LTST_CLM_IND,Line Latest Claim Indicator,Char,1.0,18.0

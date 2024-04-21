@@ -1,5 +1,6 @@
-import json
+from json import parse_json
 import os
+from file_dictionary import file_dict
 
 from dotenv import load_dotenv
 import cohere
@@ -7,6 +8,10 @@ import cohere
 
 class LLMService:
     
+    initial_prompt, clarifications, table_data, column_data, english_breakdown, previous_code = None, None, None, None, None, None
+
+
+
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
 
@@ -37,12 +42,12 @@ class LLMService:
 
     @staticmethod
     def run_clarification_questions_prompt(prompt):
-        full_prompt = f"""Generate a list of clarification questions based on the following prompt:
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way:
         {prompt}
-        Output the content in CommonMark Markdown format, using numbered list items for each question.
-        Follow the format used in the example below. Note that the example is not a relevant list of questions, but just a template to show the expected format.
-        You may ask as many questions as you think are necessary to clarify the prompt.
-        
+        {open('./clarifying_prompt.txt', 'r').read().strip()}
+
+        This is an example of how to format the clarifications:
+
         Here are some clarification questions I would ask to better understand the query:
 
         1. What specific information are you looking to extract from the database?
@@ -56,7 +61,22 @@ class LLMService:
     # Generates a plain English outline of how to approach the query described in prompt
     @staticmethod
     def run_english_overview_prompt(prompt):
-        full_prompt = f"""Generate a plain English outline of how to approach the query described in the following prompt:\n{prompt}. 
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {LLMService.initial_prompt}
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        What tables/files would be relevant for this query? Return the recommended table names in a JSON list WITH NO EXPLANATION!
+        Here is a list of tables/files and their descriptions:\n
+        """
+        for table in file_dict:
+            full_prompt += f"{table['tablename']} : {table['desc']}"
+
+        full_prompt += f"""Please return the table names in the following JSON format WITHOUT EXPLANATION: [\n\t\"tablename1\",\n\t\"tablename2\",\n\t\"tablename3\",\n\t ...\n]"""
+
+        table_res = None # call llm
+        
+        p_res = parse_json(str(table_res))
+
+
+        full_prompt += f"""Generate a plain English outline of how to approach the query described in the following prompt:\n{prompt}. 
         Do not include any additional output besides the Markdown content.
         Output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers. Do not use any Markdown headers besides h5 (#####) for step headers.
         Additionally, you do not need to include a final "combination" step, as this is implied by the outline itself.
@@ -148,15 +168,18 @@ class LLMService:
         
         
     @staticmethod
-    def run_prompt(prompt, msg_type, step, prev_code=None):
+    def run_prompt(input, msg_type, step, prev_code=None):
         if msg_type == "clarification":
-            chunks = LLMService.run_clarification_questions_prompt(prompt)
+            initial_prompt = input
+            chunks = LLMService.run_clarification_questions_prompt(input)
         elif msg_type == "englishOutline":
-            chunks = LLMService.run_english_overview_prompt(prompt)
+            # at this point the input is the clarifications the user provides from the previous llm call
+            clarifications = input
+            chunks = LLMService.run_english_overview_prompt(input)
         elif msg_type == "codeStep":
-            chunks = LLMService.run_code_step_generation_prompt(prompt, step, prev_code) # note: "prompt" should be the english outline here
+            chunks = LLMService.run_code_step_generation_prompt(input, step, prev_code) # note: "prompt" should be the english outline here
         elif msg_type == "finalCode":
-            chunks = LLMService.run_query_combination_prompt(prompt, prev_code) # note: "prompt" should be the english outline here
+            chunks = LLMService.run_query_combination_prompt(input, prev_code) # note: "prompt" should be the english outline here
         else: 
             raise ValueError("Invalid message type")
         
