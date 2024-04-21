@@ -1,25 +1,18 @@
-import { ArrowUpIcon, AttachmentIcon } from "@chakra-ui/icons";
 import {
     Box,
-    Button,
     Center,
-    Flex,
-    InputGroup,
     Spinner,
     Text,
-    Textarea,
     VStack,
     useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import logo from "../assets/locknessLogo.png";
-
 import ChatHeader from "./ChatHeader";
 import EnglishOutline from "./EnglishOutline";
-
 import CodeStep from "./CodeStep";
 import NewChatDesign from "./NewChatDesign";
+import UserInput from "./UserInput";
 
 // get active domain
 const domain = window.location.hostname;
@@ -159,6 +152,7 @@ const ChatInterface = () => {
         setLoading(true);
     };
 
+
     const handleUploadFileClick = () => {
         fileInputRef.current.click();
     };
@@ -218,44 +212,33 @@ const ChatInterface = () => {
                 overflow="auto"
                 height={step === -1 ? "75%" : "95%"}
             >
-                {messages.length === 0 && <NewChatDesign />}
+                {messages.length === 0 && <NewChatDesign mt="15%" />}
                 {messages.map((msg, index) => (
                     <Center>
                         <Box width="100%" key={index} p={5} borderRadius="md">
                             <ChatHeader sender={msg.sender} />
-                            {
-                                msg.sender === "user" ? (
-                                    <Text fontSize="md" mt="1%" ml="5%">
-                                        {msg.text}
-                                    </Text>
-                                ) : msg.type === "englishOutline" ? (
-                                    <EnglishOutline
-                                        outlineContent={msg.text ?? ""}
-                                        onContinue={handleSendMessage}
-                                        totalSteps={totalSteps}
-                                    />
-                                ) : (
-                                    //msg.type === "codeStep" ? (
-                                    <CodeStep
-                                        content={msg.text}
-                                        onContinue={handleSendMessage}
-                                        step={msg.step}
-                                        totalSteps={totalSteps}
-                                    />
-                                )
-                                //) : (
-                                //<Text>Should show total code output now</Text>
-                                //)
-
-                                // <MarkdownCasing
-                                //  markdownContent={msg.text}
-                                // />
-                            }
+                            {msg.sender === "user" ? (
+                                <Text fontSize="md" mt="1%" ml="5%">
+                                    {msg.text}
+                                </Text>
+                            ) : msg.type === "englishOutline" ? (
+                                <EnglishOutline
+                                    outlineContent={msg.text ?? ""}
+                                    onContinue={handleSendMessage}
+                                    totalSteps={totalSteps}
+                                />
+                            ) : (
+                                <CodeStep
+                                    content={msg.text}
+                                    onContinue={handleSendMessage}
+                                    step={msg.step}
+                                    totalSteps={totalSteps}
+                                />
+                            )}
                         </Box>
                     </Center>
                 ))}
                 <div ref={messagesEndRef} />
-
                 {error && (
                     <Text color="red.500" mb={4}>
                         {error}
@@ -269,103 +252,19 @@ const ChatInterface = () => {
                 )}
             </VStack>
 
-            <Flex
+            <UserInput
+                step={step}
+                handleUploadFileClick={handleUploadFileClick}
+                fileInputRef={fileInputRef}
+                handleFileChange={handleFileChange}
+                inputMessage={inputMessage}
+                setInputMessage={setInputMessage}
+                handleSendMessage={handleSendMessage}
                 position="absolute"
                 bottom="2%"
-                justifyContent="center"
                 width="50%"
                 left="25%"
-            >
-                <VStack spacing={5} width="100%">
-                    {step === -1 && (
-                        <InputGroup size="md">
-                            <Button
-                                size="lg"
-                                color="primaryColor"
-                                onClick={handleUploadFileClick}
-                                mr="1rem" // Adjust the margin to align the button as in the design
-                                borderRadius="lg"
-                                height="50%"
-                            >
-                                <AttachmentIcon color="black" />
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    onChange={handleFileChange}
-                                    style={{ display: "none" }}
-                                />
-                            </Button>
-
-                            {/* <Flex
-                alignItems="start"
-                justifyContent="left"
-                pr="1rem"
-                py="2.5%"
-                cursor="pointer"
-                // _hover={{ bg: "#3E4B5C" }}
-                onClick={handleUploadFileClick}
-              >
-                <Icon
-                size = "30px"
-                  aria-label="Upload File"
-                  as={AttachmentIcon}
-                  bg="transparent"
-                ></Icon>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-              </Flex> */}
-                            <Textarea
-                                value={inputMessage}
-                                onChange={(e) => setInputMessage(e.target.value)}
-                                placeholder={
-                                    messages.length === 0
-                                        ? "Enter new research prompt here..."
-                                        : "Message Lockness..."
-                                }
-                                style={{
-                                    background: "darkBackgroundColor",
-                                    color: "primaryColor",
-                                    borderRadius: "8px",
-                                    width: "100%",
-                                    height: "15vh",
-                                    resize: "none", // Allows vertical resizing
-                                    overflowY: "auto", // Adds scroll if content overflows
-                                    borderColor: "primaryColor",
-                                    placeholderColor: "placeHolderColor",
-                                    padding: "2%",
-                                    fontSize: "sm",
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" && !e.shiftKey) {
-                                        handleSendMessage();
-                                        e.preventDefault();
-                                    }
-                                }}
-                            />
-
-                            <Button
-                                size="lg"
-                                color="primaryColor"
-                                onClick={handleSendMessage}
-                                ml="1rem" // Adjust the margin to align the button as in the design
-                                borderRadius="lg"
-                                height="50%"
-                                isDisabled={inputMessage === ""}
-                            >
-                                <ArrowUpIcon color="black" />
-                            </Button>
-                        </InputGroup>
-                    )}{" "}
-                    <Text color="placeHolderColor" fontSize="sm">
-                        Lockness AI produces results based on the query and the data it has
-                        access to.
-                    </Text>
-                </VStack>
-            </Flex>
+            />
         </Box>
     );
 };

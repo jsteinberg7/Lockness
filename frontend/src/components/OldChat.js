@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
-import MarkdownCasing from "./Markdown";
 
 const OldChat = () => {
   const location = useLocation();
@@ -76,7 +75,7 @@ const OldChat = () => {
     : "Date not available.";
 
   return (
-    <Box p="2%" color="primaryColor" bg = "lightBackgroundColor">
+    <Box p="2%" color="primaryColor" bg="lightBackgroundColor">
       <Text>Title: {chatTitle}</Text>
       <Text>Chat History: {chatHistory}</Text>
       <Text>Date: {date}</Text>
