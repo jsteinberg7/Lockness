@@ -15,11 +15,16 @@ class LLMService:
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
 
+    system_prompt = open("system_explain_vrdc_ccw.txt", "r").read().strip()
+    json_system_prompt = open("./json_system_prompt.txt", "r").read().strip()
+    co = cohere.Client(COHERE_SECRET_KEY)
+    
+
     @staticmethod
     def stream_llm_response(prompt):
-        co = cohere.Client(LLMService.COHERE_SECRET_KEY)
-
-        response = co.chat(message=prompt)
+        
+        full_prompt = LLMService.system_prompt + prompt
+        response = LLMService.co.chat(message=full_prompt)
         
         # for event in co.chat(message=prompt
         #     # messages=[
@@ -43,6 +48,27 @@ class LLMService:
             #     print(event.finish_reason)
 
 
+
+    @staticmethod
+    def json_prompt(prompt, model_used="command-r-plus") -> str:
+        messages = []
+
+        messages.append({
+            "role": "SYSTEM",
+            "message": LLMService.system_prompt + "\n" + LLMService.json_system_prompt,
+        })
+
+
+        chat_completion = LLMService.co.chat(
+            chat_history=messages,
+            message = prompt,
+            model=model_used,
+        )
+
+        return chat_completion.text
+
+
+    
 
 
 
