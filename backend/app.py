@@ -25,19 +25,20 @@ def index():
 # step: "outline", "code"
 def handle_prompt(data):
     prompt = data["prompt"]
-    step = data["step"]
+    step = data.get("step", None)
     msg_type = data["type"]
     prev_code = data.get("prev_code", None)
 
     print(
-        f"Received prompt:, {data['prompt']} step = {data['step']} type = msg_type {data['type']}"
+        f"Received prompt:, {data['prompt']} step = {data.get('step')} type = msg_type {data['type']}"
     )
-    responses = LLMService.stream_llm_response(prompt, msg_type, step, prev_code)
-    for response in responses:
+
+    chunks = LLMService.run_prompt(prompt, msg_type, step, prev_code)
+    for chunk in chunks:
         emit(
             "new_message",
             {
-                "text": response,
+                "text": chunk,
                 "type": msg_type,
                 "final": False,
             },
