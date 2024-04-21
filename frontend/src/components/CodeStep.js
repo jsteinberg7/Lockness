@@ -1,13 +1,23 @@
-import {
-  Text,
-  Flex,
-} from "@chakra-ui/react";
+import { Text, Flex } from "@chakra-ui/react";
 import MarkdownCasing from "./Markdown";
 
 const CodeStep = ({ totalSteps, step, type, content, onContinue }) => {
+  let headerContent = content.split("~~~~")[0];
+  let code = content.replace(headerContent, "");
 
-  const headerContent = content.split("~~~")[0];
-  const code = content.replace(headerContent, "");
+  if (code === "")  {
+    headerContent = content.split("```")[0];
+    code = content.replace(headerContent, "");
+
+    if (code === "")  {
+      headerContent = content.split("~~~")[0];
+      code = content.replace(headerContent, "");
+  
+
+    }
+  }
+
+
 
   return (
     <Flex flexDirection="column">
@@ -25,6 +35,7 @@ const CodeStep = ({ totalSteps, step, type, content, onContinue }) => {
         px="10"
         backgroundColor="darkBackgroundColor"
         borderRadius="xl"
+        type="codeStep"
       />
     </Flex>
   );
