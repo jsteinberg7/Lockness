@@ -4,13 +4,13 @@ import { Box,Flex, Text } from "@chakra-ui/react";
 import logo from "../assets/locknessLogo.png";
 
 
-const NewChatDesign = () => {
+const NewChatDesign = ({...rest}) => {
   return (
 	<Flex
 	alignItems="center"
 	justifyContent="center"
 	flexDirection="column"
-	mt="15%"
+	mt={rest.mt}
   >
 	<Box
 	  display="inline-block"
