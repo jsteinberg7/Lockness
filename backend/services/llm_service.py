@@ -1,7 +1,7 @@
 from json import parse_json
 import os
 from file_dictionary import file_dict
-
+import pandas as pd
 from dotenv import load_dotenv
 import cohere
 
@@ -61,6 +61,7 @@ class LLMService:
     # Generates a plain English outline of how to approach the query described in prompt
     @staticmethod
     def run_english_overview_prompt(prompt):
+        # Segment to find relevant tables
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {LLMService.initial_prompt}
         Here are some clarifications to the query: {LLMService.clarifications} \n
         What tables/files would be relevant for this query? Return the recommended table names in a JSON list WITH NO EXPLANATION!
@@ -71,14 +72,52 @@ class LLMService:
 
         full_prompt += f"""Please return the table names in the following JSON format WITHOUT EXPLANATION: [\n\t\"tablename1\",\n\t\"tablename2\",\n\t\"tablename3\",\n\t ...\n]"""
 
-        table_res = None # call llm
+        res = None # call llm
+        table_res = parse_json(str(res))
+
+        # Segment to find relevant columns
+
+        table_payload = ""
+        tbls = [i for i in file_dict if i["tablename"] in table_res]
+        for i in tbls:
+            table_payload += i["tablename"] + ": " + i["desc"] + "\n"
+            table_payload += f"HERE ARE THE COLUMNS FOR THE TABLE {i['tablename']}. They follow the format <column_name>: <description>, <type> :"
+            root = i["file-root"]
+            fname = ""
+            if i["sub-sections"] is not None:
+                fname = i["sub-sections"][0]
+            df_temp = pd.read_csv("./Excel_Files/" + root  + fname.replace("/"," and ") + ".csv")
+
+            # get the first column as a list
+            list1 = df_temp[df_temp.columns.to_list()[0]].to_list()
+            # get the Labels column as a list
+            list2 = df_temp["Label"].to_list()
+            # get types column as a list
+            list3 = df_temp["Type"].to_list()
+            table_payload += "\n".join([f"{list1[i]}: {list2[i]}, {list3[i]}" for i in range(len(list1))]) + "\n"
         
-        p_res = parse_json(str(table_res))
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {LLMService.initial_prompt}\n
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        The following is a list of relevant tables with their descriptions and columns. I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format: \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
+        HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
 
+        res = None # call llm
+        column_res = parse_json(str(res))
+        
+        tbl_paylod2 = ""
+        for i in column_res:
+            tbl_paylod2 += "Table "+i + " has columns: " + ", ".join(column_res[i]) + "\n"
 
-        full_prompt += f"""Generate a plain English outline of how to approach the query described in the following prompt:\n{prompt}. 
-        Do not include any additional output besides the Markdown content.
+        full_prompt += f"""The user wants to run a query on vrdc ccw that is described in the following way: 
+        \n{LLMService.initial_prompt}. \n
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        Here is a list of relevant tables/files with their descriptions and columns: {tbl_paylod2} \n
+        
+        Generate a plain English outline of how to approach the query. Note that you do not have to use ALL tables provided, make a judgement on what you think is needed for the query.
+        
         Output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers. Do not use any Markdown headers besides h5 (#####) for step headers.
+        
+        Do not include any additional output besides the Markdown content.
         Additionally, you do not need to include a final "combination" step, as this is implied by the outline itself.
 
         Note that you do not need to use an arbitrary number of steps; use as many as necessary to break down the query effectively, but don't simple tasks into many steps just for the sake of it.
@@ -105,9 +144,13 @@ class LLMService:
 
         - If looking at data for a specific geographic region, filter the data based on `state`, `zip_code`, or other location identifiers.
         """
+        result = ""
 
         for chunk in LLMService.stream_llm_response(full_prompt):
+            result += chunk
             yield chunk
+
+        LLMService.english_breakdown = result
 
     # Generates an SQL query based on the outline generated in the previous step
     @staticmethod
