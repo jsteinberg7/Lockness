@@ -42,7 +42,7 @@ def handle_prompt(data):
         )
     emit(
         "new_message", {"text": "", "final": True, "type": msg_type}
-    )  # Indicates the end of this stream
+    )
 
 
 if __name__ == "__main__":
