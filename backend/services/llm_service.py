@@ -202,7 +202,7 @@ class LLMService:
         Already generated code, which you need to add on to (do not repeat already generated code):
         {LLMService.previous_code}
 
-        Wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
+        MUST WRAP all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
 
         Example:
         Alright! Let's move on to step {step}: Filter for Dialysis Services
@@ -238,7 +238,7 @@ class LLMService:
         Previously Generated code to combine:
         {LLMService.previous_code}
 
-        Wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
+        MUST wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
 
         Example:
         Alright! Here's the full query:

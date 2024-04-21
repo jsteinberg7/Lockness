@@ -6,6 +6,7 @@ import MarkdownButton from "./MarkdownButton";
 
 const MarkdownCasing = ({
   markdownContent,
+  type,
   onContinue = () => {},
   step,
   totalSteps,
@@ -28,7 +29,37 @@ const MarkdownCasing = ({
         components={ChakraUIRenderer()}
         children={markdownContent}
       />
-      <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
+      {type !== "clarification" && (
+        <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
+          <MarkdownButton
+            width="100px"
+            backgroundColor="lightBackgroundColor"
+            buttonText="Edit"
+            onClick={() => {
+              console.log("Turning on editing for this outline");
+            }}
+            textColor="primaryColor"
+          />
+
+          {step <= totalSteps && (
+            <MarkdownButton
+              width="200px"
+              backgroundColor="primaryColor"
+              textColor="darkBackgroundColor"
+              buttonText={
+                step === totalSteps
+                  ? "Final code"
+                  : "Continue to step " + (step + 1)
+              }
+              onClick={() => {
+                onContinue(markdownContent);
+              }}
+              ml="2.5%"
+            />
+          )}
+        </Flex>
+      )}
+      {/* <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
         <MarkdownButton
           width="100px"
           backgroundColor="lightBackgroundColor"
@@ -51,7 +82,7 @@ const MarkdownCasing = ({
             ml="2.5%"
           />
         )}
-      </Flex>
+      </Flex> */}
     </Box>
   );
 };

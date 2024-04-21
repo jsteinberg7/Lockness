@@ -27,7 +27,7 @@ const UserInput = ({
       left={rest.left}
     >
       <VStack spacing={5} width="100%">
-        {step === -1 && (
+        {step <= -1 && (
           <InputGroup size="md">
             <Button
               size="lg"
