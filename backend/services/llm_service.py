@@ -47,9 +47,9 @@ class LLMService:
 
 
     @staticmethod
-    def run_clarification_questions_prompt(prompt):
+    def run_clarification_questions_prompt():
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way:
-        {prompt}
+        {LLMService.initial_prompt}
         {open('./clarifying_prompt.txt', 'r').read().strip()}
 
         This is an example of how to format the clarifications:
@@ -78,7 +78,7 @@ class LLMService:
 
         full_prompt += f"""Please return the table names in the following JSON format WITHOUT EXPLANATION: [\n\t\"tablename1\",\n\t\"tablename2\",\n\t\"tablename3\",\n\t ...\n]"""
 
-        res = None # call llm
+        res = json_prompt(full_prompt) # call llm (will return json)
         table_res = parse_json(str(res))
 
         # Segment to find relevant columns
@@ -107,13 +107,15 @@ class LLMService:
         The following is a list of relevant tables with their descriptions and columns. I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format: \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
         HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
 
-        res = None # call llm
+        res = json_prompt(full_prompt) # call llm (return json)
         column_res = parse_json(str(res))
         
         tbl_paylod2 = ""
         for i in column_res:
             tbl_paylod2 += "Table "+i + " has columns: " + ", ".join(column_res[i]) + "\n"
 
+
+        # Section to generate the English breakdown
         full_prompt += f"""The user wants to run a query on vrdc ccw that is described in the following way: 
         \n{LLMService.initial_prompt}. \n
         Here are some clarifications to the query: {LLMService.clarifications} \n
@@ -160,16 +162,16 @@ class LLMService:
 
     # Generates an SQL query based on the outline generated in the previous step
     @staticmethod
-    def run_code_step_generation_prompt(english_outline, step, prev_code=None):
+    def run_code_step_generation_prompt(step):
         full_prompt = f"""Generate the SQL query code, only for step {step} based on the following outline. 
         You may use the entire outline for context, but only generate code for the specified step.
         Also include a brief bulleted explanation of the code you generated.
         
         Task outline:
-        {english_outline}
+        {LLMService.english_outline}
 
         Already generated code, which you need to add on to (do not repeat already generated code):
-        {prev_code}
+        {LLMService.previous_code}
 
         Wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
 
@@ -182,21 +184,30 @@ class LLMService:
         - I have sorted and aggregated the data in order to access the correct tables and functions
         - Identified and impored the correct columns necessaet such as...
         """
-
+        result = ""
         for chunk in LLMService.stream_llm_response(full_prompt):
+            result += chunk
             yield chunk
+        LLMService.previous_code = "" if LLMService.previous_code is None else LLMService.previous_code
+
+        split_result = result.split("~~~~sql")[1].split("~~~~")[0].strip()
+        LLMService.previous_code += split_result + "\n"
     
     @staticmethod
-    def run_query_combination_prompt(english_outline, prev_code):
+    def run_query_combination_prompt():
         full_prompt = f"""
+        The user wants to run a query on vrdc ccw that is described in the following way: 
+        {LLMService.initial_prompt}\n
+        Here are some clarifications to the query: {LLMService.clarifications} \n
+        Here is a list of relevant tables/files with their descriptions and columns: {LLMService.column_data} \n
         Combine all of the code to accomplish the task described in the outline:
         Also include a brief bulleted explanation of the code you generated.
         
         Task outline:
-        {english_outline}
+        {LLMService.english_outline}
 
-        Generated code to combine:
-        {prev_code}
+        Previously Generated code to combine:
+        {LLMService.previous_code}
 
         Wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
 
@@ -217,7 +228,7 @@ class LLMService:
         
         
     @staticmethod
-    def run_prompt(input, msg_type, step, prev_code=None):
+    def run_prompt(input, msg_type, step):
         if msg_type == "clarification":
             initial_prompt = input
             chunks = LLMService.run_clarification_questions_prompt(input)
@@ -226,9 +237,9 @@ class LLMService:
             clarifications = input
             chunks = LLMService.run_english_overview_prompt(input)
         elif msg_type == "codeStep":
-            chunks = LLMService.run_code_step_generation_prompt(input, step, prev_code) # note: "prompt" should be the english outline here
+            chunks = LLMService.run_code_step_generation_prompt(step) # note: "prompt" should be the english outline here
         elif msg_type == "finalCode":
-            chunks = LLMService.run_query_combination_prompt(input, prev_code) # note: "prompt" should be the english outline here
+            chunks = LLMService.run_query_combination_prompt() # note: "prompt" should be the english outline here
         else: 
             raise ValueError("Invalid message type")
         
