@@ -12,8 +12,6 @@ const CodeStep = ({ totalSteps, step, content, onContinue, msgType = "codeStep" 
     if (code === "") {
       headerContent = content.split("~~~")[0];
       code = content.replace(headerContent, "");
-
-
     }
   }
 

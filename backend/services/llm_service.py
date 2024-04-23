@@ -81,7 +81,7 @@ class LLMService:
 
         This is an example of how to format the clarifications:
 
-        Here are some clarification questions I would ask to better understand the query:
+        Here are some clarification questions I would like you to answer to help me better understand the query:
 
         1. What specific information are you looking to extract from the database?
         2. Are there any time constraints or specific date ranges for the data required?

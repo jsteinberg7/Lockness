@@ -30,18 +30,18 @@ def index():
 
 
 # Flask-SocketIO backend example
-@socketio.on("send_prompt")
-def handle_prompt(data, headers):
-    prompt = data["prompt"]
+@socketio.on("send_input")
+def handle_input(data, headers): # note: "headers" is not used here, but we need the param to accept the api key as a header
+    input = data["input"]
     msg_type = data["type"]
     step = data.get("step", None)
     prev_code = data.get("prev_code", None)
 
     print(
-        f"Received prompt: {prompt}, msg_type: {msg_type}, step: {step}, prev_code: {prev_code}"
+        f"Received input: {input}, msg_type: {msg_type}, step: {step}, prev_code: {prev_code}"
     )
 
-    chunks = LLMService.run_prompt(prompt, msg_type, step)
+    chunks = LLMService.run_prompt(input, msg_type, step)
     for chunk in chunks:
         emit(
             "new_message",

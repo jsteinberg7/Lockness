@@ -143,7 +143,10 @@ const ChatInterface = () => {
         setMessages((prevMessages) => [
             ...prevMessages,
             {
-                text: step <= -1 ? inputMessage : "Looks good, continuing to step " + (step + 1) + "...",
+                text:
+                    step <= -1
+                        ? inputMessage
+                        : "Looks good, continuing to step " + (step + 1) + "...",
                 sender: "user",
                 type:
                     step === -2
