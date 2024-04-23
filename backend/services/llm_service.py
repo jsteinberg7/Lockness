@@ -79,7 +79,7 @@ class LLMService:
         {LLMService.initial_prompt}
         {open('services/clarifying_prompt.txt', 'r').read().strip()}
 
-        This is an example of how to format the clarifications:
+        This is an example of how to format your response:
 
         Here are some clarification questions I would like you to answer to help me better understand the query:
 
