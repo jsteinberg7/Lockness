@@ -42,7 +42,7 @@ const EnglishOutline = ({ outlineContent, onContinue, totalSteps }) => {
         markdownContent={restOfContent}
         step={0}
         totalSteps={totalSteps}
-        type="englishOutline"
+        msgType="englishOutline"
       />
     </Flex>
   );

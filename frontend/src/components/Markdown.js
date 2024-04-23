@@ -6,12 +6,13 @@ import MarkdownButton from "./MarkdownButton";
 
 const MarkdownCasing = ({
   markdownContent,
-  type,
-  onContinue = () => {},
+  msgType,
+  onContinue = () => { },
   step,
   totalSteps,
   ...rest
 }) => {
+
   return (
     <Box
       mt={rest.mt}
@@ -29,7 +30,7 @@ const MarkdownCasing = ({
         components={ChakraUIRenderer()}
         children={markdownContent}
       />
-      {type !== "clarification" && (
+      {msgType !== "clarification" && (
         <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
           <MarkdownButton
             width="100px"
