@@ -132,8 +132,6 @@ class LLMService:
             list3 = df_temp["Type"].to_list()
             table_payload += "\n".join([f"{list1[i]}: {list2[i]}, {list3[i]}" for i in range(len(list1))]) + "\n"
 
-            # update the column data
-            self.column_data = table_payload
         
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {self.initial_prompt}\n
         Here are some clarifications to the query: {self.clarifications} \n
@@ -142,6 +140,8 @@ class LLMService:
 
         res = LLMService.prompt(full_prompt, json_output=True) # call llm (return json)
         column_res = self.parse_json(str(res))
+        # update the column data
+        self.column_data = column_res
         
         tbl_paylod2 = ""
         for i in column_res:
