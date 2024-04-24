@@ -135,13 +135,13 @@ class LLMService:
         
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {self.initial_prompt}\n
         Here are some clarifications to the query: {self.clarifications} \n
-        The following is a list of relevant tables with their descriptions and columns. I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format: \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
+        The following is a list of relevant tables with their descriptions and columns. 
+        I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format:
+        \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
         HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
 
         res = LLMService.prompt(full_prompt, json_output=True) # call llm (return json)
         column_res = self.parse_json(str(res))
-        # update the column data
-        self.column_data = column_res
         
         tbl_paylod2 = ""
         for i in column_res:

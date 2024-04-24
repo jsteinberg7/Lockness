@@ -24,6 +24,36 @@
             },
             "python": "${workspaceFolder}/backend/venv/bin/python",
             "cwd": "${workspaceFolder}/backend"
+        },
+        {
+            "name": "Pytest - Verification Endpoint",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${workspaceFolder}/backend/tests/pytests/test_verify_content_endpoint.py",
+                // "-s" // Use -s to show print statements
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/backend",
+                "USE_TEST_MODE": "true"
+            }
+        },
+        {
+            "name": "Run pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${workspaceFolder}/backend/pytests",
+                "-s"
+            ],
+            "console": "integratedTerminal",
+            "python": "${workspaceFolder}/backend/venv/bin/python",
+            "cwd": "${workspaceFolder}/backend",
+            "justMyCode": false,
         }
     ],
     "compounds": [

@@ -4,10 +4,28 @@ from mimesis import Field, Schema
 
 class QueryMocker:
     def __init__(self, data: str, columns_to_use: list):
-        self.data = data
         self.columns_to_use = columns_to_use
         self.connection = None
         self.mock_db_name = "mock_db.db"
+
+    @staticmethod
+    def convert_column_data_to_dict(data_str: str):
+        data_dict = {}
+        table_name = None
+        column_names = []
+        for line in data_str.split('\n'):
+            line = line.strip()
+            if line.startswith('HERE ARE THE COLUMNS FOR THE TABLE'):
+                if table_name and column_names:
+                    data_dict[table_name] = column_names
+                table_name = line.split('HERE ARE THE COLUMNS FOR THE TABLE')[1].split('.')[0].strip()
+                column_names = []
+            elif ':' in line and line.split(':')[1].strip().startswith('<'):
+                column_name = line.split(':')[0].strip()
+                column_names.append(column_name)
+        if table_name and column_names:
+            data_dict[table_name] = column_names
+        return data_dict
 
     def create_mock_sql_db(self):
         # Create a connection to the mock SQLite database
