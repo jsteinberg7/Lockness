@@ -14,8 +14,11 @@ class LLMService:
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
 
-    system_prompt = open("services/system_explain_vrdc_ccw.txt", "r").read().strip()
-    json_system_prompt = open("services/json_system_prompt.txt", "r").read().strip()
+
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    system_prompt = open(os.path.join(root_dir, "services", "system_explain_vrdc_ccw.txt"), "r").read().strip()
+    json_system_prompt = open(os.path.join(root_dir, "services", "json_system_prompt.txt"), "r").read().strip()
     co = cohere.Client(COHERE_SECRET_KEY)
     
     @staticmethod
@@ -76,9 +79,10 @@ class LLMService:
 
     
     def run_clarification_questions_prompt(self):
+        clarifying_prompt = open(os.path.join(LLMService.root_dir, "services", "clarifying_prompt.txt"), "r").read().strip()
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way:
         {self.initial_prompt}
-        {open('services/clarifying_prompt.txt', 'r').read().strip()}
+        {clarifying_prompt}
 
         This is an example of how to format your response. Do not include any addition output after the clarification questions.
 
@@ -122,7 +126,7 @@ class LLMService:
             fname = ""
             if i["sub-sections"] is not None:
                 fname = i["sub-sections"][0]
-            df_temp = pd.read_csv("services/Excel_Files/" + root  + fname.replace("/"," and ") + ".csv")
+            df_temp = pd.read_csv(os.path.join(LLMService.root_dir, "services", "Excel_Files", root + fname.replace("/", " and ") + ".csv"))
 
             # get the first column as a list
             list1 = df_temp[df_temp.columns.to_list()[0]].to_list()
