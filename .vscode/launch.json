@@ -20,7 +20,10 @@
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1",
                 "PYTHONPATH": "${workspaceFolder}/backend",
+                "GEVENT_SUPPORT": "True"
             },
+            "python": "${workspaceFolder}/backend/venv/bin/python",
+            "cwd": "${workspaceFolder}/backend"
         }
     ],
     "compounds": [
