@@ -4,7 +4,6 @@ from services.file_dictionary import file_dict
 import pandas as pd
 from dotenv import load_dotenv
 import cohere
-from backend.services.linting_service import LintingService
 
 
 class LLMService:
