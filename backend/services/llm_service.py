@@ -4,6 +4,7 @@ from services.file_dictionary import file_dict
 import pandas as pd
 from dotenv import load_dotenv
 import cohere
+from backend.services.linting_service import LintingService
 
 
 class LLMService:
@@ -27,7 +28,7 @@ class LLMService:
             return None
 
     @staticmethod
-    def stream_llm_response(prompt):
+    def stream_prompt(prompt):
         
         full_prompt = LLMService.system_prompt + prompt
         response = LLMService.co.chat(message=full_prompt)
@@ -55,12 +56,14 @@ class LLMService:
 
 
     @staticmethod
-    def json_prompt(prompt, model_used="command-r-plus") -> str:
+    def prompt(prompt, json_output=False, model_used="command-r-plus") -> str:
         messages = []
+
+        message = LLMService.system_prompt + "\n" + LLMService.json_system_prompt if json_output else LLMService.system_prompt
 
         messages.append({
             "role": "SYSTEM",
-            "message": LLMService.system_prompt + "\n" + LLMService.json_system_prompt,
+            "message": message,
         })
 
 
@@ -87,7 +90,7 @@ class LLMService:
         3. Do you have any preference for the output format or structure of the final results?
         """
 
-        for chunk in LLMService.stream_llm_response(full_prompt):
+        for chunk in LLMService.stream_prompt(full_prompt):
             yield chunk
 
     # Generates a plain English outline of how to approach the query described in prompt
@@ -106,7 +109,7 @@ class LLMService:
 
         print("OH LOOKEY HERE")
         print(full_prompt)
-        res = LLMService.json_prompt(full_prompt) # call llm (will return json)
+        res = LLMService.prompt(full_prompt, json_output=True) # call llm (will return json)
         table_res = LLMService.parse_json(str(res))
 
         # Segment to find relevant columns
@@ -135,7 +138,7 @@ class LLMService:
         The following is a list of relevant tables with their descriptions and columns. I want you to return a JSON Object WITHOUT EXPLANATION that is a dictionary of the table names and the correspond to a list of STRICTLY just the columns that are relevant to the query, and has the following format: \n {{\n\t\"tablename1\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n, \n\t\"tablename2\":[\n\t\t\"relevant_column_1\",\n\t\t\"relevant_column_2\"\n\t]\n....\}}\n
         HERE ARE THE TABLES AND THEIR COLUMNS: {table_payload}"""
 
-        res = LLMService.json_prompt(full_prompt) # call llm (return json)
+        res = LLMService.prompt(full_prompt, json_output=True) # call llm (return json)
         column_res = self.parse_json(str(res))
         
         tbl_paylod2 = ""
@@ -182,7 +185,7 @@ class LLMService:
         """
         result = ""
 
-        for chunk in LLMService.stream_llm_response(full_prompt):
+        for chunk in LLMService.stream_prompt(full_prompt):
             result += chunk
             yield chunk
 
@@ -213,7 +216,7 @@ class LLMService:
         - Identified and impored the correct columns necessaet such as...
         """
         result = ""
-        for chunk in LLMService.stream_llm_response(full_prompt):
+        for chunk in LLMService.stream_prompt(full_prompt):
             result += chunk
             yield chunk
         self.previous_code = "" if self.previous_code is None else self.previous_code
@@ -251,7 +254,22 @@ class LLMService:
         - I have sorted and aggregated the data in order to access the correct tables and functions
         """
 
-        for chunk in LLMService.stream_llm_response(full_prompt):
+        # final_result = LLMService.prompt(full_prompt)
+
+        # # extract the sql code from the final result
+        # split_result = final_result.split("~~~~sql")[1].split("~~~~")[0].strip()
+        # full_query = self.previous_code + split_result
+        # # pass full code to linter
+        # linting_result = LintingService.lint_sql(full_query)
+        # # append linting results to the final result
+        # final_result += "\n\nLinting Results:\n"
+        # if len(linting_result) == 0:
+        #     final_result += "No linting errors or warnings found."
+        # else:
+        #     for violation in linting_result:
+        #         final_result += f"Line {violation.line_no}: {violation.description}\n"
+        
+        for chunk in LLMService.stream_prompt(full_prompt):
             yield chunk
         
         
