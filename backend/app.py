@@ -32,6 +32,8 @@ def require_api_key():
 def index():
     return jsonify(status="WebSocket server running")
 
+llm_services = {str: LLMService()} # track LLMService instances for each WebSocket connection
+
 # Flask-SocketIO backend example
 @socketio.on("send_input")
 def handle_input(data, headers):
@@ -43,7 +45,16 @@ def handle_input(data, headers):
         f"Received input: {input}, msg_type: {msg_type}, step: {step}"
     )
 
-    chunks = LLMService.run_prompt(input, msg_type, step)
+    session_id = request.sid
+
+    if session_id not in llm_services:
+        # Create a new LLMService instance for the new WebSocket connection
+        llm_services[session_id] = LLMService()
+    
+    # Get the LLMService instance for the current WebSocket connection
+    llm_service = llm_services[session_id]
+
+    chunks = llm_service.run_prompt(input, msg_type, step)
     for chunk in chunks:
         emit(
             "new_message",
@@ -53,6 +64,13 @@ def handle_input(data, headers):
         "new_message",
         {"text": "", "final": True, "type": msg_type}
     )
+
+    # @socketio.on("disconnect")
+    # def handle_disconnect():
+    #     session_id = request.sid
+    #     if session_id in llm_services:
+    #         print("Removing LLM service for session", session_id)
+    #         del llm_services[session_id]
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5001)
