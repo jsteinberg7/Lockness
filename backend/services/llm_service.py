@@ -54,7 +54,6 @@ class LLMService:
             #     print(event.finish_reason)
 
 
-
     @staticmethod
     def json_prompt(prompt, model_used="command-r-plus") -> str:
         messages = []

@@ -98,7 +98,8 @@ const ChatInterface = () => {
         });
 
         socket.on("connect_error", (err) => {
-            setError("WebSocket connection failed.");
+            // setError("WebSocket connection failed."); // for now, hide the error
+            console.error("WebSocket connection failed: ", err);
             setLoading(false);
         });
 
