@@ -131,6 +131,9 @@ class LLMService:
             # get types column as a list
             list3 = df_temp["Type"].to_list()
             table_payload += "\n".join([f"{list1[i]}: {list2[i]}, {list3[i]}" for i in range(len(list1))]) + "\n"
+
+            # update the column data
+            self.column_data = table_payload
         
         full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way: {self.initial_prompt}\n
         Here are some clarifications to the query: {self.clarifications} \n

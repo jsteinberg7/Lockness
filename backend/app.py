@@ -32,7 +32,7 @@ def require_api_key():
 def index():
     return jsonify(status="WebSocket server running")
 
-llm_services = {str: LLMService()} # track LLMService instances for each WebSocket connection
+llm_services = {str: LLMService()} # track LLMService instances for each WebSocket connection, mapping session_id to LLMService instance
 
 # Flask-SocketIO backend example
 @socketio.on("send_input")
@@ -64,13 +64,6 @@ def handle_input(data, headers):
         "new_message",
         {"text": "", "final": True, "type": msg_type}
     )
-
-    # @socketio.on("disconnect")
-    # def handle_disconnect():
-    #     session_id = request.sid
-    #     if session_id in llm_services:
-    #         print("Removing LLM service for session", session_id)
-    #         del llm_services[session_id]
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=5001)
