@@ -25,7 +25,6 @@ class LintingService:
                 ]
             )
 
-
         filtered_violations = []
         
         # Filter out the linting errors and warnings to only include ones we care about
