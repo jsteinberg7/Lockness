@@ -2,26 +2,20 @@ import {
   Box,
   Center,
   Spinner,
-  Flex,
   Text,
   VStack,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import ChatHeader from "./ChatHeader";
-import EnglishOutline from "./EnglishOutline";
 import CodeStep from "./CodeStep";
+import EnglishOutline from "./EnglishOutline";
+import MarkdownCasing from "./Markdown";
 import NewChatDesign from "./NewChatDesign";
 import UserInput from "./UserInput";
-import MarkdownCasing from "./Markdown";
 
-// get active domain
-// const domain = window.location.hostname;
 
-// const socket = domain.includes("localhost")
-//   ? io("http://localhost:5001")
-//   : io("https://lockness-420607.uc.r.appspot.com");
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
@@ -41,7 +35,7 @@ const ChatInterface = () => {
   // Step 0 is English outline
   // All other steps are for code generation
   // Note: We start at -1 to indicate that the user has not yet started the chat
-  const [step, setStep] = useState(-2); // -2 is the start
+  const [step, setStep] = useState(-1); // -1 is the start
 
   const handleUploadFileClick = () => {
     fileInputRef.current.click();
@@ -87,64 +81,65 @@ const ChatInterface = () => {
     }
   };
 
-//   useEffect(() => {
-//     const domain = window.location.hostname.includes("localhost")
-//       ? "http://localhost:5001"
-//       : "https://lockness-420607.uc.r.appspot.com";
-//     const newSocket = io(domain);
-//     setSocket(newSocket);
-//     newSocket.on("new_message", (data) => {
-//       setMessages((prevMessages) => {
-//         // Check if there are any messages and if the last message is from the bot
-//         if (
-//           prevMessages.length > 0 &&
-//           prevMessages[prevMessages.length - 1].sender === "bot"
-//         ) {
-//           // Clone the last message and append the new text
-//           const updatedLastMessage = {
-//             ...prevMessages[prevMessages.length - 1],
-//             text: prevMessages[prevMessages.length - 1].text + data.text,
-//           };
+  //   useEffect(() => {
+  //     const domain = window.location.hostname.includes("localhost")
+  //       ? "http://localhost:5001"
+  //       : "https://lockness-420607.uc.r.appspot.com";
+  //     const newSocket = io(domain);
+  //     setSocket(newSocket);
+  //     newSocket.on("new_message", (data) => {
+  //       setMessages((prevMessages) => {
+  //         // Check if there are any messages and if the last message is from the bot
+  //         if (
+  //           prevMessages.length > 0 &&
+  //           prevMessages[prevMessages.length - 1].sender === "bot"
+  //         ) {
+  //           // Clone the last message and append the new text
+  //           const updatedLastMessage = {
+  //             ...prevMessages[prevMessages.length - 1],
+  //             text: prevMessages[prevMessages.length - 1].text + data.text,
+  //           };
 
-//           // Return the array with the updated last message
-//           return [...prevMessages.slice(0, -1), updatedLastMessage];
-//         } else {
-//           // If the last message is not from the bot, add a new message object
-//           return [
-//             ...prevMessages,
-//             {
-//               text: data.text,
-//               sender: "bot",
-//               type: getStepType(),
-//               step: step + 1,
-//             },
-//           ];
-//         }
-//       });
+  //           // Return the array with the updated last message
+  //           return [...prevMessages.slice(0, -1), updatedLastMessage];
+  //         } else {
+  //           // If the last message is not from the bot, add a new message object
+  //           return [
+  //             ...prevMessages,
+  //             {
+  //               text: data.text,
+  //               sender: "bot",
+  //               type: getStepType(),
+  //               step: step + 1,
+  //             },
+  //           ];
+  //         }
+  //       });
 
-//       if (data.final) {
-//         setStep((prevStep) => prevStep + 1); // Update the step state
-//         setLoading(false); // Turn off loading when stream ends
-//       }
-//     });
+  //       if (data.final) {
+  //         setStep((prevStep) => prevStep + 1); // Update the step state
+  //         setLoading(false); // Turn off loading when stream ends
+  //       }
+  //     });
 
-//     return () => {
-//       newSocket.close();
-//     };
-//   }, []);    CORRECT WORKING STREAM
+  //     return () => {
+  //       newSocket.close();
+  //     };
+  //   }, []);    CORRECT WORKING STREAM
 
 
-useEffect(() => {
+  useEffect(() => {
     const domain = window.location.hostname.includes("localhost")
       ? "http://localhost:5001"
       : "https://lockness-420607.uc.r.appspot.com";
     const newSocket = io(domain);
     setSocket(newSocket);
-  
+
     newSocket.on("new_message", (data) => {
       setMessages((prevMessages) => {
+
         const lastMessage = prevMessages.length > 0 ? prevMessages[prevMessages.length - 1] : null;
-  
+
         if (lastMessage && lastMessage.sender === "bot") {
           // Update the last bot message
           const updatedLastMessage = {
@@ -157,42 +152,42 @@ useEffect(() => {
           return [...prevMessages, {
             text: data.text,
             sender: "bot",
-            type: getStepType(),
+            type: data.type,
             step: prevMessages.length > 0 ? prevMessages[prevMessages.length - 1].step + 1 : 1,
           }];
         }
       });
-  
+
+      setLoading(false);
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+
       if (data.final) {
-        setStep(prevStep => prevStep + 1);
-        setLoading(false);
+        // setStep(prevStep => prevStep + 1);
       }
     });
-  
+
     return () => {
       newSocket.close();
     };
   }, []); // Review if dependencies like `getStepType` or others need to be included
-  
+
 
   console.log(messages);
 
-  const getStepType = () => {
-  
-    if (step === -2) {
+  const getStepType = (msgStep = step) => {
+    if (msgStep === -1) {
       return "clarification";
-    }
-    if (step === -1) {
-      return "userInput";
-    } else if (step === 0) {
+    } else if (msgStep === 0) {
       return "englishOutline";
-    } else if (step === totalSteps) {
+    } else if (msgStep === totalSteps) {
       return "finalCode";
     } else {
       return "codeStep";
     }
   };
-  
+
   //   const handleSendMessage = (context = "") => {
   //     setStep((prevStep) => prevStep + 1); // Update the step state
 
@@ -227,38 +222,47 @@ useEffect(() => {
 
   const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
-        alert("Please enter a message.");
-        return;
+      setError("Please enter a message.");
+      return;
     }
 
     const input = context ? context : inputMessage;
     const nextStep = step + 1; // Create a local variable for immediate use
+    const msgType = getStepType();
 
     // Emit to socket with the next step
-    
+
     console.log("Step before sending message:", step);
     socket.emit("send_input", {
       input: input,
-      step: nextStep,
+      step: step,
       type: getStepType(),
     });
     console.log("Step after sending message:", step);
-        // Update the messages array
+    // Update the messages array
     setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-            text: input,
-            sender: "user",
-            type: "userInput",
-            step: step,  // use current step for display purposes
-        },
+      ...prevMessages,
+      {
+        text:
+          (msgType === "clarification" || msgType === "englishOutline")
+            ? inputMessage
+            : "Looks good, " + ((step == totalSteps ? "generate the full query" : "continue to step " + (step + 1)) + "..."),
+        sender: "user",
+        type: getStepType(),
+        step: step,  // use current step for display purposes
+      },
     ]);
+
 
     // Update input state and increment step
     setInputMessage("");
     setLoading(true);
     setStep(nextStep); // Set the step state after using the local variable
-};
+    // after a quick delay, scroll to the bottom of the chat
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
 
   return (
@@ -304,17 +308,13 @@ useEffect(() => {
                   totalSteps={totalSteps}
                 />
               ) : (
-                <Text fontSize="md" mt="1%" ml="5%">
-                  {msg.text}
-                </Text>
-
-                // <CodeStep
-                //content={msg.text}
-                //onContinue={handleSendMessage}
-                //step={msg.step}
-                //totalSteps={totalSteps}
-                //msgType={msg.type}
-                ///>
+                <CodeStep
+                  content={msg.text}
+                  onContinue={handleSendMessage}
+                  step={msg.step}
+                  totalSteps={totalSteps}
+                  msgType={msg.type}
+                />
               )}
             </Box>
           </Center>
@@ -335,19 +335,20 @@ useEffect(() => {
 
       <Text>{step}</Text>
 
-      <UserInput
-        step={step}
-        handleUploadFileClick={handleUploadFileClick}
-        fileInputRef={fileInputRef}
-        handleFileChange={handleFileChange}
-        inputMessage={inputMessage}
-        setInputMessage={setInputMessage}
-        handleSendMessage={handleSendMessage}
-        position="absolute"
-        bottom="2%"
-        width="50%"
-        left="25%"
-      />
+      {step <= 0 &&
+        <UserInput
+          handleUploadFileClick={handleUploadFileClick}
+          fileInputRef={fileInputRef}
+          handleFileChange={handleFileChange}
+          inputMessage={inputMessage}
+          setInputMessage={setInputMessage}
+          handleSendMessage={handleSendMessage}
+          position="absolute"
+          bottom="2%"
+          width="50%"
+          left="25%"
+        />
+      }
     </Box>
   );
 };

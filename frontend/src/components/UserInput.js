@@ -9,7 +9,6 @@ import {
 import { ArrowUpIcon, AttachmentIcon } from "@chakra-ui/icons";
 
 const UserInput = ({
-  step,
   handleUploadFileClick,
   fileInputRef,
   handleFileChange,
@@ -27,7 +26,7 @@ const UserInput = ({
       left={rest.left}
     >
       <VStack spacing={5} width="100%">
-        {step <= 0 && (
+         (
           <InputGroup size="md">
             <Button
               size="lg"
@@ -91,7 +90,7 @@ const UserInput = ({
               <ArrowUpIcon color="black" />
             </Button>
           </InputGroup>
-        )}{" "}
+        ){" "}
         <Text color="placeHolderColor" fontSize="sm">
           Lockness AI produces results based on the query and the data it has
           access to.

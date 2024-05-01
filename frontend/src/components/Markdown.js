@@ -60,30 +60,6 @@ const MarkdownCasing = ({
           )}
         </Flex>
       )}
-      {/* <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
-        <MarkdownButton
-          width="100px"
-          backgroundColor="lightBackgroundColor"
-          buttonText="Edit"
-          onClick={() => {
-            console.log("Turning on editing for this outline");
-          }}
-          textColor="primaryColor"
-        />
-
-        {step <= totalSteps && (
-          <MarkdownButton
-            width="200px"
-            backgroundColor="primaryColor"
-            textColor="darkBackgroundColor"
-            buttonText="Looks good, continue"
-            onClick={() => {
-              onContinue(markdownContent);
-            }}
-            ml="2.5%"
-          />
-        )}
-      </Flex> */}
     </Box>
   );
 };
