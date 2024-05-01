@@ -48,6 +48,7 @@ const UserInput = ({
           <Textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
+            bg="darkBackgroundColor"
             placeholder={
               //messages.length === 0
               //?

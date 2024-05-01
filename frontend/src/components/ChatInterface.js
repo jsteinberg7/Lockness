@@ -256,8 +256,6 @@ const ChatInterface = () => {
         )}
       </VStack>
 
-      <Text>{step}</Text>
-
       {step <= 0 &&
         <UserInput
           handleUploadFileClick={handleUploadFileClick}
