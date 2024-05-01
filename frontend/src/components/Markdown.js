@@ -35,14 +35,25 @@ const MarkdownCasing = ({
       {msgType !== "clarification" && (
         <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
           <MarkdownButton
-            width="100px"
+            width="150px"
             backgroundColor="lightBackgroundColor"
-            buttonText="Edit"
+            buttonText="Fix"
             onClick={() => {
-              console.log("Turning on editing for this outline");
+              console.log("Explain the text here..."); // TODO: Show input box, prompt llm to fix the output
             }}
             textColor="primaryColor"
           />
+          <MarkdownButton
+            ml="1.5%"
+            width="150px"
+            backgroundColor="lightBackgroundColor"
+            buttonText="Ask question"
+            onClick={() => {
+              console.log("Fix the output..."); // TODO: Prompt llm to explain the output
+            }}
+            textColor="primaryColor"
+          />
+
 
           {step <= totalSteps && (
             <MarkdownButton
