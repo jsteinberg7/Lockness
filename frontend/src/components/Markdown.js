@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import ReactMarkdown from "react-markdown";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, useToast } from "@chakra-ui/react";
 import MarkdownButton from "./MarkdownButton";
 
 const MarkdownCasing = ({
@@ -12,6 +12,10 @@ const MarkdownCasing = ({
   totalSteps,
   ...rest
 }) => {
+
+  const toast = useToast();
+
+  console.log("MarkdownCasing: current step, total steps", step, totalSteps);
 
   return (
     <Box
@@ -33,14 +37,40 @@ const MarkdownCasing = ({
       {msgType !== "clarification" && (
         <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
           <MarkdownButton
-            width="100px"
+            width="150px"
             backgroundColor="lightBackgroundColor"
-            buttonText="Edit"
+            buttonText="Fix"
             onClick={() => {
-              console.log("Turning on editing for this outline");
+              console.log("Something's wrong..."); // TODO: Show input box, prompt llm to fix the output
+              // show a coming soon message using toast
+              toast({
+                title: "Coming soon!",
+                description: "This feature is not available yet.",
+                status: "info",
+                duration: 9000,
+                isClosable: true,
+              });
             }}
             textColor="primaryColor"
           />
+          <MarkdownButton
+            ml="1.5%"
+            width="150px"
+            backgroundColor="lightBackgroundColor"
+            buttonText="Ask question"
+            onClick={() => {
+              console.log("Ask a question..."); // TODO: Prompt llm to explain the output
+              toast({
+                title: "Coming soon!",
+                description: "This feature is not available yet.",
+                status: "info",
+                duration: 9000,
+                isClosable: true,
+              });
+            }}
+            textColor="primaryColor"
+          />
+
 
           {step <= totalSteps && (
             <MarkdownButton
@@ -49,7 +79,7 @@ const MarkdownCasing = ({
               textColor="darkBackgroundColor"
               buttonText={
                 step === totalSteps
-                  ? "Final code"
+                  ? "Generate full query"
                   : "Continue to step " + (step + 1)
               }
               onClick={() => {
@@ -60,30 +90,6 @@ const MarkdownCasing = ({
           )}
         </Flex>
       )}
-      {/* <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
-        <MarkdownButton
-          width="100px"
-          backgroundColor="lightBackgroundColor"
-          buttonText="Edit"
-          onClick={() => {
-            console.log("Turning on editing for this outline");
-          }}
-          textColor="primaryColor"
-        />
-
-        {step <= totalSteps && (
-          <MarkdownButton
-            width="200px"
-            backgroundColor="primaryColor"
-            textColor="darkBackgroundColor"
-            buttonText="Looks good, continue"
-            onClick={() => {
-              onContinue(markdownContent);
-            }}
-            ml="2.5%"
-          />
-        )}
-      </Flex> */}
     </Box>
   );
 };

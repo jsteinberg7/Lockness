@@ -33,28 +33,15 @@ class LLMService:
     def stream_prompt(prompt):
         
         full_prompt = LLMService.system_prompt + prompt
-        response = LLMService.co.chat(message=full_prompt)
-        
-        # for event in co.chat(message=prompt
-        #     # messages=[
-        #     #     {
-        #     #         "role": "system",
-        #     #         "content": "You are a helpful assistant.",
-        #     #     },
-        #     #     {
-        #     #         "role": "user", 
-        #     #         "content": prompt,
-        #     #     }
-        #     # ],
-        #     # model="command-xlarge-20221108"
-        # ):
-        print(response.text)
-        yield response.text
-            # if event.event_type == "text-generation":
-            #     print(event.text)
-            #     yield event.text
-            # elif event.event_type == "stream-end":
-            #     print(event.finish_reason)
+
+        for response in LLMService.co.chat_stream(message=full_prompt):
+            if response.event_type == "text-generation":
+                print(response.text)
+                yield response.text
+            elif response.event_type == "stream-end":
+                print(response.finish_reason)
+                break
+
 
 
     @staticmethod
@@ -210,13 +197,13 @@ class LLMService:
         Already generated code, which you need to add on to (do not repeat already generated code):
         {self.previous_code}
 
-        MUST WRAP all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
+        MUST WRAP all SQL query code in ~~~sql ~~~ to format it as SQL code, readable in Markdown, following the example format below. Note the example is only to show the format, and does not contain relevant data to the query.
 
         Example:
         Alright! Let's move on to step {step}: Filter for Dialysis Services
-        ~~~~sql
+        ~~~sql
         WHERE service_id IN (SELECT service_id FROM services WHERE service_type = 'Dialysis')
-        ~~~~
+        ~~~
         ##### Explanation
         - I have sorted and aggregated the data in order to access the correct tables and functions
         - Identified and impored the correct columns necessaet such as...
@@ -227,7 +214,7 @@ class LLMService:
             yield chunk
         self.previous_code = "" if self.previous_code is None else self.previous_code
 
-        split_result = result.split("~~~~sql")[1].split("~~~~")[0].strip()
+        split_result = result.split("~~~sql")[1].split("~~~")[0].strip()
         self.previous_code += split_result + "\n"
     
     
@@ -246,7 +233,7 @@ class LLMService:
         Previously Generated code to combine:
         {self.previous_code}
 
-        MUST wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, following the example format below:
+        MUST wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, ensure the generated code will pass a linter. Follow the example format below.
 
         Example:
         Alright! Here's the full query:

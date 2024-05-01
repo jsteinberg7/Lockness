@@ -36,8 +36,8 @@ llm_services = {str: LLMService()} # track LLMService instances for each WebSock
 
 # Flask-SocketIO backend example
 @socketio.on("send_input")
-def handle_input(data, headers):
-    # note: "headers" is not used here, but we need the param to accept the api key as a header
+def handle_input(data, headers=None):
+    # note: "headers" is not used here, but we need the param to accept the api key as a header    
     input = data["input"]
     msg_type = data["type"]
     step = data.get("step", None)
@@ -58,11 +58,11 @@ def handle_input(data, headers):
     for chunk in chunks:
         emit(
             "new_message",
-            {"text": chunk, "type": msg_type, "final": False},
+            {"text": chunk, "type": msg_type, "final": False, "step": step},
         )
     emit(
         "new_message",
-        {"text": "", "final": True, "type": msg_type}
+        {"text": "", "final": True, "type": msg_type, "step": step},
     )
 
 if __name__ == "__main__":

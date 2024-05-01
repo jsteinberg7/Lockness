@@ -1,8 +1,8 @@
 import { Text, Flex } from "@chakra-ui/react";
 import MarkdownCasing from "./Markdown";
 
-const CodeStep = ({ totalSteps, step, content, onContinue, msgType = "codeStep" }) => {
-  let headerContent = content.split("~~~~")[0];
+const CodeStep = ({ totalSteps, step, content, onContinue }) => {
+  let headerContent = content.split("~~~")[0];
   let code = content.replace(headerContent, "");
 
   if (code === "") {

@@ -48,9 +48,3 @@ for i in range(1, number_of_code_steps + 1):
         raise NotImplementedError("Explain/Fix feedback loop not yet implemented")
     
 final_code_step = run_prompt_wrapper(None, "finalCode", number_of_code_steps)
-
-
-
-# tests
-# I would like to find out how many medicare beneficiaries in ohio passed away from lung cancer in 2022 
-# Make your best guesses for all of the questions
