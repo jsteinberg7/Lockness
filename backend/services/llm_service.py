@@ -1,5 +1,6 @@
 import json
 import os
+from services.linting_service import LintingService
 from services.file_dictionary import file_dict
 import pandas as pd
 from dotenv import load_dotenv
@@ -20,6 +21,10 @@ class LLMService:
     system_prompt = open(os.path.join(root_dir, "services", "system_explain_vrdc_ccw.txt"), "r").read().strip()
     json_system_prompt = open(os.path.join(root_dir, "services", "json_system_prompt.txt"), "r").read().strip()
     co = cohere.Client(COHERE_SECRET_KEY)
+
+    @staticmethod
+    def extract_sql_code(result):
+        return result.split("~~~sql")[1].split("~~~")[0].strip()
     
     @staticmethod
     def parse_json(json_str):
@@ -36,10 +41,10 @@ class LLMService:
 
         for response in LLMService.co.chat_stream(message=full_prompt):
             if response.event_type == "text-generation":
-                print(response.text)
+                # print(response.text)
                 yield response.text
             elif response.event_type == "stream-end":
-                print(response.finish_reason)
+                # print(response.finish_reason)
                 break
 
 
@@ -214,9 +219,9 @@ class LLMService:
             yield chunk
         self.previous_code = "" if self.previous_code is None else self.previous_code
 
-        split_result = result.split("~~~sql")[1].split("~~~")[0].strip()
+        split_result = LLMService.extract_sql_code(result)
         self.previous_code += split_result + "\n"
-    
+
     
     def run_query_combination_prompt(self):
         full_prompt = f"""
@@ -233,24 +238,24 @@ class LLMService:
         Previously Generated code to combine:
         {self.previous_code}
 
-        MUST wrap all SQL query code in ~~~~sql ~~~~ to format it as SQL code, readable in Markdown, ensure the generated code will pass a linter. Follow the example format below.
+        MUST wrap all SQL query code in ~~~sql ~~~ to format it as SQL code, readable in Markdown, ensure the generated code will pass a linter. Follow the example format below.
 
         Example:
         Alright! Here's the full query:
-        ~~~~sql
+        ~~~sql
         SELECT * FROM transactions
         JOIN patients ON transactions.patient_id = patients.patient_id
         JOIN services ON transactions.service_id = services.service_id
         WHERE services.service_type = 'Dialysis'
-        ~~~~
+        ~~~
         ##### Explanation
         - I have sorted and aggregated the data in order to access the correct tables and functions
         """
 
-        # final_result = LLMService.prompt(full_prompt)
+        final_result = LLMService.prompt(full_prompt)
 
         # # extract the sql code from the final result
-        # split_result = final_result.split("~~~~sql")[1].split("~~~~")[0].strip()
+        # split_result = LLMService.extract_sql_code(final_result)
         # full_query = self.previous_code + split_result
         # # pass full code to linter
         # linting_result = LintingService.lint_sql(full_query)
@@ -261,9 +266,9 @@ class LLMService:
         # else:
         #     for violation in linting_result:
         #         final_result += f"Line {violation.line_no}: {violation.description}\n"
+
+        yield final_result
         
-        for chunk in LLMService.stream_prompt(full_prompt):
-            yield chunk
         
         
     def run_prompt(self, input, msg_type, step):

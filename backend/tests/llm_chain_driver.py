@@ -9,7 +9,7 @@ from services.llm_service import LLMService
 
 # function to convert streamed chunks into a single output
 def convert_chunks_to_string(chunks: list) -> str:
-    return "\n".join(chunks)
+    return "".join(chunks)
 
 def get_total_code_steps(english_outline: str) -> int:
     return len(english_outline.split("#####")) - 1
@@ -18,7 +18,9 @@ def get_total_code_steps(english_outline: str) -> int:
 # modified output with streamed chunks converted to a single string
 def run_prompt_wrapper(input, msg_type, step) -> str: # returns a list of chunks
     chunks = llm_service.run_prompt(input, msg_type, step)
-    return convert_chunks_to_string(chunks)
+    output = convert_chunks_to_string(chunks)
+    print(output)
+    return output
         
 
 # Run prompt chain using LLMService, using user input instead of frontend input (no need for WebSocket connection)
