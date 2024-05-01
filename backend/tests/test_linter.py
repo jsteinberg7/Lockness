@@ -24,6 +24,21 @@ WHERE
     violations = LintingService.lint_sql(sql)
     assert len(violations) == 0
 
+def test_lint_sql_valid3():
+    sql = """
+SELECT STATE_CD, DEATH_DT, RFRNC_YR, BENE_ID
+FROM Master_Beneficiary_Summary_File_Base
+JOIN Inpatient_FeeForService USING (BENE_ID)
+JOIN Outpatient_FeeForService USING (BENE_ID)
+JOIN Carrier_FeeForService USING (BENE_ID)
+WHERE STATE_CD = 'KS'
+AND EXTRACT(YEAR FROM DEATH_DT) = 2018
+AND -- Add additional conditions here to identify car accident-related deaths, e.g., diagnosis codes.
+;
+    """
+    violations = LintingService.lint_sql(sql)
+    assert len(violations) == 0
+
 def test_lint_sql_invalid():
     sql = """
 SELECT *
