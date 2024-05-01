@@ -9,23 +9,15 @@ class LintingService:
     def lint_sql(sql_string):
         # Create a new linter instance
         linter = Linter(dialect="ansi")
+        filtered_violations = []
+        errors = []
 
         # Lint the SQL string
         try:
             linting_result = linter.lint_string(sql_string)
         except SQLParseError as e:
             # add the error to the linting result
-            linting_result = LintingResult(
-                violations=[
-                    {
-                        "description": "str(e.message)",
-                        "line_no": e.line_no,
-                        "rule_code": "SQLPARSEERROR",
-                    },
-                ]
-            )
-
-        filtered_violations = []
+            errors = [str(e.message)]
         
         # Filter out the linting errors and warnings to only include ones we care about
         for violation in linting_result.get_violations():
@@ -35,9 +27,9 @@ class LintingService:
                 "Unnecessary trailing whitespace at end of file.",
                 "Files must end with a trailing newline.",
                 "Files must not begin with newlines or whitespace.",
-                "Unnecessary trailing whitespace."
+                "Unnecessary trailing whitespace.",
             ]:
                 filtered_violations.append(violation)
 
         # Return the number of linting errors and warnings
-        return filtered_violations
+        return filtered_violations, errors
