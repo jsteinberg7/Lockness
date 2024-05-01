@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import ReactMarkdown from "react-markdown";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, useToast } from "@chakra-ui/react";
 import MarkdownButton from "./MarkdownButton";
 
 const MarkdownCasing = ({
@@ -12,6 +12,8 @@ const MarkdownCasing = ({
   totalSteps,
   ...rest
 }) => {
+
+  const toast = useToast();
 
   console.log("MarkdownCasing: current step, total steps", step, totalSteps);
 
@@ -39,7 +41,15 @@ const MarkdownCasing = ({
             backgroundColor="lightBackgroundColor"
             buttonText="Fix"
             onClick={() => {
-              console.log("Explain the text here..."); // TODO: Show input box, prompt llm to fix the output
+              console.log("Something's wrong..."); // TODO: Show input box, prompt llm to fix the output
+              // show a coming soon message using toast
+              toast({
+                title: "Coming soon!",
+                description: "This feature is not available yet.",
+                status: "info",
+                duration: 9000,
+                isClosable: true,
+              });
             }}
             textColor="primaryColor"
           />
@@ -49,7 +59,14 @@ const MarkdownCasing = ({
             backgroundColor="lightBackgroundColor"
             buttonText="Ask question"
             onClick={() => {
-              console.log("Fix the output..."); // TODO: Prompt llm to explain the output
+              console.log("Ask a question..."); // TODO: Prompt llm to explain the output
+              toast({
+                title: "Coming soon!",
+                description: "This feature is not available yet.",
+                status: "info",
+                duration: 9000,
+                isClosable: true,
+              });
             }}
             textColor="primaryColor"
           />
