@@ -24,7 +24,7 @@ const ChatInterface = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
-  const [totalSteps, setTotalSteps] = useState(4);
+  const [totalSteps, setTotalSteps] = useState(10);
   const [socket, setSocket] = useState(null);
 
   const toast = useToast();
@@ -34,7 +34,7 @@ const ChatInterface = () => {
   // Define the step state to manage the chatbot steps
   // Step 0 is English outline
   // All other steps are for code generation
-  // Note: We start at -1 to indicate that the user has not yet started the chat
+
   const [step, setStep] = useState(-1); // -1 is the start
 
   const handleUploadFileClick = () => {
@@ -81,52 +81,6 @@ const ChatInterface = () => {
     }
   };
 
-  //   useEffect(() => {
-  //     const domain = window.location.hostname.includes("localhost")
-  //       ? "http://localhost:5001"
-  //       : "https://lockness-420607.uc.r.appspot.com";
-  //     const newSocket = io(domain);
-  //     setSocket(newSocket);
-  //     newSocket.on("new_message", (data) => {
-  //       setMessages((prevMessages) => {
-  //         // Check if there are any messages and if the last message is from the bot
-  //         if (
-  //           prevMessages.length > 0 &&
-  //           prevMessages[prevMessages.length - 1].sender === "bot"
-  //         ) {
-  //           // Clone the last message and append the new text
-  //           const updatedLastMessage = {
-  //             ...prevMessages[prevMessages.length - 1],
-  //             text: prevMessages[prevMessages.length - 1].text + data.text,
-  //           };
-
-  //           // Return the array with the updated last message
-  //           return [...prevMessages.slice(0, -1), updatedLastMessage];
-  //         } else {
-  //           // If the last message is not from the bot, add a new message object
-  //           return [
-  //             ...prevMessages,
-  //             {
-  //               text: data.text,
-  //               sender: "bot",
-  //               type: getStepType(),
-  //               step: step + 1,
-  //             },
-  //           ];
-  //         }
-  //       });
-
-  //       if (data.final) {
-  //         setStep((prevStep) => prevStep + 1); // Update the step state
-  //         setLoading(false); // Turn off loading when stream ends
-  //       }
-  //     });
-
-  //     return () => {
-  //       newSocket.close();
-  //     };
-  //   }, []);    CORRECT WORKING STREAM
-
 
   useEffect(() => {
     const domain = window.location.hostname.includes("localhost")
@@ -136,9 +90,18 @@ const ChatInterface = () => {
     setSocket(newSocket);
 
     newSocket.on("new_message", (data) => {
+      setLoading(false);
+      setError(null);
+
+
       setMessages((prevMessages) => {
 
         const lastMessage = prevMessages.length > 0 ? prevMessages[prevMessages.length - 1] : null;
+
+        if (data.type === "englishOutline" && data.final) {
+          // This means we have just gotten the full English Outline, so we can use the latest message to calculate the total steps
+          calculateTotalSteps(lastMessage.text);
+        }
 
         if (lastMessage && lastMessage.sender === "bot") {
           // Update the last bot message
@@ -153,19 +116,14 @@ const ChatInterface = () => {
             text: data.text,
             sender: "bot",
             type: data.type,
-            step: prevMessages.length > 0 ? prevMessages[prevMessages.length - 1].step + 1 : 1,
+            step: data.step,
           }];
         }
       });
 
-      setLoading(false);
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
-
-      if (data.final) {
-        // setStep(prevStep => prevStep + 1);
-      }
     });
 
     return () => {
@@ -181,44 +139,13 @@ const ChatInterface = () => {
       return "clarification";
     } else if (msgStep === 0) {
       return "englishOutline";
-    } else if (msgStep === totalSteps) {
+    } else if (msgStep === totalSteps + 1) {
       return "finalCode";
     } else {
       return "codeStep";
     }
   };
 
-  //   const handleSendMessage = (context = "") => {
-  //     setStep((prevStep) => prevStep + 1); // Update the step state
-
-  //     // Thsi one streams incrementally
-  //     if (!inputMessage.trim() && !context.trim()) {
-  //       alert("Please enter a message.");
-  //       return;
-  //     }
-
-  //     const input = context ? context : inputMessage;
-
-  //     socket.emit("send_input", {
-  //       input: input,
-  //       step: step + 1,
-  //       type: getStepType(),
-  //     });
-
-  //     // Update UI and state accordingly
-  //     setMessages((prevMessages) => [
-  //       ...prevMessages,
-  //       {
-  //         text: input,
-  //         sender: "user",
-  //         type: "userInput",
-  //         step: step
-  //       },
-  //     ]);
-
-  //     setInputMessage("");
-  //     setLoading(true);
-  //   };
 
   const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
@@ -227,7 +154,6 @@ const ChatInterface = () => {
     }
 
     const input = context ? context : inputMessage;
-    const nextStep = step + 1; // Create a local variable for immediate use
     const msgType = getStepType();
 
     // Emit to socket with the next step
@@ -236,9 +162,8 @@ const ChatInterface = () => {
     socket.emit("send_input", {
       input: input,
       step: step,
-      type: getStepType(),
+      type: msgType,
     });
-    console.log("Step after sending message:", step);
     // Update the messages array
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -246,18 +171,17 @@ const ChatInterface = () => {
         text:
           (msgType === "clarification" || msgType === "englishOutline")
             ? inputMessage
-            : "Looks good, " + ((step == totalSteps ? "generate the full query" : "continue to step " + (step + 1)) + "..."),
+            : "Looks good, " + ((msgType === "finalCode" ? "generate the full query" : "continue to step " + step) + "..."),
         sender: "user",
-        type: getStepType(),
+        type: msgType,
         step: step,  // use current step for display purposes
       },
     ]);
 
-
     // Update input state and increment step
     setInputMessage("");
     setLoading(true);
-    setStep(nextStep); // Set the step state after using the local variable
+    setStep(step + 1); // Set the step state after using the local variable
     // after a quick delay, scroll to the bottom of the chat
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -313,7 +237,6 @@ const ChatInterface = () => {
                   onContinue={handleSendMessage}
                   step={msg.step}
                   totalSteps={totalSteps}
-                  msgType={msg.type}
                 />
               )}
             </Box>
@@ -345,6 +268,7 @@ const ChatInterface = () => {
           handleSendMessage={handleSendMessage}
           position="absolute"
           bottom="2%"
+          mt="2%"
           width="50%"
           left="25%"
         />

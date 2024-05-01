@@ -13,6 +13,8 @@ const MarkdownCasing = ({
   ...rest
 }) => {
 
+  console.log("MarkdownCasing: current step, total steps", step, totalSteps);
+
   return (
     <Box
       mt={rest.mt}
@@ -49,7 +51,7 @@ const MarkdownCasing = ({
               textColor="darkBackgroundColor"
               buttonText={
                 step === totalSteps
-                  ? "Final code"
+                  ? "Generate full query"
                   : "Continue to step " + (step + 1)
               }
               onClick={() => {

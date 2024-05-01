@@ -30,29 +30,19 @@ class LLMService:
             return None
 
     @staticmethod
-    def stream_prompt(prompt, type):
+    def stream_prompt(prompt):
         
         full_prompt = LLMService.system_prompt + prompt
 
-        # response = LLMService.co.chat(message=full_prompt)
-
-        if (type == "clarification" or type == "englishOutline" ):
-
-            for response in LLMService.co.chat_stream(message=prompt):
-                if response.event_type == "text-generation":
-                    print(response.text)
-                    yield response.text
-                elif response.event_type == "stream-end":
-                    print(response.finish_reason)
-                    break
-
-        else:
-            response = LLMService.co.chat(message=full_prompt)
-            print(response.text)
-            yield response.text
+        for response in LLMService.co.chat_stream(message=full_prompt):
+            if response.event_type == "text-generation":
+                print(response.text)
+                yield response.text
+            elif response.event_type == "stream-end":
+                print(response.finish_reason)
+                break
 
 
-        
 
     @staticmethod
     def prompt(prompt, json_output=False, model_used="command-r-plus") -> str:
@@ -90,7 +80,7 @@ class LLMService:
         3. Do you have any preference for the output format or structure of the final results?
         """
 
-        for chunk in LLMService.stream_prompt(full_prompt, "clarification"):
+        for chunk in LLMService.stream_prompt(full_prompt):
             yield chunk
 
     # Generates a plain English outline of how to approach the query described in prompt
@@ -188,7 +178,7 @@ class LLMService:
         """
         result = ""
 
-        for chunk in LLMService.stream_prompt(full_prompt, "englishOutline"):
+        for chunk in LLMService.stream_prompt(full_prompt):
             result += chunk
             yield chunk
 
@@ -219,7 +209,7 @@ class LLMService:
         - Identified and impored the correct columns necessaet such as...
         """
         result = ""
-        for chunk in LLMService.stream_prompt(full_prompt, "codeStep"):
+        for chunk in LLMService.stream_prompt(full_prompt):
             result += chunk
             yield chunk
         self.previous_code = "" if self.previous_code is None else self.previous_code
@@ -272,7 +262,7 @@ class LLMService:
         #     for violation in linting_result:
         #         final_result += f"Line {violation.line_no}: {violation.description}\n"
         
-        for chunk in LLMService.stream_prompt(full_prompt, "finalCode"):
+        for chunk in LLMService.stream_prompt(full_prompt):
             yield chunk
         
         

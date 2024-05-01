@@ -58,11 +58,11 @@ def handle_input(data, headers=None):
     for chunk in chunks:
         emit(
             "new_message",
-            {"text": chunk, "type": msg_type, "final": False},
+            {"text": chunk, "type": msg_type, "final": False, "step": step},
         )
     emit(
         "new_message",
-        {"text": "", "final": True, "type": msg_type}
+        {"text": "", "final": True, "type": msg_type, "step": step},
     )
 
 if __name__ == "__main__":
