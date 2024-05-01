@@ -17,8 +17,9 @@ def test_lint_sql_valid2():
     sql = """
 SELECT *
 FROM mytable
-WHERE id = 1
-AND name = 'John';
+WHERE
+    id = 1
+    AND name = 'John';
     """
     violations = LintingService.lint_sql(sql)
     assert len(violations) == 0
@@ -29,9 +30,10 @@ SELECT *
 regewrg mytable;
     """
     violations = LintingService.lint_sql(sql)
-    assert len(violations) > 0
+    assert len(violations) == 1
 
     print(violations)
+    assert "Found unparsable section:" in violations[0].description
 
     # Check that the expected violation is reported
     # expected_violation = "syntax error"

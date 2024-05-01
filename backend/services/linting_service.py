@@ -30,12 +30,13 @@ class LintingService:
         
         # Filter out the linting errors and warnings to only include ones we care about
         for violation in linting_result.get_violations():
-            # print(f"Line {violation.line_no}: {violation.description}, {violation.rule_code}")
+            # Filter out errors/warnings we don't care about
             if not violation.description in [
                 "Query produces an unknown number of result columns.",
                 "Unnecessary trailing whitespace at end of file.",
                 "Files must end with a trailing newline.",
-                "Files must not begin with newlines or whitespace."
+                "Files must not begin with newlines or whitespace.",
+                "Unnecessary trailing whitespace."
             ]:
                 filtered_violations.append(violation)
 
