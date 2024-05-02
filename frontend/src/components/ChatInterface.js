@@ -202,7 +202,7 @@ const ChatInterface = () => {
         align="stretch"
         px="10%"
         overflow="auto"
-        height={step <= -1 ? "75%" : "95%"}
+        height={step <= 0 ? "75%" : "95%"}
       >
         {messages.length === 0 && <NewChatDesign mt="15%" />}
         {messages.map((msg, index) => (
