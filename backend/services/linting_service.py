@@ -6,7 +6,13 @@ from sqlfluff.core.linter import LintingResult
 class LintingService:
 
     @staticmethod
-    def lint_sql(sql_string):
+    def lint_sql(sql_string: str, ignore_violations=True):
+        """
+        Lint the given SQL string using the SQLFluff linter.
+        sql_string: The SQL string to lint
+        ignore_violations: Whether to ignore violations (i.e. "best practices") | note: still includes errors regardless
+        """
+
         # Create a new linter instance
         linter = Linter(dialect="ansi")
         filtered_violations = []
@@ -25,14 +31,14 @@ class LintingService:
         # Filter out the linting errors and warnings to only include ones we care about
         for violation in linting_result.get_violations():
             # Filter out errors/warnings we don't care about
-            # if not violation.description in [
-            #     "Query produces an unknown number of result columns.",
-            #     "Unnecessary trailing whitespace at end of file.",
-            #     "Files must end with a trailing newline.",
-            #     "Files must not begin with newlines or whitespace.",
-            #     "Unnecessary trailing whitespace.",
-            # ]:
-            #     filtered_violations.append(violation)
+            if not ignore_violations and not violation.description in [
+                "Query produces an unknown number of result columns.",
+                "Unnecessary trailing whitespace at end of file.",
+                "Files must end with a trailing newline.",
+                "Files must not begin with newlines or whitespace.",
+                "Unnecessary trailing whitespace.",
+            ]:
+                filtered_violations.append(violation)
             if type(violation).__name__ == "SQLParseError":
                 errors.append(str(violation.description))
                 

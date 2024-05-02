@@ -255,19 +255,35 @@ class LLMService:
         final_result = LLMService.prompt(full_prompt)
 
         # extract the sql code from the final result
-        split_result = LLMService.extract_sql_code(final_result)
-        full_query = self.previous_code + split_result
+        full_query = LLMService.extract_sql_code(final_result)
         # pass full code to linter
-        linting_result = LintingService.lint_sql(full_query)
+        violations, errors = LintingService.lint_sql(full_query)
         # append linting results to the final result
-        final_result += "\n\nLinting Results:\n"
-        if len(linting_result[1]) == 0:
-            final_result += "No syntax errors found."
+        
+        num_fix_attempts = 0
+        while len(errors) > 0 and num_fix_attempts < 3:
+        # If errors are found, prompt the LLM to fix the errors
+            fix_prompt = full_prompt + f"""This is the code previously generated for the above orignal prompt:
+{full_query}
+
+The query has been linted and the following are the results:
+{errors}
+
+Please regenerate the query, following the original prompt and format and fixing the above errors.
+"""
+            print("Errors found, attempting to fix...")
+            final_result = LLMService.prompt(fix_prompt)
+            full_query = LLMService.extract_sql_code(final_result)
+            violations, errors = LintingService.lint_sql(full_query)
+            num_fix_attempts += 1
+
+        
+        if len(errors) == 0:
+            final_result += "\n\n*Code successfully parsed for syntax errors ✅*"
         else:
-            # for violation in linting_result:
-            #     final_result += f"Line {violation.line_no}: {violation.description}\n"
-            for error in linting_result[1]:
-                final_result += f"Error: {error}\n"
+            final_result += "\n\nThe linter found the following errors, which were unable to be fixed:\n"
+            for error in errors:
+                final_result += f"{error}\n"
 
         yield final_result
         
