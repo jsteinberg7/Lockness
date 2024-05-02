@@ -3,6 +3,11 @@ import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import MarkdownButton from "./MarkdownButton";
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import { twilight } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Using the Prism style, you can choose another
+
+SyntaxHighlighter.registerLanguage('sql', sql);
 
 const MarkdownCasing = ({
   markdownContent,
@@ -16,6 +21,27 @@ const MarkdownCasing = ({
   const toast = useToast();
 
   console.log("MarkdownCasing: current step, total steps", step, totalSteps);
+
+  const newTheme = {
+    ...ChakraUIRenderer(),
+    code({ node, inline, className, children, ...props }) {
+      const match = /language-(\w+)/.exec(className || '')
+      return !inline && match ? (
+        <SyntaxHighlighter
+          style={twilight}
+          language={match[1]}
+          PreTag="div"
+          {...props}
+        >
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      )
+    }
+  };
 
   return (
     <Box
@@ -31,7 +57,7 @@ const MarkdownCasing = ({
         px="10"
         backgroundColor="black"
         borderRadius="xl"
-        components={ChakraUIRenderer()}
+        components={newTheme}
         children={markdownContent}
       />
       {msgType !== "clarification" && (
