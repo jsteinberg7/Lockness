@@ -1,7 +1,7 @@
-import { Box, Text, Flex } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
-import logo from "../assets/locknessLogo.png";
 import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
+import logo from "../assets/locknessLogo.png";
 
 const ChatHeader = ({ sender }) => {
   return (

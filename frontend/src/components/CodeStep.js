@@ -1,4 +1,4 @@
-import { Text, Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import MarkdownCasing from "./Markdown";
 
 const CodeStep = ({ totalSteps, step, content, onContinue }) => {

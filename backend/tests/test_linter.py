@@ -1,8 +1,10 @@
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from services.linting_service import LintingService
+
 
 def test_lint_sql_valid():
     sql = """
@@ -71,13 +73,3 @@ ORDER BY;
     violations, errors = LintingService.lint_sql(sql)
     assert len(errors) >= 1
     assert "Found unparsable section:" in errors[0]
-
-
-
-
-
-
-
-    # Check that the expected violation is reported
-    # expected_violation = "syntax error"
-    # assert any(expected_violation in str(violation) for violation in violations)

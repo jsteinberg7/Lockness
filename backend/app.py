@@ -1,13 +1,15 @@
 from gevent import monkey
+
 monkey.patch_all()  # monkey patch before any other imports to avoid warnings
 
-from flask import Flask, jsonify, request, abort
+import base64
+import os
+
+from dotenv import load_dotenv
+from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from services.llm_service import LLMService
-from dotenv import load_dotenv
-import os
-import base64
 
 app = Flask(__name__)
 CORS(

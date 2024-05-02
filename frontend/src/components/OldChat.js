@@ -1,6 +1,6 @@
-import React from "react";
 import { Box, Text } from "@chakra-ui/react";
-import { NavLink, useLocation } from "react-router-dom";
+import React from "react";
+import { useLocation } from "react-router-dom";
 
 const OldChat = () => {
   const location = useLocation();

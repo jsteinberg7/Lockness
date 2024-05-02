@@ -1,12 +1,12 @@
-import {
-  Flex,
-  VStack,
-  InputGroup,
-  Button,
-  Textarea,
-  Text,
-} from "@chakra-ui/react";
 import { ArrowUpIcon, AttachmentIcon, CheckIcon } from "@chakra-ui/icons";
+import {
+  Button,
+  Flex,
+  InputGroup,
+  Text,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
 
 const UserInput = ({
   handleUploadFileClick,

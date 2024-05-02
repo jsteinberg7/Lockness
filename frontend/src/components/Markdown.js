@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import React from "react";
 import ReactMarkdown from "react-markdown";
-import { Box, Button, Flex, Text, useToast } from "@chakra-ui/react";
 import MarkdownButton from "./MarkdownButton";
 
 const MarkdownCasing = ({

@@ -1,18 +1,8 @@
-import React, { useState, useEffect } from "react";
 import {
-  Box,
-  VStack,
-  HStack,
-  Button,
-  Text,
-  Textarea,
-  Spinner,
   Flex,
-  Center,
-  InputGroup,
-  InputRightElement,
-  useColorModeValue,
+  Text
 } from "@chakra-ui/react";
+import React from "react";
 import MarkdownCasing from "./Markdown";
 
 const EnglishOutline = ({ outlineContent, onContinue, totalSteps }) => {

@@ -1,11 +1,11 @@
 import {
   Box,
   Center,
+  Flex,
   Spinner,
   Text,
   VStack,
   useToast,
-  Flex,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";

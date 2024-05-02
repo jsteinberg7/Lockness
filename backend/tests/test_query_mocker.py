@@ -1,8 +1,10 @@
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from services.query_mocker import QueryMocker
+
 
 def test_query_mocker_convert_column_data_to_dict():
     test_cols_file = open("assets/test_column_data.txt", "r")

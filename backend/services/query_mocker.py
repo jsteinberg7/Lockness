@@ -1,6 +1,8 @@
-import pandas as pd
 import sqlite3
+
+import pandas as pd
 from mimesis import Field, Schema
+
 
 class QueryMocker:
     def __init__(self, data: str, columns_to_use: list):

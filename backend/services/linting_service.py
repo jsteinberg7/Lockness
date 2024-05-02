@@ -27,7 +27,6 @@ class LintingService:
             # add the error to the linting result
             errors.append(str(e))
         
-        # FOR NOW, ONLY RETURN THE ERRORS (ignore the violations)
         # Filter out the linting errors and warnings to only include ones we care about
         for violation in linting_result.get_violations():
             # Filter out errors/warnings we don't care about

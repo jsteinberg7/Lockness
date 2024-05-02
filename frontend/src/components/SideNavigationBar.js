@@ -1,20 +1,16 @@
 import {
   Box,
-  VStack,
-  IconButton,
-  Text,
-  Flex,
-  Avatar,
   Divider,
-  useToast,
+  Flex,
+  Text,
+  VStack,
+  useToast
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 
-import { FaUpload, FaCommentAlt } from "react-icons/fa"; // or any other icon library you prefer
-import { SlCloudUpload } from "react-icons/sl";
 import { BsDatabaseAdd } from "react-icons/bs";
+import { SlCloudUpload } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
-import { SlOptionsVertical } from "react-icons/sl";
 
 import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
 import Profile from "./Profile";

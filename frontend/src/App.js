@@ -1,19 +1,18 @@
 // App.js
+import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import {
+  Navigate,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
 } from "react-router-dom";
-import logo from "./logo.svg"; // Assuming you might use it somewhere else
 import "./App.css";
 import ChatInterface from "./components/ChatInterface";
-import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "./components/Layout";
-import theme from "./design/theme"; // Make sure the path is correct
 import NotFound from "./components/NotFound";
 import OldChat from "./components/OldChat";
+import theme from "./design/theme"; // Make sure the path is correct
 
 function App() {
   return (
