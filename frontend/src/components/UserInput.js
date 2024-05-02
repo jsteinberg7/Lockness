@@ -6,11 +6,12 @@ import {
   Textarea,
   Text,
 } from "@chakra-ui/react";
-import { ArrowUpIcon, AttachmentIcon } from "@chakra-ui/icons";
+import { ArrowUpIcon, AttachmentIcon, CheckIcon } from "@chakra-ui/icons";
 
 const UserInput = ({
   handleUploadFileClick,
   fileInputRef,
+  isFileUploaded,
   handleFileChange,
   inputMessage,
   setInputMessage,
@@ -36,7 +37,11 @@ const UserInput = ({
             borderRadius="lg"
             height="50%"
           >
-            <AttachmentIcon color="black" />
+              {isFileUploaded ? (
+                <CheckIcon color="black" />
+              ) : (
+                <AttachmentIcon color="black" />
+              )}
             <input
               type="file"
               ref={fileInputRef}
@@ -97,7 +102,7 @@ const UserInput = ({
           access to.
         </Text>
       </VStack>
-    </Flex >
+    </Flex>
   );
 };
 
