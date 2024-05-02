@@ -213,6 +213,8 @@ const handleSendMessage = (context = "") => {
       sendInput();
     }
   };
+
+  console.log(files);
   
   return (
     <Box

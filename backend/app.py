@@ -85,13 +85,22 @@ def handle_input(data, headers=None):
     file_name = data.get("fileName", None)
     file_type = data.get("fileType", None)
 
-    print(f"Received input: {input}, msg_type: {msg_type}, step: {step}, file: {file_name}")
+    print(f"Received input: {input}, msg_type: {msg_type}, step: {step}, file: {file_name}, file data")
 
     # Check if there's a file data and handle it
     if file_data:
+        print("FILE DATA AVAILABLE SHOULD SAVE " + file_name)
         # Assuming file_data is in ArrayBuffer format or similar binary format
         # Convert to bytes and save or process as needed
         try:
+
+            # Ensure the base64 string has correct padding
+            print(f"Length of data before padding: {len(file_data)}")
+            padding = len(file_data) % 4
+            if padding:  # Padding needed if not zero
+                file_data += '=' * (4 - padding)
+            print(f"Length of data after padding: {len(file_data)}")
+
             # If the file data is coming in base64 encoded
             file_bytes = base64.b64decode(file_data)
             file_path = f"./uploadedDocuments/{file_name}"
