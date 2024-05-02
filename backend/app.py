@@ -37,37 +37,6 @@ def index():
 
 llm_services = {str: LLMService()} # track LLMService instances for each WebSocket connection, mapping s
 
-# Flask-SocketIO backend example
-# @socketio.on("send_input")
-# def handle_input(data, headers):
-#     # note: "headers" is not used here, but we need the param to accept the api key as a header
-#     input = data["input"]
-#     msg_type = data["type"]
-#     step = data.get("step", None)
-#     file = data.get("file", None)
-#     print(
-#         f"Received input: {input}, msg_type: {msg_type}, step: {step}, file {file}"
-#     )
-
-#     session_id = request.sid
-
-#     if session_id not in llm_services:
-#         # Create a new LLMService instance for the new WebSocket connection
-#         llm_services[session_id] = LLMService()
-    
-#     # Get the LLMService instance for the current WebSocket connection
-#     llm_service = llm_services[session_id]
-
-#     chunks = llm_service.run_prompt(input, msg_type, step)
-#     for chunk in chunks:
-#         emit(
-#             "new_message",
-#             {"text": chunk, "type": msg_type, "final": False},
-#         )
-#     emit(
-#         "new_message",
-#         {"text": "", "final": True, "type": msg_type}
-#     )
 
 @socketio.on("send_input")
 def handle_input(data, headers=None):
