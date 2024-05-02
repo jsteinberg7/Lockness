@@ -4,7 +4,8 @@ import {
   Spinner,
   Text,
   VStack,
-  useToast
+  useToast,
+  Flex,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
@@ -15,8 +16,6 @@ import MarkdownCasing from "./Markdown";
 import NewChatDesign from "./NewChatDesign";
 import UserInput from "./UserInput";
 
-
-
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -24,7 +23,8 @@ const ChatInterface = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
-  const [totalSteps, setTotalSteps] = useState(10);
+  const [totalSteps, setTotalSteps] = useState(0);
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [socket, setSocket] = useState(null);
 
   const toast = useToast();
@@ -46,11 +46,11 @@ const ChatInterface = () => {
     setTotalSteps(englishOutline.split("#####").length - 1);
   };
 
-  // add file to the staging area - file will be uploaded with the message
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+
     if (file) {
-      // check file type, ensure it is a csv file, txt file, or pdf
+      // Check file type, ensure it is a csv, txt, or pdf
       if (
         file.type !== "text/csv" &&
         file.type !== "text/plain" &&
@@ -63,13 +63,13 @@ const ChatInterface = () => {
           duration: 1500,
           isClosable: true,
         });
+        setIsFileUploaded(false);
         return;
       }
 
-      // add file to the staging area, by appending to the files array
+      // Prepare the file for upload but do not send yet
       setFiles([...files, file]);
-      // clear the file input
-      event.target.value = null;
+      setIsFileUploaded(true);
 
       toast({
         title: "File uploaded successfully.",
@@ -80,7 +80,6 @@ const ChatInterface = () => {
       });
     }
   };
-
 
   useEffect(() => {
     const domain = window.location.hostname.includes("localhost")
@@ -93,10 +92,11 @@ const ChatInterface = () => {
       setLoading(false);
       setError(null);
 
-
       setMessages((prevMessages) => {
-
-        const lastMessage = prevMessages.length > 0 ? prevMessages[prevMessages.length - 1] : null;
+        const lastMessage =
+          prevMessages.length > 0
+            ? prevMessages[prevMessages.length - 1]
+            : null;
 
         if (data.type === "englishOutline" && data.final) {
           // This means we have just gotten the full English Outline, so we can use the latest message to calculate the total steps
@@ -112,12 +112,15 @@ const ChatInterface = () => {
           return [...prevMessages.slice(0, -1), updatedLastMessage];
         } else {
           // Add a new bot message
-          return [...prevMessages, {
-            text: data.text,
-            sender: "bot",
-            type: data.type,
-            step: data.step,
-          }];
+          return [
+            ...prevMessages,
+            {
+              text: data.text,
+              sender: "bot",
+              type: data.type,
+              step: data.step,
+            },
+          ];
         }
       });
 
@@ -130,7 +133,6 @@ const ChatInterface = () => {
       newSocket.close();
     };
   }, []); // Review if dependencies like `getStepType` or others need to be included
-
 
   console.log(messages);
 
@@ -147,48 +149,71 @@ const ChatInterface = () => {
   };
 
 
-  const handleSendMessage = (context = "") => {
+const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
       setError("Please enter a message.");
       return;
     }
-
+  
     const input = context ? context : inputMessage;
     const msgType = getStepType();
-
-    // Emit to socket with the next step
-
-    console.log("Step before sending message:", step);
-    socket.emit("send_input", {
-      input: input,
-      step: step,
-      type: msgType,
-    });
-    // Update the messages array
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        text:
-          (msgType === "clarification" || msgType === "englishOutline")
-            ? inputMessage
-            : "Looks good, " + ((msgType === "finalCode" ? "generate the full query" : "continue to step " + step) + "..."),
-        sender: "user",
+  
+    // Prepare to handle file upload if any
+    const fileToSend = isFileUploaded ? files[files.length - 1] : null;
+  
+    const sendInput = () => {
+      // Object to send
+      const dataToSend = {
+        input: input,
+        step: step,
         type: msgType,
-        step: step,  // use current step for display purposes
-      },
-    ]);
-
-    // Update input state and increment step
-    setInputMessage("");
-    setLoading(true);
-    setStep(step + 1); // Set the step state after using the local variable
-    // after a quick delay, scroll to the bottom of the chat
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+      };
+  
+      // Include file data if available
+      if (fileToSend) {
+        dataToSend.fileData = fileToSend.data;  // File data prepared as base64
+        dataToSend.fileName = fileToSend.name;
+        dataToSend.fileType = fileToSend.type;
+      }
+  
+      socket.emit("send_input", dataToSend);
+  
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          text:
+            (msgType === "clarification" || msgType === "englishOutline")
+              ? inputMessage
+              : "Looks good, " + ((msgType === "finalCode" ? "generate the full query" : "continue to step " + step) + "..."),
+          sender: "user",
+          type: msgType,
+          step: step,
+          fileName: fileToSend ? fileToSend.name : null, 
+          fileType: fileToSend ? fileToSend.type : null,
+        },
+      ]);
+  
+      setInputMessage("");
+      setIsFileUploaded(false);
+      setLoading(true);
+      setStep(step + 1);
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    };
+  
+    if (fileToSend) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        fileToSend.data = event.target.result; // Prepare file data as base64
+        sendInput();
+      };
+      reader.readAsDataURL(fileToSend); // Read the file as Data URL (base64)
+    } else {
+      sendInput();
+    }
   };
-
-
+  
   return (
     <Box
       bg="lightBackgroundColor"
@@ -210,9 +235,14 @@ const ChatInterface = () => {
             <Box width="100%" key={index} p={5} borderRadius="md">
               <ChatHeader sender={msg.sender} />
               {msg.sender === "user" ? (
-                <Text fontSize="md" mt="1%" ml="5%">
-                  {msg.text}
-                </Text>
+                <Flex flexDirection="column" mt="1%" ml="5%">
+                  <Text fontSize="md">{msg.text}</Text>
+                  {msg.fileName !== null && (
+                    <Text fontSize="sm" mt="1%">
+                      File uploaded: {msg.fileName}
+                    </Text>
+                  )}
+                </Flex>
               ) : msg.type === "clarification" ? (
                 <MarkdownCasing
                   mt="2.5%"
@@ -256,7 +286,7 @@ const ChatInterface = () => {
         )}
       </VStack>
 
-      {step <= 0 &&
+      {step <= 0 && (
         <UserInput
           handleUploadFileClick={handleUploadFileClick}
           fileInputRef={fileInputRef}
@@ -264,13 +294,14 @@ const ChatInterface = () => {
           inputMessage={inputMessage}
           setInputMessage={setInputMessage}
           handleSendMessage={handleSendMessage}
+          isFileUploaded={isFileUploaded}
           position="absolute"
           bottom="2%"
           mt="2%"
           width="50%"
           left="25%"
         />
-      }
+      )}
     </Box>
   );
 };
