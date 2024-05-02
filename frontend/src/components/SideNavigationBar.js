@@ -39,7 +39,14 @@ const SideNavigationBar = () => {
 
   // Function to simulate clicking the hidden file input
   const handleClick = () => {
-    fileInputRef.current.click();
+    // fileInputRef.current.click();
+    toast({
+      title: "Coming soon!",
+      description: "Uploading files globally is not available yet. For now, try uploading a file to the chat instead!",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
   };
 
   const userChatData = [
@@ -118,12 +125,12 @@ const SideNavigationBar = () => {
           <SlCloudUpload size="10%" />
 
           <Text ml="5%">Upload Document</Text>
-          <input
+          {/* <input
             type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
             style={{ display: "none" }} // Hide the input element
-          />
+          /> */}
         </Flex>
         <Flex
           alignItems="center"
