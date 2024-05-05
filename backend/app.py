@@ -35,7 +35,7 @@ def require_api_key():
 def index():
     return jsonify(status="WebSocket server running")
 
-llm_services = {str: LLMService()} # track LLMService instances for each WebSocket connection, mapping s
+llm_services = {str: LLMService} # track LLMService instances for each WebSocket connection, mapping s
 
 
 @socketio.on("send_input")
@@ -64,7 +64,6 @@ def handle_input(data, headers=None):
         # Assuming file_data is in ArrayBuffer format or similar binary format
         # Convert to bytes and save or process as needed
         try:
-
             # Ensure the base64 string has correct padding
             print(f"Length of data before padding: {len(file_data)}")
             padding = len(file_data) % 4

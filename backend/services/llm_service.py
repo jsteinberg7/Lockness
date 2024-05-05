@@ -6,16 +6,15 @@ import pandas as pd
 from dotenv import load_dotenv
 from services.file_dictionary import file_dict
 from services.linting_service import LintingService
+from services.db_service import DbService
 
 
 class LLMService:
     
-    initial_prompt, clarifications, column_data, english_outline, previous_code = None, None, None, None, None
-
+    initial_prompt, clarifications, column_data, english_outline, previous_code, final_code = None, None, None, None, None, None
 
     load_dotenv()
     COHERE_SECRET_KEY = os.getenv('COHERE_SECRET_KEY') # ENSURE THIS IS SET IN YOUR .env FILE
-
 
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,6 +22,39 @@ class LLMService:
     json_system_prompt = open(os.path.join(root_dir, "services", "json_system_prompt.txt"), "r").read().strip()
     co = cohere.Client(COHERE_SECRET_KEY)
 
+    def __init__(self, session_id=None):
+
+        if not session_id: # if no session_id is provided, we can skip loading in the session data
+            return
+
+        self.session_id = session_id
+        self.db_service = DbService()
+        # check if there is a session in db matching the session_id
+        session = self.db_service.get_session(session_id)
+        if session is None: # if no session exists with the id, create a new session in the db with the session_id
+            # if there isn't, create a new session in the db with the session_id
+            self.db_service.create_session(session_id)
+        else: # if there session exists in db, load the session data into the instance variables
+            self.column_data = session.column_data
+            messages = self.db_service.get_messages(session_id)
+            if messages is not None:
+                # load the messages into the instance variables
+                for message in messages:
+                    if message.is_system:
+                        if message.msg_type == "englishOutline":
+                            self.english_outline = message.text
+                        elif message.msg_type == "codeStep":
+                            self.previous_code = "" if self.previous_code is None else self.previous_code
+                            self.previous_code += LLMService.extract_sql_code(message.text) + "\n"
+                        elif message.msg_type == "finalCode":
+                            self.final_code = LLMService.extract_sql_code(message.text)
+                    else: # if the message is not a system message, it is a user message
+                        if message.msg_type == "clarification":
+                            self.initial_prompt = message.text
+                        elif message.msg_type == "englishOutline":
+                            self.clarifications = message.text
+                    
+                            
     @staticmethod
     def extract_sql_code(result):
         return result.split("~~~sql")[1].split("~~~")[0].strip()
