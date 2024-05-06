@@ -1,4 +1,5 @@
 from gevent import monkey
+from services.db_service import DbService
 
 monkey.patch_all()  # monkey patch before any other imports to avoid warnings
 
@@ -35,6 +36,15 @@ def require_api_key():
 def index():
     return jsonify(status="WebSocket server running")
 
+@app.route("/load-session/<session_id>")
+def get_messages(session_id):
+    db_service = DbService()
+    messages = db_service.get_messages(session_id)
+    if not messages:
+        return jsonify({"error": "Session not found"}), 404
+    return jsonify([message.to_dict() for message in messages])
+    
+
 llm_services = {str: LLMService} # track LLMService instances for each WebSocket connection, mapping s
 
 
@@ -42,21 +52,15 @@ llm_services = {str: LLMService} # track LLMService instances for each WebSocket
 def handle_input(data, headers=None):
     # note: "headers" is not used here, but we need the param to accept the api key as a header    
     input = data["input"]
-    msg_type = data["type"]
     step = data.get("step", None)
-    print(
-        f"Received input: {input}, msg_type: {msg_type}, step: {step}"
-    )
-
-    session_id = request.sid
-    input = data.get("input")
-    msg_type = data.get("type")
-    step = data.get("step")
+    session_id = data.get("session_id")
+    requested_msg_type = data.get("requested_msg_type")
     file_data = data.get("fileData", None)
     file_name = data.get("fileName", None)
     file_type = data.get("fileType", None)
+    
 
-    print(f"Received input: {input}, msg_type: {msg_type}, step: {step}, file: {file_name}, file data")
+    print(f"Received input: {input}, requested_msg_type: {requested_msg_type}, step: {step}, file: {file_name}, file data")
 
     # Check if there's a file data and handle it
     if file_data:
@@ -82,20 +86,20 @@ def handle_input(data, headers=None):
     
     # Create or get an existing LLMService instance for the WebSocket session
     if session_id not in llm_services:
-        llm_services[session_id] = LLMService()
+        llm_services[session_id] = LLMService(session_id)
     
     llm_service = llm_services[session_id]
 
-    # Run prompt with input text, msg_type, and step
-    chunks = llm_service.run_prompt(input, msg_type, step)
+    # Run prompt with input text, requested_msg_type, and step
+    chunks = llm_service.run_prompt(input, requested_msg_type, step)
     for chunk in chunks:
         emit(
             "new_message",
-            {"text": chunk, "type": msg_type, "final": False, "step": step},
+            {"text": chunk, "requested_msg_type": requested_msg_type, "final": False, "step": step},
         )
     emit(
         "new_message",
-        {"text": "", "final": True, "type": msg_type, "step": step},
+        {"text": "", "final": True, "requested_msg_type": requested_msg_type, "step": step},
     )
 
 

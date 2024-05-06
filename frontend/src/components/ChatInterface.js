@@ -8,6 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import ChatHeader from "./ChatHeader";
 import CodeStep from "./CodeStep";
@@ -26,6 +27,74 @@ const ChatInterface = () => {
   const [totalSteps, setTotalSteps] = useState(0);
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [socket, setSocket] = useState(null);
+
+  // get session id from url
+  const [sessionId, setSessionId] = useState(window.location.pathname.split("/").pop());
+
+  const backendDomain = window.location.hostname.includes("localhost")
+    ? "http://localhost:5001"
+    : "https://lockness-420607.uc.r.appspot.com";
+
+
+  useEffect(() => {
+    if (!sessionId) {
+      const newSessionId = [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, '0')).join('');
+      setSessionId(newSessionId);
+      window.history.pushState({}, null, `/chat/${newSessionId}`);
+    } else {
+      // Fetching chat history
+      console.log("Fetching chat history");
+      console.log(`${backendDomain}/load-session/${sessionId}`);
+      fetch(`${backendDomain}/load-session/${sessionId}`, {
+        method: "GET",
+        headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
+      }
+      )
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            setError("Failed to load messages.");
+            setLoading(false);
+            toast({
+              title: "Error",
+              description: "Failed to load messages.",
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+            });
+            return;
+          }
+          setMessages(data);
+          // set the message step to the last step
+          if (data.length > 0) {
+            setStep(data[data.length - 1].step);
+          }
+          // set the total steps
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].requested_msg_type === "englishOutline" && data[i].is_system) {
+              calculateTotalSteps(data[i].text);
+              break;
+            }
+          }
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Failed to fetch messages", err);
+          setError("Failed to load messages.");
+          setLoading(false);
+          toast({
+            title: "Error",
+            description: "Failed to load messages.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        });
+    }
+  }, [sessionId]);
+
+  // TODO: try loading chat history from db
+
 
   const toast = useToast();
 
@@ -82,10 +151,7 @@ const ChatInterface = () => {
   };
 
   useEffect(() => {
-    const domain = window.location.hostname.includes("localhost")
-      ? "http://localhost:5001"
-      : "https://lockness-420607.uc.r.appspot.com";
-    const newSocket = io(domain);
+    const newSocket = io(backendDomain);
     setSocket(newSocket);
 
     newSocket.on("new_message", (data) => {
@@ -98,12 +164,12 @@ const ChatInterface = () => {
             ? prevMessages[prevMessages.length - 1]
             : null;
 
-        if (data.type === "englishOutline" && data.final) {
+        if (data.requested_msg_type === "englishOutline" && data.final) {
           // This means we have just gotten the full English Outline, so we can use the latest message to calculate the total steps
           calculateTotalSteps(lastMessage.text);
         }
 
-        if (lastMessage && lastMessage.sender === "bot") {
+        if (lastMessage && lastMessage.is_system) {
           // Update the last bot message
           const updatedLastMessage = {
             ...lastMessage,
@@ -116,8 +182,8 @@ const ChatInterface = () => {
             ...prevMessages,
             {
               text: data.text,
-              sender: "bot",
-              type: data.type,
+              is_system: true,
+              type: data.requested_msg_type,
               step: data.step,
             },
           ];
@@ -149,35 +215,36 @@ const ChatInterface = () => {
   };
 
 
-const handleSendMessage = (context = "") => {
+  const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
       setError("Please enter a message.");
       return;
     }
-  
+
     const input = context ? context : inputMessage;
     const msgType = getStepType();
-  
+
     // Prepare to handle file upload if any
     const fileToSend = isFileUploaded ? files[files.length - 1] : null;
-  
+
     const sendInput = () => {
       // Object to send
       const dataToSend = {
         input: input,
         step: step,
-        type: msgType,
+        requested_msg_type: msgType,
+        session_id: sessionId,
       };
-  
+
       // Include file data if available
       if (fileToSend) {
         dataToSend.fileData = fileToSend.data;  // File data prepared as base64
         dataToSend.fileName = fileToSend.name;
         dataToSend.fileType = fileToSend.type;
       }
-  
+
       socket.emit("send_input", dataToSend);
-  
+
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -185,14 +252,14 @@ const handleSendMessage = (context = "") => {
             (msgType === "clarification" || msgType === "englishOutline")
               ? inputMessage
               : "Looks good, " + ((msgType === "finalCode" ? "generate the full query" : "continue to step " + step) + "..."),
-          sender: "user",
+          is_system: false,
           type: msgType,
           step: step,
-          fileName: fileToSend ? fileToSend.name : null, 
+          fileName: fileToSend ? fileToSend.name : null,
           fileType: fileToSend ? fileToSend.type : null,
         },
       ]);
-  
+
       setInputMessage("");
       setIsFileUploaded(false);
       setLoading(true);
@@ -201,7 +268,7 @@ const handleSendMessage = (context = "") => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     };
-  
+
     if (fileToSend) {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -215,7 +282,7 @@ const handleSendMessage = (context = "") => {
   };
 
   console.log(files);
-  
+
   return (
     <Box
       bg="lightBackgroundColor"
@@ -235,8 +302,8 @@ const handleSendMessage = (context = "") => {
         {messages.map((msg, index) => (
           <Center>
             <Box width="100%" key={index} p={5} borderRadius="md">
-              <ChatHeader sender={msg.sender} />
-              {msg.sender === "user" ? (
+              <ChatHeader is_system={msg.is_system} />
+              {!msg.is_system ? (
                 <Flex flexDirection="column" mt="1%" ml="5%">
                   <Text fontSize="md">{msg.text}</Text>
                   {msg.fileName !== null && (
@@ -245,7 +312,7 @@ const handleSendMessage = (context = "") => {
                     </Text>
                   )}
                 </Flex>
-              ) : msg.type === "clarification" ? (
+              ) : msg.requested_msg_type === "clarification" ? (
                 <MarkdownCasing
                   mt="2.5%"
                   ml="4%"
@@ -257,7 +324,7 @@ const handleSendMessage = (context = "") => {
                   step={step}
                   totalSteps={totalSteps}
                 />
-              ) : msg.type === "englishOutline" ? (
+              ) : msg.requested_msg_type === "englishOutline" ? (
                 <EnglishOutline
                   outlineContent={msg.text}
                   onContinue={handleSendMessage}

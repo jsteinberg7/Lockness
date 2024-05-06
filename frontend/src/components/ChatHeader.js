@@ -3,7 +3,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import defaultProfilePicture from "../assets/defaultProfilePicture.jpeg";
 import logo from "../assets/locknessLogo.png";
 
-const ChatHeader = ({ sender }) => {
+const ChatHeader = ({ is_system }) => {
   return (
     <Flex alignItems="center" justifyContent="start">
       <Box
@@ -11,11 +11,11 @@ const ChatHeader = ({ sender }) => {
         width="40px"
         height="40px"
         borderRadius="50%"
-        backgroundImage={sender === "user" ? defaultProfilePicture : logo}
+        backgroundImage={is_system ? logo : defaultProfilePicture}
         backgroundSize="cover"
       />
       <Text ml="1.5%" size="lg" fontWeight="bold">
-        {sender === "user" ? "You" : "Lockness AI"}
+        {is_system ? "Lockness AI" : "You"}
       </Text>
     </Flex>
   );

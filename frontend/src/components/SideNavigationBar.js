@@ -21,6 +21,7 @@ const SideNavigationBar = () => {
   const fileInputRef = useRef(null);
   const toast = useToast();
   const [file, setFile] = useState(null); // State to store the uploaded file
+  const sessionIds = JSON.parse(localStorage.getItem("sessionIds")) || [];
 
   const handleFileChange = (event) => {
     const file = event.target.files[0]; // Access the file
@@ -49,57 +50,13 @@ const SideNavigationBar = () => {
     });
   };
 
-  const userChatData = [
-    {
-      chatID1: {
-        id: "chatID1",
-        title: "Dialysis spend from 2021 to 2022",
-        chatHistory:
-          "Initial analysis shows a 10% increase in spending compared to previous period.",
-        date: "04/17/2024",
-      },
-    },
-    {
-      chatID2: {
-        id: "chatID2",
+  const userChatData = sessionIds.reverse().map((sessionId) => ({
+    id: sessionId,
+    title: "Id: " + sessionId,
+    chatHistory: "No chat history available. (TODO)",
+    date: "04/17/2024",
+  }));
 
-        title: "Diabetes treatment updates 2024",
-        chatHistory:
-          "New insulin types being considered. More data is needed for decision-making.",
-        date: "04/17/2024",
-      },
-    },
-    {
-      chatID3: {
-        id: "chatID3",
-
-        title: "Healthcare budget review 2024",
-        chatHistory:
-          "Meeting scheduled to discuss potential adjustments due to increased demands.",
-        date: "04/20/2024",
-      },
-    },
-    {
-      chatID4: {
-        id: "chatID4",
-
-        title: "Patient satisfaction survey results 2024",
-        chatHistory:
-          "Overall satisfaction has improved. Detailed reports will follow.",
-        date: "04/25/2024",
-      },
-    },
-    {
-      chatID5: {
-        id: "chatID5",
-
-        title: "Updates on medical equipment procurement",
-        chatHistory:
-          "Negotiations with new suppliers are underway. Looking for better pricing.",
-        date: "04/28/2024",
-      },
-    },
-  ];
   return (
     <Box
       position="fixed"
@@ -137,8 +94,12 @@ const SideNavigationBar = () => {
           justifyContent="left"
           borderRadius="lg"
           onClick={() => {
-            navigate(`/new-chat`);
-            console.log("creating new query");
+            // generate a new 32-long session id
+            const sessionId = [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, '0')).join('');
+            sessionIds.push(sessionId);
+            localStorage.setItem("sessionIds", JSON.stringify(sessionIds));
+            navigate(`/chat/${sessionId}`);
+            console.log("creating new chat");
           }}
           p="6.5%"
           cursor="pointer"
@@ -174,7 +135,6 @@ const SideNavigationBar = () => {
         >
           {userChatData.map((chat, index) => {
             // Since each chat is an object with a dynamic key, let's access the data using Object.values
-            const chatData = Object.values(chat)[0];
             return (
               <Box
                 key={index} // Use index as key, or better, a unique id if available
@@ -184,11 +144,11 @@ const SideNavigationBar = () => {
                 py="3%"
                 cursor="pointer"
                 onClick={() => {
-                  navigate(`/queries?queryId=${chatData.id}`);
+                  navigate(`/chat/${chat.id}`);
                 }}
                 _hover={{ bg: "lightBackgroundColor" }}
               >
-                {chatData.title}
+                {chat.title}
               </Box>
             );
           })}

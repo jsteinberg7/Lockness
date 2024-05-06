@@ -33,7 +33,7 @@ class LLMService:
         session = self.db_service.get_session(session_id)
         if session is None: # if no session exists with the id, create a new session in the db with the session_id
             # if there isn't, create a new session in the db with the session_id
-            self.db_service.create_session(session_id)
+            session = self.db_service.create_session(session_id)
         else: # if there session exists in db, load the session data into the instance variables
             self.column_data = session.column_data
             messages = self.db_service.get_messages(session_id)
@@ -41,17 +41,17 @@ class LLMService:
                 # load the messages into the instance variables
                 for message in messages:
                     if message.is_system:
-                        if message.msg_type == "englishOutline":
+                        if message.requested_msg_type == "englishOutline":
                             self.english_outline = message.text
-                        elif message.msg_type == "codeStep":
+                        elif message.requested_msg_type == "codeStep":
                             self.previous_code = "" if self.previous_code is None else self.previous_code
                             self.previous_code += LLMService.extract_sql_code(message.text) + "\n"
-                        elif message.msg_type == "finalCode":
+                        elif message.requested_msg_type == "finalCode":
                             self.final_code = LLMService.extract_sql_code(message.text)
                     else: # if the message is not a system message, it is a user message
-                        if message.msg_type == "clarification":
+                        if message.requested_msg_type == "clarification":
                             self.initial_prompt = message.text
-                        elif message.msg_type == "englishOutline":
+                        elif message.requested_msg_type == "englishOutline":
                             self.clarifications = message.text
                     
                             
@@ -321,18 +321,19 @@ Please regenerate the query, following the original prompt and format and fixing
         yield final_result
         
         
-        
-    def run_prompt(self, input, msg_type, step):
-        if msg_type == "clarification":
+    def run_prompt(self, input, requested_msg_type, step):
+        # add message to the database for the session
+        self.db_service.create_message(self.session_id, input, requested_msg_type, False)
+        if requested_msg_type == "clarification":
             self.initial_prompt = input
             chunks = self.run_clarification_questions_prompt()
-        elif msg_type == "englishOutline":
+        elif requested_msg_type == "englishOutline":
             # at this point the input is the clarifications the user provides from the previous llm call
             self.clarifications = input
             chunks = self.run_english_overview_prompt()
-        elif msg_type == "codeStep":
+        elif requested_msg_type == "codeStep":
             chunks = self.run_code_step_generation_prompt(step) # note: "prompt" should be the english outline here
-        elif msg_type == "finalCode":
+        elif requested_msg_type == "finalCode":
             chunks = self.run_query_combination_prompt() # note: "prompt" should be the english outline here
         else: 
             raise ValueError("Invalid message type")

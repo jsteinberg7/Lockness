@@ -21,8 +21,8 @@ function App() {
         <Router>
           <Layout>
             <Routes>
-              <Route path="/" element={<Navigate replace to="/new-chat" />} />
-              <Route path="/new-chat" element={<ChatInterface />} />
+              <Route path="/" element={<Navigate replace to="/chat/" />} />
+              <Route path="/chat/*" element={<ChatInterface />} />
               <Route path="/queries" element={<OldChat />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

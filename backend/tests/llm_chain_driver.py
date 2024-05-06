@@ -16,8 +16,8 @@ def get_total_code_steps(english_outline: str) -> int:
 
 # wrapper function around LLMService.run_prompt()
 # modified output with streamed chunks converted to a single string
-def run_prompt_wrapper(input, msg_type, step) -> str: # returns a list of chunks
-    chunks = llm_service.run_prompt(input, msg_type, step)
+def run_prompt_wrapper(input, requested_msg_type, step) -> str: # returns a list of chunks
+    chunks = llm_service.run_prompt(input, requested_msg_type, step)
     output = convert_chunks_to_string(chunks)
     print(output)
     return output
