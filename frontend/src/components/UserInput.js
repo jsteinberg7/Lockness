@@ -96,8 +96,7 @@ const UserInput = ({
         </InputGroup>
         ){" "}
         <Text color="placeHolderColor" fontSize="sm">
-          Lockness AI produces results based on the query and the data it has
-          access to.
+          Lockness is a tool to help researchers build queries for projects involving CMS data.
         </Text>
       </VStack>
     </Flex>

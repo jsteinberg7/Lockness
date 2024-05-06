@@ -283,7 +283,7 @@ const ChatInterface = () => {
         {loading && (
           <VStack justifyContent="center" py="5%">
             <Spinner color="primaryColor" />
-            <Text>Hmmm...</Text>
+            <Text>{totalSteps > 0 && step > totalSteps ? "Generating full query.... This may take a few minutes." : "Hmmm..."}</Text>
           </VStack>
         )}
       </VStack>
