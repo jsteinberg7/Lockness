@@ -350,7 +350,7 @@ const ChatInterface = () => {
                   onContinue={handleSendMessage}
                   totalSteps={totalSteps}
                 />
-              ) : (msg.requested_msg_type === "codeStep" || msg.requested_msg_type === "finalCode" && msg.is_system) ? (
+              ) : ((msg.requested_msg_type === "codeStep" || msg.requested_msg_type === "finalCode") && msg.is_system) ? (
                 < CodeStep
                   content={msg.text}
                   onContinue={handleSendMessage}
