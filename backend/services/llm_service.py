@@ -322,8 +322,6 @@ Please regenerate the query, following the original prompt and format and fixing
         
         
     def run_prompt(self, input, requested_msg_type, step):
-        # add message to the database for the session
-        self.db_service.create_message(self.session_id, input, requested_msg_type, False)
         if requested_msg_type == "clarification":
             self.initial_prompt = input
             chunks = self.run_clarification_questions_prompt()

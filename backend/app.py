@@ -40,9 +40,16 @@ def index():
 def get_messages(session_id):
     db_service = DbService()
     messages = db_service.get_messages(session_id)
+    messages_dict = [message.to_dict() for message in messages]
+    i = -2
+    for message in messages_dict:
+        if not message["is_system"]:
+            i += 1
+        message["step"] = i
+
     if not messages:
-        return jsonify({"error": "Session not found"}), 404
-    return jsonify([message.to_dict() for message in messages])
+        return jsonify({"message": "Session not found"}), 201
+    return jsonify(messages_dict), 200
     
 
 llm_services = {str: LLMService} # track LLMService instances for each WebSocket connection, mapping s
@@ -91,8 +98,12 @@ def handle_input(data, headers=None):
     llm_service = llm_services[session_id]
 
     # Run prompt with input text, requested_msg_type, and step
+    # add message to the database for the session
+    llm_service.db_service.create_message(llm_service.session_id, input, requested_msg_type, False)
     chunks = llm_service.run_prompt(input, requested_msg_type, step)
+    output = ""
     for chunk in chunks:
+        output += chunk
         emit(
             "new_message",
             {"text": chunk, "requested_msg_type": requested_msg_type, "final": False, "step": step},
@@ -101,6 +112,8 @@ def handle_input(data, headers=None):
         "new_message",
         {"text": "", "final": True, "requested_msg_type": requested_msg_type, "step": step},
     )
+    # add output as message in database
+    llm_service.db_service.create_message(llm_service.session_id, output, requested_msg_type, True)
 
 
 if __name__ == "__main__":

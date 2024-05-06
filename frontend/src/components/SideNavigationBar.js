@@ -6,7 +6,7 @@ import {
   VStack,
   useToast
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import { BsDatabaseAdd } from "react-icons/bs";
 import { SlCloudUpload } from "react-icons/sl";
@@ -22,6 +22,11 @@ const SideNavigationBar = () => {
   const toast = useToast();
   const [file, setFile] = useState(null); // State to store the uploaded file
   const sessionIds = JSON.parse(localStorage.getItem("sessionIds")) || [];
+  const [selectedSessionId, setSelectedSessionId] = useState(sessionIds[0] || null);
+  const [userChatData, setUserChatData] = useState([]);
+  const backendDomain = window.location.hostname.includes("localhost")
+    ? "http://localhost:5001"
+    : "https://lockness-420607.uc.r.appspot.com";
 
   const handleFileChange = (event) => {
     const file = event.target.files[0]; // Access the file
@@ -50,12 +55,37 @@ const SideNavigationBar = () => {
     });
   };
 
-  const userChatData = sessionIds.reverse().map((sessionId) => ({
-    id: sessionId,
-    title: "Id: " + sessionId,
-    chatHistory: "No chat history available. (TODO)",
-    date: "04/17/2024",
-  }));
+  useEffect(() => {
+    const fetchDataForSessions = async () => {
+      const sessionsData = await Promise.all(sessionIds.map(async (sessionId) => {
+        const url = `${backendDomain}/load-session/${sessionId}`;
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
+          });
+          if (!response.ok) throw new Error('Failed to fetch');
+          const data = await response.json();
+          const firstMessage = data && data.length > 0 ? data[0].text : "New chat";
+          return {
+            id: sessionId,
+            title: firstMessage,
+            chatHistory: data || "No chat history available.",
+          };
+        } catch (error) {
+          console.error("Failed to fetch messages for session:", sessionId, error);
+          return {
+            id: sessionId,
+            title: `Id: ${sessionId} - Failed to load messages`,
+            chatHistory: "Failed to load messages.",
+          };
+        }
+      }));
+      setUserChatData(sessionsData);
+    };
+
+    fetchDataForSessions();
+  }, [sessionIds]);
 
   return (
     <Box
@@ -96,8 +126,11 @@ const SideNavigationBar = () => {
           onClick={() => {
             // generate a new 32-long session id
             const sessionId = [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, '0')).join('');
-            sessionIds.push(sessionId);
+            // add the new session id to the list of session ids (add to front of list)
+            sessionIds.unshift(sessionId);
+            // save the updated session ids to local storage
             localStorage.setItem("sessionIds", JSON.stringify(sessionIds));
+            setSelectedSessionId(sessionId);
             navigate(`/chat/${sessionId}`);
             console.log("creating new chat");
           }}
@@ -143,10 +176,13 @@ const SideNavigationBar = () => {
                 px="6.5%"
                 py="3%"
                 cursor="pointer"
+                bg={selectedSessionId === chat.id ? "lightBackgroundColor" : "transparent"}
                 onClick={() => {
+                  setSelectedSessionId(chat.id);
                   navigate(`/chat/${chat.id}`);
                 }}
                 _hover={{ bg: "lightBackgroundColor" }}
+                _active={{ bg: "lightBackgroundColor" }}
               >
                 {chat.title}
               </Box>

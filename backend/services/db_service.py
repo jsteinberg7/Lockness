@@ -40,7 +40,6 @@ class DbService:
         self._engine = create_engine(db_url)
         self._session_factory = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=self._engine))
         # if tables are not created, create them
-        # drop all tables
         self.create_tables()
 
     def create_tables(self):
@@ -84,7 +83,7 @@ class DbService:
     def get_messages(self, session_id):
         db_session = self.get_db_session()
         # Querying and ordering messages by 'sent_at' in descending order (newest first)
-        messages = db_session.query(Message).filter(Message.session_id == session_id).order_by(Message.sent_at.desc()).all()
+        messages = db_session.query(Message).filter(Message.session_id == session_id).order_by(Message.sent_at.asc()).all()
         db_session.close()
         return messages
 

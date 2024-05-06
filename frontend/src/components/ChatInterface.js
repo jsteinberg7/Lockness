@@ -8,7 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
 import ChatHeader from "./ChatHeader";
 import CodeStep from "./CodeStep";
@@ -27,9 +27,10 @@ const ChatInterface = () => {
   const [totalSteps, setTotalSteps] = useState(0);
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [socket, setSocket] = useState(null);
+  const location = useLocation();
 
   // get session id from url
-  const [sessionId, setSessionId] = useState(window.location.pathname.split("/").pop());
+  const sessionId = location.pathname.split("/").pop();
 
   const backendDomain = window.location.hostname.includes("localhost")
     ? "http://localhost:5001"
@@ -37,31 +38,49 @@ const ChatInterface = () => {
 
 
   useEffect(() => {
+    // reset fields
+    setMessages([]);
+    setInputMessage("");
+    setError(null);
+    setLoading(false);
+    setFiles([]);
+    setIsFileUploaded(false);
+    setTotalSteps(0);
+    setStep(-1);
+    // TODO: reset socket for new session?
     if (!sessionId) {
       const newSessionId = [...crypto.getRandomValues(new Uint8Array(16))].map(b => b.toString(16).padStart(2, '0')).join('');
-      setSessionId(newSessionId);
+      // update local storage, setting the new session id to the front of the list
+      const sessionIds = JSON.parse(localStorage.getItem("sessionIds")) || [];
+      sessionIds.unshift(newSessionId);
+      localStorage.setItem("sessionIds", JSON.stringify(sessionIds));
+      // update the url
       window.history.pushState({}, null, `/chat/${newSessionId}`);
     } else {
       // Fetching chat history
       console.log("Fetching chat history");
       console.log(`${backendDomain}/load-session/${sessionId}`);
+      setLoading(true);
       fetch(`${backendDomain}/load-session/${sessionId}`, {
         method: "GET",
         headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
-      }
-      )
-        .then(response => response.json())
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch');
+          }
+          if (response.status === 201) {
+            // Handle the case where no session was found
+            console.log("No matching session was found.");
+            return null; // or any other appropriate handling
+          }
+          return response.json();
+        })
         .then(data => {
-          if (data.error) {
-            setError("Failed to load messages.");
+          if (!data) {
+            // If no data received (status was 201), handle appropriately
             setLoading(false);
-            toast({
-              title: "Error",
-              description: "Failed to load messages.",
-              status: "error",
-              duration: 9000,
-              isClosable: true,
-            });
+            setMessages([]);
             return;
           }
           setMessages(data);
@@ -91,7 +110,8 @@ const ChatInterface = () => {
           });
         });
     }
-  }, [sessionId]);
+  }, [sessionId]);  // Ensure sessionId is a dependency of useEffect
+
 
   // TODO: try loading chat history from db
 
@@ -183,7 +203,7 @@ const ChatInterface = () => {
             {
               text: data.text,
               is_system: true,
-              type: data.requested_msg_type,
+              requested_msg_type: data.requested_msg_type,
               step: data.step,
             },
           ];
@@ -200,8 +220,6 @@ const ChatInterface = () => {
     };
   }, []); // Review if dependencies like `getStepType` or others need to be included
 
-  console.log(messages);
-
   const getStepType = (msgStep = step) => {
     if (msgStep === -1) {
       return "clarification";
@@ -213,6 +231,8 @@ const ChatInterface = () => {
       return "codeStep";
     }
   };
+
+  console.log("messages", messages);
 
 
   const handleSendMessage = (context = "") => {
@@ -253,7 +273,7 @@ const ChatInterface = () => {
               ? inputMessage
               : "Looks good, " + ((msgType === "finalCode" ? "generate the full query" : "continue to step " + step) + "..."),
           is_system: false,
-          type: msgType,
+          requested_msg_type: msgType,
           step: step,
           fileName: fileToSend ? fileToSend.name : null,
           fileType: fileToSend ? fileToSend.type : null,
@@ -281,7 +301,7 @@ const ChatInterface = () => {
     }
   };
 
-  console.log(files);
+  // console.log(files);
 
   return (
     <Box
@@ -298,12 +318,12 @@ const ChatInterface = () => {
         overflow="auto"
         height={step <= 0 ? "75%" : "95%"}
       >
-        {messages.length === 0 && <NewChatDesign mt="15%" />}
+        {(messages.length === 0 && !loading) && < NewChatDesign mt="15%" />}
         {messages.map((msg, index) => (
           <Center>
             <Box width="100%" key={index} p={5} borderRadius="md">
               <ChatHeader is_system={msg.is_system} />
-              {!msg.is_system ? (
+              {!msg.is_system && msg.file_name ? (
                 <Flex flexDirection="column" mt="1%" ml="5%">
                   <Text fontSize="md">{msg.text}</Text>
                   {msg.fileName !== null && (
@@ -312,7 +332,7 @@ const ChatInterface = () => {
                     </Text>
                   )}
                 </Flex>
-              ) : msg.requested_msg_type === "clarification" ? (
+              ) : msg.requested_msg_type === "clarification" && msg.is_system ? (
                 <MarkdownCasing
                   mt="2.5%"
                   ml="4%"
@@ -324,20 +344,25 @@ const ChatInterface = () => {
                   step={step}
                   totalSteps={totalSteps}
                 />
-              ) : msg.requested_msg_type === "englishOutline" ? (
+              ) : msg.requested_msg_type === "englishOutline" && msg.is_system ? (
                 <EnglishOutline
                   outlineContent={msg.text}
                   onContinue={handleSendMessage}
                   totalSteps={totalSteps}
                 />
-              ) : (
-                <CodeStep
+              ) : (msg.requested_msg_type === "codeStep" || msg.requested_msg_type === "finalCode" && msg.is_system) ? (
+                < CodeStep
                   content={msg.text}
                   onContinue={handleSendMessage}
                   step={msg.step}
                   totalSteps={totalSteps}
                 />
-              )}
+              )
+                : (
+                  <Text fontSize="md" mt="1%" ml="5%">
+                    {msg.text}
+                  </Text>
+                )}
             </Box>
           </Center>
         ))}
