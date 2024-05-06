@@ -1,8 +1,15 @@
-import { Box, Flex, useToast } from "@chakra-ui/react";
+import { Box, Flex, useToast, Button } from "@chakra-ui/react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import MarkdownButton from "./MarkdownButton";
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import { twilight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CopyIcon } from '@chakra-ui/icons';
+
+SyntaxHighlighter.registerLanguage('sql', sql);
 
 const MarkdownCasing = ({
   markdownContent,
@@ -12,10 +19,43 @@ const MarkdownCasing = ({
   totalSteps,
   ...rest
 }) => {
-
   const toast = useToast();
 
-  console.log("MarkdownCasing: current step, total steps", step, totalSteps);
+  const newTheme = {
+    ...ChakraUIRenderer(),
+    code({ node, inline, className, children, ...props }) {
+      const match = /language-(\w+)/.exec(className || '')
+      return !inline && match ? (
+        <Box position="relative">
+          <SyntaxHighlighter
+            style={twilight}
+            language={match[1]}
+            PreTag="div"
+            {...props}
+          >
+            {String(children).replace(/\n$/, '')}
+          </SyntaxHighlighter>
+          <CopyToClipboard text={String(children).replace(/\n$/, '')}
+            onCopy={() => toast({
+              title: "Code Copied",
+              description: "Code has been copied to clipboard",
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            })}
+          >
+            <Button size="xs" position="absolute" top="0" right="0" m="2">
+              <CopyIcon mr="2" /> Copy Code
+            </Button>
+          </CopyToClipboard>
+        </Box>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      )
+    }
+  };
 
   return (
     <Box
@@ -31,7 +71,7 @@ const MarkdownCasing = ({
         px="10"
         backgroundColor="black"
         borderRadius="xl"
-        components={ChakraUIRenderer()}
+        components={newTheme}
         children={markdownContent}
       />
       {msgType !== "clarification" && (
