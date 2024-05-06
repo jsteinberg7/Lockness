@@ -175,13 +175,14 @@ const ChatInterface = () => {
         dataToSend.fileType = fileToSend.type;
       }
 
+
       socket.emit("send_input", dataToSend);
 
       setMessages((prevMessages) => [   // handle "explanation" type here?? what to do?
         ...prevMessages,
         {
           text:
-            msgType === "clarification" || msgType === "englishOutline"
+            msgType === "clarification" || msgType === "englishOutline" || msgType === "explanation"
               ? inputMessage
               : "Looks good, " +
                 ((msgType === "finalCode"
@@ -259,8 +260,8 @@ const ChatInterface = () => {
                   onContinue={handleSendMessage}
                   step={step}
                   totalSteps={totalSteps}
-                //   inputMessage={inputMessage}
-                //   setInputMessag={setInputMessage}
+                  inputMessage={inputMessage}
+                  setInputMessage={setInputMessage}
                   handleSendMessage={handleSendMessage}
                 />
               ) : msg.type === "englishOutline" ? (

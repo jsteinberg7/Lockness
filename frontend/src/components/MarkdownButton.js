@@ -21,6 +21,7 @@ const MarkdownButton = ({ onClick, ...rest }) => {
       _hover={{
         transform: "scale(1.05)",
       }}
+      isDisabled={rest.isDisabled}
     >
       <Text color={rest.textColor}>{rest.buttonText}</Text>
     </Button>

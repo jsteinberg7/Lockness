@@ -6,16 +6,24 @@ import {
   Text,
   Textarea,
   VStack,
+  Center,
+  Box,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
+import ChatHeader from "./ChatHeader";
 
 const AskQuestionInput = ({
   setIsAskingQuestion,
-  handleSendMessage = Function,
+  inputMessage,
+  handleSendMessage,
+  setInputMessage ,
   ...rest
 }) => {
-  const [inputMessage, setInputMessage] = useState("");
+
+	console.log("ASK QUESTIO setInputMessage type:", typeof setInputMessage);
+
+//   const [inputMessage, setInputMessage] = useState("");
 
   return (
     <VStack spacing={5} width="100%" mt={rest.mt}>
@@ -61,6 +69,7 @@ const AskQuestionInput = ({
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
+				console.log(inputMessage);
               handleSendMessage("", "explanation");
               e.preventDefault();
             }
@@ -71,7 +80,7 @@ const AskQuestionInput = ({
           size="lg"
           color="primaryColor"
           onClick={(e) => {
-            handleSendMessage();
+            handleSendMessage("", "explanation");
             e.preventDefault();
           }}
           ml="1rem" // Adjust the margin to align the button as in the design

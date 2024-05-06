@@ -89,6 +89,18 @@ class LLMService:
         for chunk in LLMService.stream_prompt(full_prompt):
             yield chunk
 
+
+    def run_explanation_prompt(self, input):
+        full_prompt = f"""The user wants to run a query on vrdc ccw that is described in the following way:
+        {self.initial_prompt}
+
+        Answer this question in a concise and straightforward manner: {input}
+                """
+
+        for chunk in LLMService.stream_prompt(full_prompt):
+            yield chunk
+
+
     # Generates a plain English outline of how to approach the query described in prompt
     
     def run_english_overview_prompt(self):
@@ -302,6 +314,8 @@ Please regenerate the query, following the original prompt and format and fixing
             chunks = self.run_code_step_generation_prompt(step) # note: "prompt" should be the english outline here
         elif msg_type == "finalCode":
             chunks = self.run_query_combination_prompt() # note: "prompt" should be the english outline here
+        elif msg_type == "explanation":
+            chunks = self.run_explanation_prompt(input)
         else: 
             raise ValueError("Invalid message type")
         

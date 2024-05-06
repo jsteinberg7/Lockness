@@ -29,17 +29,15 @@ const MarkdownCasing = ({
   onContinue = () => {},
   step,
   totalSteps,
-  // inputMessage,
-  // setInputMessage,
+  inputMessage,
+  setInputMessage,
   handleSendMessage,
   ...rest
 }) => {
   const toast = useToast();
   const [isAskingQuestion, setIsAskingQuestion] = useState(false);
   const messagesEndRef = useRef(null);
-  
-
-  
+  console.log("MARKDOWN: setInputMessage type:", typeof setInputMessage);
 
 
   const newTheme = {
@@ -102,15 +100,13 @@ const MarkdownCasing = ({
       {isAskingQuestion && (
         <AskQuestionInput
           setIsAskingQuestion={setIsAskingQuestion}
-          // inputMessage={inputMessage}
-          // setInputMessage={setInputMessage}
+          inputMessage={inputMessage}
+          setInputMessage={setInputMessage}
           handleSendMessage={handleSendMessage}
           mt="5%"
         />
-        
       )}
       <div ref={messagesEndRef} />
-
 
       <Text>{isAskingQuestion}</Text>
       {msgType !== "clarification" && (
@@ -119,6 +115,7 @@ const MarkdownCasing = ({
             width="150px"
             backgroundColor="lightBackgroundColor"
             buttonText="Fix"
+            isDisabled={isAskingQuestion}
             onClick={() => {
               console.log("Something's wrong..."); // TODO: Show input box, prompt llm to fix the output
               setIsAskingQuestion(false);
@@ -138,12 +135,13 @@ const MarkdownCasing = ({
             width="150px"
             backgroundColor="lightBackgroundColor"
             buttonText="Ask question"
+            isDisabled={isAskingQuestion}
             onClick={() => {
               console.log("Ask a question..."); // TODO: Prompt llm to explain the output
               setIsAskingQuestion(true);
               setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 10);
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+              }, 10);
 
               // toast({
               //   title: "Coming soon!",
@@ -161,6 +159,7 @@ const MarkdownCasing = ({
               width="200px"
               backgroundColor="primaryColor"
               textColor="darkBackgroundColor"
+              isDisabled={isAskingQuestion}
               buttonText={
                 step === totalSteps
                   ? "Generate full query"
