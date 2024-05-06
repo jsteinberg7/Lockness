@@ -149,18 +149,18 @@ const ChatInterface = () => {
   };
 
 
-const handleSendMessage = (context = "") => {
+  const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
       setError("Please enter a message.");
       return;
     }
-  
+
     const input = context ? context : inputMessage;
     const msgType = getStepType();
-  
+
     // Prepare to handle file upload if any
     const fileToSend = isFileUploaded ? files[files.length - 1] : null;
-  
+
     const sendInput = () => {
       // Object to send
       const dataToSend = {
@@ -168,16 +168,16 @@ const handleSendMessage = (context = "") => {
         step: step,
         type: msgType,
       };
-  
+
       // Include file data if available
       if (fileToSend) {
         dataToSend.fileData = fileToSend.data;  // File data prepared as base64
         dataToSend.fileName = fileToSend.name;
         dataToSend.fileType = fileToSend.type;
       }
-  
+
       socket.emit("send_input", dataToSend);
-  
+
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -188,11 +188,11 @@ const handleSendMessage = (context = "") => {
           sender: "user",
           type: msgType,
           step: step,
-          fileName: fileToSend ? fileToSend.name : null, 
+          fileName: fileToSend ? fileToSend.name : null,
           fileType: fileToSend ? fileToSend.type : null,
         },
       ]);
-  
+
       setInputMessage("");
       setIsFileUploaded(false);
       setLoading(true);
@@ -201,7 +201,7 @@ const handleSendMessage = (context = "") => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     };
-  
+
     if (fileToSend) {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -215,7 +215,7 @@ const handleSendMessage = (context = "") => {
   };
 
   console.log(files);
-  
+
   return (
     <Box
       bg="lightBackgroundColor"
@@ -287,7 +287,6 @@ const handleSendMessage = (context = "") => {
           </VStack>
         )}
       </VStack>
-
       {step <= 0 && (
         <UserInput
           handleUploadFileClick={handleUploadFileClick}
@@ -297,6 +296,7 @@ const handleSendMessage = (context = "") => {
           setInputMessage={setInputMessage}
           handleSendMessage={handleSendMessage}
           isFileUploaded={isFileUploaded}
+          placeholderText={step < 0 ? "Enter new research prompt here..." : "Answer the clarification questions here..."}
           position="absolute"
           bottom="2%"
           mt="2%"
