@@ -22,6 +22,7 @@ const ChatInterface = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingSession, setLoadingSession] = useState(false);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
   const [totalSteps, setTotalSteps] = useState(0);
@@ -60,7 +61,7 @@ const ChatInterface = () => {
       // Fetching chat history
       console.log("Fetching chat history");
       console.log(`${backendDomain}/load-session/${sessionId}`);
-      setLoading(true);
+      setLoadingSession(true);
       fetch(`${backendDomain}/load-session/${sessionId}`, {
         method: "GET",
         headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
@@ -80,6 +81,7 @@ const ChatInterface = () => {
           if (!data) {
             // If no data received (status was 201), handle appropriately
             setLoading(false);
+            setLoadingSession(false);
             setMessages([]);
             return;
           }
@@ -96,11 +98,13 @@ const ChatInterface = () => {
             }
           }
           setLoading(false);
+          setLoadingSession(false);
         })
         .catch(err => {
           console.error("Failed to fetch messages", err);
           setError("Failed to load messages.");
           setLoading(false);
+          setLoadingSession(false);
           toast({
             title: "Error",
             description: "Failed to load messages.",
@@ -318,7 +322,7 @@ const ChatInterface = () => {
         overflow="auto"
         height={step <= 0 ? "75%" : "95%"}
       >
-        {(messages.length === 0 && !loading) && < NewChatDesign mt="15%" />}
+        {(messages.length === 0 && !loadingSession) && < NewChatDesign mt="15%" />}
         {messages.map((msg, index) => (
           <Center>
             <Box width="100%" key={index} p={5} borderRadius="md">
@@ -376,6 +380,12 @@ const ChatInterface = () => {
           <VStack justifyContent="center" py="5%">
             <Spinner color="primaryColor" />
             <Text>Hmmm...</Text>
+          </VStack>
+        )}
+        {loadingSession && (
+          <VStack justifyContent="center" py="5%">
+            <Spinner color="primaryColor" />
+            <Text>Loading chat...</Text>
           </VStack>
         )}
       </VStack>
