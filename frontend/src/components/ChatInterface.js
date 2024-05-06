@@ -148,19 +148,18 @@ const ChatInterface = () => {
     }
   };
 
-
-const handleSendMessage = (context = "") => {
+  const handleSendMessage = (context = "", type = "") => {
     if (!inputMessage.trim() && !context.trim()) {
       setError("Please enter a message.");
       return;
     }
-  
+
     const input = context ? context : inputMessage;
-    const msgType = getStepType();
-  
+    const msgType = type !== "" ? type : getStepType();
+
     // Prepare to handle file upload if any
     const fileToSend = isFileUploaded ? files[files.length - 1] : null;
-  
+
     const sendInput = () => {
       // Object to send
       const dataToSend = {
@@ -168,31 +167,35 @@ const handleSendMessage = (context = "") => {
         step: step,
         type: msgType,
       };
-  
+
       // Include file data if available
       if (fileToSend) {
-        dataToSend.fileData = fileToSend.data;  // File data prepared as base64
+        dataToSend.fileData = fileToSend.data; // File data prepared as base64
         dataToSend.fileName = fileToSend.name;
         dataToSend.fileType = fileToSend.type;
       }
-  
+
       socket.emit("send_input", dataToSend);
-  
-      setMessages((prevMessages) => [
+
+      setMessages((prevMessages) => [   // handle "explanation" type here?? what to do?
         ...prevMessages,
         {
           text:
-            (msgType === "clarification" || msgType === "englishOutline")
+            msgType === "clarification" || msgType === "englishOutline"
               ? inputMessage
-              : "Looks good, " + ((msgType === "finalCode" ? "generate the full query" : "continue to step " + step) + "..."),
+              : "Looks good, " +
+                ((msgType === "finalCode"
+                  ? "generate the full query"
+                  : "continue to step " + step) +
+                  "..."),
           sender: "user",
           type: msgType,
           step: step,
-          fileName: fileToSend ? fileToSend.name : null, 
+          fileName: fileToSend ? fileToSend.name : null,
           fileType: fileToSend ? fileToSend.type : null,
         },
       ]);
-  
+
       setInputMessage("");
       setIsFileUploaded(false);
       setLoading(true);
@@ -201,7 +204,7 @@ const handleSendMessage = (context = "") => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     };
-  
+
     if (fileToSend) {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -215,7 +218,7 @@ const handleSendMessage = (context = "") => {
   };
 
   console.log(files);
-  
+
   return (
     <Box
       bg="lightBackgroundColor"
@@ -256,6 +259,9 @@ const handleSendMessage = (context = "") => {
                   onContinue={handleSendMessage}
                   step={step}
                   totalSteps={totalSteps}
+                //   inputMessage={inputMessage}
+                //   setInputMessag={setInputMessage}
+                  handleSendMessage={handleSendMessage}
                 />
               ) : msg.type === "englishOutline" ? (
                 <EnglishOutline
