@@ -65,6 +65,10 @@ CREATE USER lockness WITH PASSWORD '{password}';
 
 Deploy the frontend to Vercel
 ```bash
+cd frontend
+```
+
+```bash
 vercel --prod   
 ```
 
