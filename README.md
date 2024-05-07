@@ -59,6 +59,22 @@ CREATE DATABASE lockness;
 CREATE USER lockness WITH PASSWORD '{password}';
 ```
 
+## Deployment
+
+### Frontend
+
+Deploy the frontend to Vercel
+```bash
+vercel --prod   
+```
+
+### Backend
+
+Deploy the backend to Heroku
+```bash
+git subtree push --prefix backend heroku main 
+```
+
 ## Contributing
 
 For all major features, create a new feature branch. When finished testing, merge into the `main` branch.
