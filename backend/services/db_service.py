@@ -40,7 +40,7 @@ class Message(Base):
 
 class DbService:
     def __init__(self):
-        db_url = os.getenv("DATABASE_URL") if os.getenv("DATABASE_URL") else f'postgresql://postgres:{os.getenv("DB_PASS")}@localhost/lockness' 
+        db_url = os.getenv("DATABASE_URL").replace("postgres", "postgresql") if os.getenv("DATABASE_URL") else f'postgresql://postgres:{os.getenv("DB_PASS")}@localhost/lockness' 
         self._engine = create_engine(db_url)
         self._session_factory = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=self._engine))
         # if tables are not created, create them
