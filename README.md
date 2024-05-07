@@ -1,6 +1,66 @@
-Create a query using the following table to determine the average FirstName length in the table: CREATE TABLE Persons ( PersonID int, LastName varchar(255), FirstName varchar(255), Address varchar(255), City varchar(255) );
+## About
 
-Yes that is the goal, no constraints, there should be no varchar limit, no empty strings, yes SQL code, there are no security constraits, yes personID is unique, the table structure is fixed yes, this is a one time report, there is no specific formatting.
+Lockness is a tool that helps researchers write queries more efficiently.
 
-I need help analyzing some data related to medical procedures, but I'm not sure about all the details yet. Can you provide an outline of the steps needed to look at billing amounts for certain procedures in a specific timeframe and location? Let me know if you need any other information from me to generate the outline.
+## Getting Started
+
+### Running the frontend
+
+1. Install the dependencies
+```bash
+cd frontend
+npm install
+```
+
+2. Start the frontend
+```bash
+npm start
+```
+
+### Running the backend
+
+1. Set up the virtual environment
+```bash
+cd backend
+python3 -m venv venv
+```
+
+2. Activate the virtual environment
+```bash
+source venv/bin/activate
+```
+
+3. Install the dependencies
+```bash
+pip install -r requirements.txt
+```
+
+4. Start the backend
+```bash
+python app.py
+```
+
+### Starting the database
+
+1. Install postgresql
+```bash
+brew install postgresql
+```
+
+2. Start the postgresql server
+```bash
+brew services start postgresql
+```
+
+3. Create the necessary db/user (run at db_url = 'postgresql://postgres:{password}@localhost/lockness')
+```bash
+psql postgres
+CREATE DATABASE lockness;
+CREATE USER lockness WITH PASSWORD '{password}';
+```
+
+## Contributing
+
+For all major features, create a new feature branch. When finished testing, merge into the `main` branch.
+
 
