@@ -1,7 +1,7 @@
-import { Button, Text } from "@chakra-ui/react";
 import React from "react";
+import { Button, Text } from "@chakra-ui/react";
 
-const MarkdownButton = ({ onClick, textColor, buttonText, backgroundColor, ...rest }) => {
+const MarkdownButton = ({ onClick, textColor, buttonText, ...rest }) => {
   return (
     <Button
       onClick={() => {
@@ -9,11 +9,11 @@ const MarkdownButton = ({ onClick, textColor, buttonText, backgroundColor, ...re
         onClick(); // Make sure to call the onClick prop if it's provided
       }}
       _active={{
-        backgroundColor: backgroundColor,
+        backgroundColor: rest.backgroundColor,
       }}
       _focus={{
         boxShadow: "none",
-        backgroundColor: backgroundColor,
+        backgroundColor: rest.backgroundColor,
       }}
       _hover={{
         transform: "scale(1.05)",

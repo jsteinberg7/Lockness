@@ -59,10 +59,6 @@ const MarkdownCasing = ({
 
   return (
     <Box
-      mt={rest.mt}
-      ml={rest.ml}
-      py={rest.py}
-      px={rest.px}
       backgroundColor="darkBackgroundColor"
       borderRadius="xl"
       {...rest}
