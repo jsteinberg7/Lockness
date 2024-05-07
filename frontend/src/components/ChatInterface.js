@@ -238,7 +238,6 @@ const ChatInterface = () => {
 
   console.log("messages", messages);
 
-
   const handleSendMessage = (context = "") => {
     if (!inputMessage.trim() && !context.trim()) {
       setError("Please enter a message.");
@@ -379,7 +378,7 @@ const ChatInterface = () => {
         {loading && (
           <VStack justifyContent="center" py="5%">
             <Spinner color="primaryColor" />
-            <Text>Hmmm...</Text>
+            <Text>{totalSteps > 0 && step > totalSteps ? "Generating full query.... This may take a few minutes." : "Hmmm..."}</Text>
           </VStack>
         )}
         {loadingSession && (
@@ -389,7 +388,6 @@ const ChatInterface = () => {
           </VStack>
         )}
       </VStack>
-
       {step <= 0 && (
         <UserInput
           handleUploadFileClick={handleUploadFileClick}
@@ -399,6 +397,7 @@ const ChatInterface = () => {
           setInputMessage={setInputMessage}
           handleSendMessage={handleSendMessage}
           isFileUploaded={isFileUploaded}
+          placeholderText={step < 0 ? "Enter new research prompt here..." : "Answer the clarification questions here..."}
           position="absolute"
           bottom="2%"
           mt="2%"
