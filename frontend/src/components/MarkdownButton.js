@@ -1,28 +1,26 @@
 import { Button, Text } from "@chakra-ui/react";
 import React from "react";
 
-const MarkdownButton = ({ onClick, ...rest }) => {
+const MarkdownButton = ({ onClick, textColor, buttonText, backgroundColor, ...rest }) => {
   return (
     <Button
-      ml={rest.ml}
       onClick={() => {
         console.log("Turning on editing for this outline");
         onClick(); // Make sure to call the onClick prop if it's provided
       }}
-      width={rest.width}
-      backgroundColor={rest.backgroundColor}
       _active={{
-        backgroundColor: rest.backgroundColor,
+        backgroundColor: backgroundColor,
       }}
       _focus={{
         boxShadow: "none",
-        backgroundColor: rest.backgroundColor,
+        backgroundColor: backgroundColor,
       }}
       _hover={{
         transform: "scale(1.05)",
       }}
+      {...rest}
     >
-      <Text color={rest.textColor}>{rest.buttonText}</Text>
+      <Text color={textColor}>{buttonText}</Text>
     </Button>
   );
 };

@@ -21,11 +21,8 @@ const UserInput = ({
 }) => {
   return (
     <Flex
-      position={rest.position}
-      bottom={rest.bottom}
       justifyContent="center"
-      width={rest.width}
-      left={rest.left}
+      {...rest}
     >
       <VStack spacing={5} width="100%">
         (

@@ -65,6 +65,7 @@ const MarkdownCasing = ({
       px={rest.px}
       backgroundColor="darkBackgroundColor"
       borderRadius="xl"
+      {...rest}
     >
       <ReactMarkdown
         py="5"
