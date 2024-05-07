@@ -16,6 +16,7 @@ const UserInput = ({
   inputMessage,
   setInputMessage,
   handleSendMessage,
+  placeholderText,
   ...rest
 }) => {
   return (
@@ -37,11 +38,11 @@ const UserInput = ({
             borderRadius="lg"
             height="50%"
           >
-              {isFileUploaded ? (
-                <CheckIcon color="black" />
-              ) : (
-                <AttachmentIcon color="black" />
-              )}
+            {isFileUploaded ? (
+              <CheckIcon color="black" />
+            ) : (
+              <AttachmentIcon color="black" />
+            )}
             <input
               type="file"
               ref={fileInputRef}
@@ -55,10 +56,7 @@ const UserInput = ({
             onChange={(e) => setInputMessage(e.target.value)}
             bg="darkBackgroundColor"
             placeholder={
-              //messages.length === 0
-              //?
-              "Enter new research prompt here..."
-              //: "Message Lockness..."
+              placeholderText
             }
             style={{
               background: "darkBackgroundColor",
@@ -98,8 +96,7 @@ const UserInput = ({
         </InputGroup>
         ){" "}
         <Text color="placeHolderColor" fontSize="sm">
-          Lockness AI produces results based on the query and the data it has
-          access to.
+          Lockness is a tool to help researchers build queries for projects involving CMS data.
         </Text>
       </VStack>
     </Flex>

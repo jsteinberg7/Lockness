@@ -132,9 +132,7 @@ const ChatInterface = () => {
     return () => {
       newSocket.close();
     };
-  }, []); // Review if dependencies like `getStepType` or others need to be included
-
-  console.log(messages);
+  }, [setInputMessage]); // Review if dependencies like `getStepType` or others need to be included
 
   const getStepType = (msgStep = step) => {
     if (msgStep === -1) {
@@ -148,11 +146,17 @@ const ChatInterface = () => {
     }
   };
 
-  const handleSendMessage = (context = "", type = "") => {
+  const handleSendMessage = (context = "", type = "", tempInput = "") => {
+    const effectiveInput = tempInput === "" ? inputMessage : tempInput;
+    setInputMessage(effectiveInput);
+
     if (!inputMessage.trim() && !context.trim()) {
       setError("Please enter a message.");
       return;
     }
+
+    console.log(inputMessage);
+    console.log(type);
 
     const input = context ? context : inputMessage;
     const msgType = type !== "" ? type : getStepType();
@@ -175,14 +179,15 @@ const ChatInterface = () => {
         dataToSend.fileType = fileToSend.type;
       }
 
-
       socket.emit("send_input", dataToSend);
 
-      setMessages((prevMessages) => [   // handle "explanation" type here?? what to do?
+      setMessages((prevMessages) => [
         ...prevMessages,
         {
           text:
-            msgType === "clarification" || msgType === "englishOutline" || msgType === "explanation"
+            msgType === "clarification" ||
+            msgType === "englishOutline" ||
+            msgType === "explanation"
               ? inputMessage
               : "Looks good, " +
                 ((msgType === "finalCode"
@@ -200,7 +205,9 @@ const ChatInterface = () => {
       setInputMessage("");
       setIsFileUploaded(false);
       setLoading(true);
-      setStep(step + 1);
+      if (type !== "explanation") {
+        setStep(step + 1);
+      }
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
@@ -217,8 +224,6 @@ const ChatInterface = () => {
       sendInput();
     }
   };
-
-  console.log(files);
 
   return (
     <Box
@@ -249,13 +254,13 @@ const ChatInterface = () => {
                     </Text>
                   )}
                 </Flex>
-              ) : msg.type === "clarification" ? (
+              ) : msg.type === "clarification" || msg.type === "explanation" ? (
                 <MarkdownCasing
                   mt="2.5%"
                   ml="4%"
                   py="5"
                   px="10"
-                  msgType="clarification"
+                  msgType={msg.type}
                   markdownContent={msg.text}
                   onContinue={handleSendMessage}
                   step={step}
@@ -290,11 +295,14 @@ const ChatInterface = () => {
         {loading && (
           <VStack justifyContent="center" py="5%">
             <Spinner color="primaryColor" />
-            <Text>Hmmm...</Text>
+            <Text>
+              {totalSteps > 0 && step > totalSteps
+                ? "Generating full query.... This may take a few minutes."
+                : "Hmmm..."}
+            </Text>
           </VStack>
         )}
       </VStack>
-
       {step <= 0 && (
         <UserInput
           handleUploadFileClick={handleUploadFileClick}
@@ -304,6 +312,11 @@ const ChatInterface = () => {
           setInputMessage={setInputMessage}
           handleSendMessage={handleSendMessage}
           isFileUploaded={isFileUploaded}
+          placeholderText={
+            step < 0
+              ? "Enter new research prompt here..."
+              : "Answer the clarification questions here..."
+          }
           position="absolute"
           bottom="2%"
           mt="2%"

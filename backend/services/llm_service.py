@@ -95,6 +95,8 @@ class LLMService:
         {self.initial_prompt}
 
         Answer this question in a concise and straightforward manner: {input}
+
+        Output the content/code in CommonMark Markdown format, divided into steps, using h5 for step headers. Do not use any Markdown headers besides h5 (#####) for step headers.
                 """
 
         for chunk in LLMService.stream_prompt(full_prompt):

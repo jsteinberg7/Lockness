@@ -26,19 +26,15 @@ SyntaxHighlighter.registerLanguage("sql", sql);
 const MarkdownCasing = ({
   markdownContent,
   msgType,
-  onContinue = () => {},
+  onContinue = Function,
   step,
   totalSteps,
-  inputMessage,
-  setInputMessage,
   handleSendMessage,
   ...rest
 }) => {
   const toast = useToast();
   const [isAskingQuestion, setIsAskingQuestion] = useState(false);
   const messagesEndRef = useRef(null);
-  console.log("MARKDOWN: setInputMessage type:", typeof setInputMessage);
-
 
   const newTheme = {
     ...ChakraUIRenderer(),
@@ -100,16 +96,13 @@ const MarkdownCasing = ({
       {isAskingQuestion && (
         <AskQuestionInput
           setIsAskingQuestion={setIsAskingQuestion}
-          inputMessage={inputMessage}
-          setInputMessage={setInputMessage}
-          handleSendMessage={handleSendMessage}
+          onContinue={onContinue}
           mt="5%"
         />
       )}
       <div ref={messagesEndRef} />
 
-      <Text>{isAskingQuestion}</Text>
-      {msgType !== "clarification" && (
+      {msgType !== "clarification"  && (
         <Flex justifyContent="end" alignItems="center" mt="3%" mb="1%">
           <MarkdownButton
             width="150px"
@@ -167,7 +160,7 @@ const MarkdownCasing = ({
               }
               onClick={() => {
                 setIsAskingQuestion(false);
-                onContinue(markdownContent);
+                onContinue(markdownContent, "");
               }}
               ml="2.5%"
             />

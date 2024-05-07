@@ -13,17 +13,8 @@ import {
 import { useState } from "react";
 import ChatHeader from "./ChatHeader";
 
-const AskQuestionInput = ({
-  setIsAskingQuestion,
-  inputMessage,
-  handleSendMessage,
-  setInputMessage ,
-  ...rest
-}) => {
-
-	console.log("ASK QUESTIO setInputMessage type:", typeof setInputMessage);
-
-//   const [inputMessage, setInputMessage] = useState("");
+const AskQuestionInput = ({ setIsAskingQuestion, onContinue, ...rest }) => {
+  const [inputMessage, setInputMessage] = useState("");
 
   return (
     <VStack spacing={5} width="100%" mt={rest.mt}>
@@ -69,9 +60,11 @@ const AskQuestionInput = ({
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
-				console.log(inputMessage);
-              handleSendMessage("", "explanation");
-              e.preventDefault();
+              e.preventDefault(); // Prevent default form submission behavior
+              console.log("input question: " + inputMessage);
+              onContinue("", "explanation", inputMessage); // Use inputMessage before clearing it
+              setInputMessage(""); // Clear after using it
+              setIsAskingQuestion(false);
             }
           }}
         />
@@ -80,8 +73,11 @@ const AskQuestionInput = ({
           size="lg"
           color="primaryColor"
           onClick={(e) => {
-            handleSendMessage("", "explanation");
-            e.preventDefault();
+            e.preventDefault(); // Prevent default form submission behavior
+            console.log("input question: " + inputMessage);
+            onContinue("", "explanation", inputMessage); // Use inputMessage before clearing it
+            setInputMessage(""); // Clear after using it
+            setIsAskingQuestion(false);
           }}
           ml="1rem" // Adjust the margin to align the button as in the design
           borderRadius="lg"
@@ -91,19 +87,19 @@ const AskQuestionInput = ({
         </Button>
 
         {/* <Button
-          size="lg"
-          color="primaryColor"
-          onClick={(e) => {
-            handleSendMessage();
-            e.preventDefault();
-          }}
-          ml="1rem" // Adjust the margin to align the button as in the design
-          borderRadius="lg"
-          height="50%"
-          isDisabled={inputMessage === ""}
-        >
-          <ArrowUpIcon color="black" />
-        </Button> */}
+		size="lg"
+		color="primaryColor"
+		onClick={(e) => {
+		  handleSendMessage();
+		  e.preventDefault();
+		}}
+		ml="1rem" // Adjust the margin to align the button as in the design
+		borderRadius="lg"
+		height="50%"
+		isDisabled={inputMessage === ""}
+	  >
+		<ArrowUpIcon color="black" />
+	  </Button> */}
       </InputGroup>
       ){" "}
     </VStack>
