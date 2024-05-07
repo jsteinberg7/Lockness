@@ -192,6 +192,7 @@ const SideNavigationBar = () => {
       </VStack>
 
       <Profile
+        bg="darkBackgroundColor"
         bottom="5"
         width="13vw"
         profilePicture={defaultProfilePicture}

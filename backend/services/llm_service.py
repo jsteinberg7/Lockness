@@ -335,6 +335,5 @@ Please regenerate the query, following the original prompt and format and fixing
             chunks = self.run_query_combination_prompt() # note: "prompt" should be the english outline here
         else: 
             raise ValueError("Invalid message type")
-        
         for chunk in chunks:
             yield chunk

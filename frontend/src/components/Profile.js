@@ -5,7 +5,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 const Profile = ({ authAccountName, profilePicture, ...rest }) => {
 
   return (
-    <Box position="absolute" bottom={rest.bottom} width={rest.width}>
+    <Box position="absolute" {...rest}>
       <Flex alignItems="center" justifyContent="space-between">
         <Flex alignItems="center" justifyContent="start" width="80%">
           <Box
