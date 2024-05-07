@@ -26,7 +26,7 @@ const SideNavigationBar = () => {
   const [userChatData, setUserChatData] = useState([]);
   const backendDomain = window.location.hostname.includes("localhost")
     ? "http://localhost:5001"
-    : "https://lockness-420607.uc.r.appspot.com";
+    : "https://lockness-7a7deea4b2f5.herokuapp.com";
 
   const handleFileChange = (event) => {
     const file = event.target.files[0]; // Access the file
