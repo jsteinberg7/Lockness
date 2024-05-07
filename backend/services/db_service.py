@@ -5,6 +5,9 @@ from datetime import datetime, timezone
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
                         Text, create_engine)
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker, declarative_base
+from dotenv import load_dotenv
+
+load_dotenv()
 
 Base = declarative_base()
 
@@ -37,7 +40,7 @@ class Message(Base):
 
 class DbService:
     def __init__(self):
-        db_url = f'postgresql://postgres:{os.environ.get("DB_PASS")}@localhost/lockness'
+        db_url = f'postgresql://postgres:{os.getenv("DB_PASS")}@localhost/lockness'
         self._engine = create_engine(db_url)
         self._session_factory = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=self._engine))
         # if tables are not created, create them
