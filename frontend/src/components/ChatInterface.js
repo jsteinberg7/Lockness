@@ -299,6 +299,7 @@ const ChatInterface = () => {
           placeholderText={step < 0 ? "Enter new research prompt here..." : "Answer the clarification questions here..."}
           position="absolute"
           bottom="2%"
+          isDisabled={loading}
           mt="2%"
           width="50%"
           left="25%"
