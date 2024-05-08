@@ -84,6 +84,20 @@ Deploy the backend to Heroku
 git subtree push --prefix backend heroku main 
 ```
 
+## Viewing Logs
+
+### Backend
+
+```bash
+heroku logs --tail
+```
+
+### Database
+
+```bash
+heroku pg:psql
+```
+
 ## Contributing
 
 For all major features, create a new feature branch. When finished testing, merge into the `main` branch.
