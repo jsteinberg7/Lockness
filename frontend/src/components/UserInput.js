@@ -17,6 +17,7 @@ const UserInput = ({
   setInputMessage,
   handleSendMessage,
   placeholderText,
+  isDisabled,
   ...rest
 }) => {
   return (
@@ -49,7 +50,6 @@ const UserInput = ({
           </Button>
 
           <Textarea
-            disabled={isDisabled || inputMessage === ""}
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             bg="darkBackgroundColor"
@@ -70,13 +70,12 @@ const UserInput = ({
               fontSize: "sm",
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey && !isDisabled && inputMessage !== "") {
                 handleSendMessage();
                 e.preventDefault();
               }
             }}
           />
-
           <Button
             size="lg"
             color="primaryColor"
