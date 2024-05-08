@@ -61,18 +61,23 @@ const SideNavigationBar = () => {
 
     const fetchDataForSessions = async () => {
       const sessionsData = await Promise.all(sessionIds.map(async (sessionId) => {
-        const url = `${backendDomain}/load-session/${sessionId}`;
-        try {
-          const response = await fetch(url, {
-            method: "GET",
-            headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
-          });
-          const data = await response.json();
-          const firstMessage = data && data.length > 0 ? data[0].text : "New chat";
+        // const url = `${backendDomain}/load-session/${sessionId}`;
+        try { // TODO: RE-ENABLE THIS (WAS INFINITELY RETRYING)
+          // const response = await fetch(url, {
+          //   method: "GET",
+          //   headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
+          // });
+          // const data = await response.json();
+          // const firstMessage = data && data.length > 0 ? data[0].text : "New chat";
+          // return {
+          //   id: sessionId,
+          //   title: firstMessage,
+          //   chatHistory: data || "No chat history available.",
+          // };
           return {
             id: sessionId,
-            title: firstMessage,
-            chatHistory: data || "No chat history available.",
+            title: "New Chat",
+            chatHistory: "No chat history available.",
           };
         } catch (error) {
           if (retryCount < maxRetries) {
