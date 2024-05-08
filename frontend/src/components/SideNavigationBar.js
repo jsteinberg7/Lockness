@@ -56,6 +56,9 @@ const SideNavigationBar = () => {
   };
 
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 3;
+
     const fetchDataForSessions = async () => {
       const sessionsData = await Promise.all(sessionIds.map(async (sessionId) => {
         const url = `${backendDomain}/load-session/${sessionId}`;
@@ -72,7 +75,12 @@ const SideNavigationBar = () => {
             chatHistory: data || "No chat history available.",
           };
         } catch (error) {
-          console.error("Failed to fetch messages for session:", sessionId, error);
+          if (retryCount < maxRetries) {
+            retryCount++;
+            console.error(`Retry ${retryCount}: Failed to fetch messages for session:`, sessionId, error);
+            await new Promise(resolve => setTimeout(resolve, 1000 * retryCount)); // Exponential back-off
+            return fetchDataForSessions(); // Retry fetching
+          }
           return {
             id: sessionId,
             title: `No chat history available.`,
@@ -84,7 +92,8 @@ const SideNavigationBar = () => {
     };
 
     fetchDataForSessions();
-  }, [sessionIds]);
+  }, [sessionIds]); // Ensure this does not change unnecessarily
+
 
   return (
     <Box
