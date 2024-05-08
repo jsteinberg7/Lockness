@@ -64,7 +64,6 @@ const SideNavigationBar = () => {
             method: "GET",
             headers: { "Authorization": process.env.REACT_APP_BACKEND_API_KEY }
           });
-          if (!response.ok) throw new Error('Failed to fetch');
           const data = await response.json();
           const firstMessage = data && data.length > 0 ? data[0].text : "New chat";
           return {
@@ -76,7 +75,7 @@ const SideNavigationBar = () => {
           console.error("Failed to fetch messages for session:", sessionId, error);
           return {
             id: sessionId,
-            title: `Id: ${sessionId} - Failed to load messages`,
+            title: `No chat history available.`,
             chatHistory: "Failed to load messages.",
           };
         }
