@@ -72,6 +72,11 @@ cd frontend
 vercel --prod   
 ```
 
+(Or to deploy to a test/preview channel)
+```bash
+vercel
+```
+
 ### Backend
 
 Deploy the backend to Heroku
