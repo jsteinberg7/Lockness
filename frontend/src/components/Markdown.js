@@ -115,7 +115,7 @@ const MarkdownCasing = ({
               backgroundColor="primaryColor"
               textColor="darkBackgroundColor"
               buttonText={
-                step === totalSteps
+                step === totalSteps && totalSteps > 1
                   ? "Generate full query"
                   : "Continue to step " + (step + 1)
               }

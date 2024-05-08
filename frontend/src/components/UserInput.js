@@ -49,6 +49,7 @@ const UserInput = ({
           </Button>
 
           <Textarea
+            disabled={isDisabled || inputMessage === ""}
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             bg="darkBackgroundColor"
@@ -86,7 +87,7 @@ const UserInput = ({
             ml="1rem" // Adjust the margin to align the button as in the design
             borderRadius="lg"
             height="50%"
-            isDisabled={inputMessage === ""}
+            isDisabled={isDisabled || inputMessage === ""}
           >
             <ArrowUpIcon color="black" />
           </Button>
