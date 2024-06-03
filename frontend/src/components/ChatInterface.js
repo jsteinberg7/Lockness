@@ -37,6 +37,29 @@ const ChatInterface = () => {
     ? "http://localhost:5001"
     : "https://lockness-7a7deea4b2f5.herokuapp.com";
 
+  // do a test fetch to the base url to wake up the backend (TESTING)
+  const wakeUpBackend = () => {
+    console.log("Waking up backend...");
+    fetch(backendDomain)
+      .then(response => {
+        if (!response.ok) {
+          console.error("Failed to fetch, response no bueno");
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Backend is awake", data);
+      })
+      .catch(err => {
+        console.error("Failed to fetch", err);
+      });
+  };
+
+  // call the function to wake up the backend
+  useEffect(() => { // TESTING
+    wakeUpBackend();
+  }, []);
+
 
   useEffect(() => {
     // reset fields
