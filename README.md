@@ -8,3 +8,6 @@ We made a (self-hostable) chat application where VRDC researchers can generate c
 
 ## How we built it
 After unanimously agreeing on the logical flow and design for the application, we split into two sub-teams. Ryan and Michael worked on data aggregation for the documentation, as well as prompt engineering and chaining to make the LLM pipeline. UV and Jason created on the frontend and backend architecture for the website. Since we want to make this application deployable to offline/restricted environments, we built our LLM solutions using Cohere's self-hostable Command-R-Plus model. We also used Google Cloud App Engine to host our Flask backend, and Vercel to statically host our React + Chakra UI frontend.
+
+## Devpost
+https://devpost.com/software/lockness-ai
